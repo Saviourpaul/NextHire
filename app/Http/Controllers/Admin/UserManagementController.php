@@ -1,0 +1,257 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Enums\UserRole;
+use App\Enums\UserStatus;
+use App\Http\Controllers\Controller;
+use App\Models\User;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules;
+
+class UserManagementController extends Controller
+{
+    public function employers(Request $request): View
+    {
+        return $this->index($request, 'admin.Employers', 'Employers', UserRole::Employer);
+    }
+
+    public function administrators(Request $request): View
+    {
+        return $this->index($request, 'admin.administrators', 'Administrators', UserRole::Admin);
+    }
+
+    public function applicants(Request $request): View
+    {
+        return $this->index($request, 'admin.applicants', 'Applicants', UserRole::Applicant);
+    }
+
+    public function approved(Request $request): View
+    {
+        return $this->index(
+            request: $request,
+            view: 'admin.user-verification',
+            title: 'Approved Users',
+            status: UserStatus::Active,
+            showCreate: false,
+        );
+    }
+
+    public function suspended(Request $request): View
+    {
+        return $this->index(
+            request: $request,
+            view: 'admin.suspended-accounts',
+            title: 'Suspended Accounts',
+            status: UserStatus::Suspended,
+            showCreate: false,
+        );
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => ['required', Rule::in(UserRole::values())],
+            'status' => ['required', Rule::in(UserStatus::values())],
+        ]);
+
+        $user = new User([
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'username' => $data['username'],
+            'email' => $data['email'],
+            'password' => $data['password'],
+            'role' => UserRole::from($data['role']),
+        ]);
+
+        $this->setStatus($user, UserStatus::from($data['status']));
+        $user->save();
+
+        return back()->with('success', 'User created successfully.');
+    }
+
+    public function update(Request $request, User $user): RedirectResponse
+    {
+        $data = $request->validate([
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user)],
+            'role' => ['required', Rule::in(UserRole::values())],
+            'status' => ['required', Rule::in(UserStatus::values())],
+        ]);
+
+        $role = UserRole::from($data['role']);
+        $status = UserStatus::from($data['status']);
+
+        if ($error = $this->protectedAdminError($request->user(), $user, $role, $status)) {
+            return back()->withErrors(['user' => $error]);
+        }
+
+        $user->fill([
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'username' => $data['username'],
+            'email' => $data['email'],
+            'role' => $role,
+        ]);
+
+        $this->setStatus($user, $status);
+        $user->save();
+
+        return back()->with('success', 'User updated successfully.');
+    }
+
+    public function suspend(Request $request, User $user): RedirectResponse
+    {
+        if ($error = $this->protectedAdminError($request->user(), $user, $user->role, UserStatus::Suspended)) {
+            return back()->withErrors(['user' => $error]);
+        }
+
+        $user->suspend();
+
+        return back()->with('success', 'User suspended successfully.');
+    }
+
+    public function activate(User $user): RedirectResponse
+    {
+        $user->activate();
+
+        return back()->with('success', 'User activated successfully.');
+    }
+
+    public function destroy(Request $request, User $user): RedirectResponse
+    {
+        if ($user->is($request->user())) {
+            return back()->withErrors(['user' => 'You cannot delete your own administrator account.']);
+        }
+
+        if ($this->wouldRemoveLastActiveAdmin($user, $user->role, UserStatus::Suspended)) {
+            return back()->withErrors(['user' => 'You cannot remove the last active administrator.']);
+        }
+
+        $user->delete();
+
+        return back()->with('success', 'User deleted successfully.');
+    }
+
+    public function sendPasswordReset(User $user): RedirectResponse
+    {
+        $status = Password::sendResetLink(['email' => $user->email]);
+
+        if ($status !== Password::RESET_LINK_SENT) {
+            return back()->withErrors(['user' => __($status)]);
+        }
+
+        return back()->with('success', 'Password reset link sent.');
+    }
+
+    private function index(
+        Request $request,
+        string $view,
+        string $title,
+        ?UserRole $role = null,
+        ?UserStatus $status = null,
+        bool $showCreate = true,
+    ): View {
+        $users = User::query()
+            ->when($role, fn ($query) => $query->role($role))
+            ->when($status, fn ($query) => $query->status($status))
+            ->when($request->filled('name'), function ($query) use ($request) {
+                $name = '%'.$request->string('name')->trim().'%';
+
+                $query->where(function ($query) use ($name) {
+                    $query->where('first_name', 'like', $name)
+                        ->orWhere('last_name', 'like', $name)
+                        ->orWhere('username', 'like', $name);
+                });
+            })
+            ->when($request->filled('email'), function ($query) use ($request) {
+                $query->where('email', 'like', '%'.$request->string('email')->trim().'%');
+            })
+            ->when(! $role && $request->filled('role'), function ($query) use ($request) {
+                if (in_array($request->input('role'), UserRole::values(), true)) {
+                    $query->role($request->input('role'));
+                }
+            })
+            ->when(! $status && $request->filled('status'), function ($query) use ($request) {
+                if (in_array($request->input('status'), UserStatus::values(), true)) {
+                    $query->status($request->input('status'));
+                }
+            })
+            ->latest()
+            ->paginate(25)
+            ->withQueryString();
+
+        return view($view, [
+            'users' => $users,
+            'title' => $title,
+            'roleConstraint' => $role,
+            'statusConstraint' => $status,
+            'showCreate' => $showCreate,
+            'defaultRole' => $role ?? UserRole::Applicant,
+            'defaultStatus' => $status === UserStatus::Suspended ? UserStatus::Suspended : UserStatus::Active,
+            'roles' => UserRole::cases(),
+            'statuses' => UserStatus::cases(),
+        ]);
+    }
+
+    private function setStatus(User $user, UserStatus $status): void
+    {
+        $user->status = $status;
+
+        if ($status === UserStatus::Active) {
+            $user->approved_at ??= now();
+            $user->suspended_at = null;
+
+            return;
+        }
+
+        if ($status === UserStatus::Suspended) {
+            $user->suspended_at ??= now();
+
+            return;
+        }
+
+        $user->approved_at = null;
+        $user->suspended_at = null;
+    }
+
+    private function protectedAdminError(User $actingUser, User $targetUser, UserRole $targetRole, UserStatus $targetStatus): ?string
+    {
+        if ($targetUser->is($actingUser) && ($targetRole !== $targetUser->role || $targetStatus !== $targetUser->status)) {
+            return 'You cannot suspend or demote your own administrator account.';
+        }
+
+        if ($this->wouldRemoveLastActiveAdmin($targetUser, $targetRole, $targetStatus)) {
+            return 'You cannot remove the last active administrator.';
+        }
+
+        return null;
+    }
+
+    private function wouldRemoveLastActiveAdmin(User $targetUser, UserRole $targetRole, UserStatus $targetStatus): bool
+    {
+        if (! $targetUser->isAdmin() || ! $targetUser->isActive()) {
+            return false;
+        }
+
+        if ($targetRole === UserRole::Admin && $targetStatus === UserStatus::Active) {
+            return false;
+        }
+
+        return User::query()
+            ->role(UserRole::Admin)
+            ->active()
+            ->count() <= 1;
+    }
+}
