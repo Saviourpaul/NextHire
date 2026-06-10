@@ -9,6 +9,8 @@
 
     <div class="row">
         <div class="col-lg-8">
+            @include('profile.partials.completion-tracker', ['user' => auth()->user()])
+
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Welcome back, {{ auth()->user()->first_name }}.</h5>

@@ -31,6 +31,7 @@ class UserFactory extends Factory
             'last_name' => fake()->lastName(),
             'username' => fake()->userName(),
             'email' => fake()->unique()->safeEmail(),
+            'date_of_birth' => null,
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'role' => UserRole::Applicant,
@@ -38,6 +39,13 @@ class UserFactory extends Factory
             'approved_at' => now(),
             'suspended_at' => null,
             'last_login_at' => null,
+            'profile_image_path' => null,
+            'phone' => null,
+            'address' => null,
+            'country' => null,
+            'state' => null,
+            'city' => null,
+            'zipcode' => null,
             'remember_token' => Str::random(10),
         ];
     }
@@ -83,6 +91,20 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'status' => UserStatus::Suspended,
             'suspended_at' => now(),
+        ]);
+    }
+
+    public function completeApplicantProfile(): static
+    {
+        return $this->applicant()->state(fn (array $attributes) => [
+            'profile_image_path' => 'profile-images/avatar.jpg',
+            'date_of_birth' => fake()->dateTimeBetween('-60 years', '-18 years')->format('Y-m-d'),
+            'phone' => fake()->phoneNumber(),
+            'address' => fake()->streetAddress(),
+            'country' => fake()->country(),
+            'state' => fake()->state(),
+            'city' => fake()->city(),
+            'zipcode' => fake()->postcode(),
         ]);
     }
 

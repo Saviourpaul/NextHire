@@ -83,7 +83,7 @@
 				<li class="nav-item dropdown has-arrow main-drop">
 					<a href="javascript:void(0);" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
 						<span class="user-img">
-							<img src="{{ asset('admin/assets/img/profiles/avatar-07.jpg') }}" alt="Img">
+							<img src="{{ auth()->user()->profileImageUrl() }}" alt="{{ auth()->user()->first_name }}">
 							<span class="status online"></span>
 						</span>
 					</a>

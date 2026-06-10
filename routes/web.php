@@ -27,6 +27,10 @@ Route::get('account/pending-approval', [DashboardController::class, 'pending'])
     ->name('account.pending');
 
 Route::middleware(['auth', 'active.account'])->group(function () {
+    Route::get('applicants/{user}/profile', [ProfileController::class, 'showApplicant'])
+        ->middleware('role:admin,employer')
+        ->name('applicants.profile.show');
+
     Route::middleware('role:employer')->group(function () {
         Route::get('jobs', [JobController::class, 'index'])->name('jobs');
         Route::post('jobs', [JobController::class, 'store'])->name('jobs.store');

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -21,14 +23,37 @@ class ProfileController extends Controller
         ]);
     }
 
+    public function showApplicant(Request $request, User $user): View
+    {
+        abort_unless($user->isApplicant(), 404);
+
+        if ($request->user()->isEmployer()) {
+            abort_unless($user->isActive(), 403);
+        }
+
+        return view('profile.show', [
+            'user' => $user,
+        ]);
+    }
+
     /**
      * Update the user's profile information.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
+        $data = $request->safe()->except('profile_image', 'email');
 
-        $request->user()->save();
+        if ($request->hasFile('profile_image')) {
+            if ($user->profile_image_path) {
+                Storage::disk('public')->delete($user->profile_image_path);
+            }
+
+            $data['profile_image_path'] = $request->file('profile_image')->store('profile-images', 'public');
+        }
+
+        $user->fill($data);
+        $user->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }

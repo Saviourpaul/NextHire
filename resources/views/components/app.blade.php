@@ -85,8 +85,8 @@
 								<li class="{{ request()->is('/') ? 'active' : '' }}">
 									<a href="/">Home</a>
 								</li>
-								<li class="{{ request()->is('jobs*') ? 'active' : '' }}">
-									<a href="/jobs">Jobs</a>
+								<li class="">
+									<a href="">Jobs</a>
 								</li>
 								<li class="{{ request()->is('about') ? 'active' : '' }}">
 									<a href="/about">About</a>

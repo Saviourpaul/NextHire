@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -27,12 +28,20 @@ class User extends Authenticatable
         'last_name',
         'username',
         'email',
+        'date_of_birth',
         'password',
         'role',
         'status',
         'approved_at',
         'suspended_at',
         'last_login_at',
+        'profile_image_path',
+        'phone',
+        'address',
+        'country',
+        'state',
+        'city',
+        'zipcode',
     ];
 
     /**
@@ -64,6 +73,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'date_of_birth' => 'date',
             'password' => 'hashed',
             'role' => UserRole::class,
             'status' => UserStatus::class,
@@ -76,6 +86,81 @@ class User extends Authenticatable
     public function jobs(): HasMany
     {
         return $this->hasMany(Job::class, 'employer_id');
+    }
+
+    public function profileImageUrl(): string
+    {
+        if (! $this->profile_image_path) {
+            return asset('admin/assets/img/profiles/avatar-14.jpg');
+        }
+
+        $path = ltrim($this->profile_image_path, '/');
+
+        if (filter_var($path, FILTER_VALIDATE_URL)) {
+            return $path;
+        }
+
+        if (str_starts_with($path, 'storage/')) {
+            return asset($path);
+        }
+
+        if (str_starts_with($path, 'public/')) {
+            $path = substr($path, strlen('public/'));
+        }
+
+        if (! Storage::disk('public')->exists($path)) {
+            return asset('admin/assets/img/profiles/avatar-14.jpg');
+        }
+
+        return asset('storage/'.$path);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function applicantProfileFields(): array
+    {
+        return [
+            'profile_image_path' => 'Profile image',
+            'date_of_birth' => 'Date of birth',
+            'phone' => 'Phone number',
+            'address' => 'Address',
+            'country' => 'Country',
+            'state' => 'State',
+            'city' => 'City',
+            'zipcode' => 'Zipcode',
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function missingApplicantProfileFields(): array
+    {
+        if (! $this->isApplicant()) {
+            return [];
+        }
+
+        return collect(self::applicantProfileFields())
+            ->filter(fn (string $label, string $field): bool => blank($this->{$field}))
+            ->all();
+    }
+
+    public function applicantProfileCompletionPercentage(): int
+    {
+        if (! $this->isApplicant()) {
+            return 100;
+        }
+
+        $total = count(self::applicantProfileFields());
+        $missing = count($this->missingApplicantProfileFields());
+
+        return (int) round((($total - $missing) / $total) * 100);
+    }
+
+    public function hasCompletedApplicantProfile(): bool
+    {
+        return $this->isApplicant() && $this->missingApplicantProfileFields() === [];
     }
 
     public function isAdmin(): bool

@@ -15,7 +15,8 @@ class JobController extends Controller
         $jobs = Job::query()
             ->where('employer_id', $request->user()->id)
             ->latest()
-            ->get();
+            ->paginate(15)
+            ->withQueryString();
 
         return view('admin.Jobs', [
             'jobs' => $jobs,

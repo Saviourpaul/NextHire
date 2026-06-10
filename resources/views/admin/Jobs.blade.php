@@ -27,61 +27,79 @@
                     @endif
 
                     <div class="table-responsive mt-3">
-                        <table class="table table-center table-hover mb-0 datatable">
+                        <table class="table table-hover mb-0 jobs-table">
                             <thead>
                                 <tr>
-                                    <th></th>
-                                    <th>Logo</th>
-                                    <th>Title</th>
-                                    <th>Description</th>
-                                    <th>Company</th>
-                                    <th>Start date</th>
-                                    <th>Due date</th>
-                                    <th>Status</th>
-                                    <th class="text-end">Actions</th>
+                                    <th class="align-middle">#</th>
+                                    <th class="align-middle">Logo</th>
+                                    <th class="align-middle">Title</th>
+                                    <th class="align-middle d-none d-md-table-cell">Company</th>
+                                    <th class="align-middle d-none d-lg-table-cell">Start Date</th>
+                                    <th class="align-middle d-none d-lg-table-cell">Due Date</th>
+                                    <th class="align-middle">Status</th>
+                                    <th class="align-middle text-end">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($jobs as $job)
+                                @forelse ($jobs as $index => $job)
                                     @php
                                         $logoPath = $job->logo ?: 'admin/assets/img/company/img-10.png';
                                         $logoUrl = filter_var($logoPath, FILTER_VALIDATE_URL) ? $logoPath : asset($logoPath);
                                     @endphp
                                     <tr>
-                                        <td>
-                                            <div class="form-check form-checkbox">
-                                                <input type="checkbox" class="form-check-input" id="job-check-{{ $job->id }}">
-                                                <label class="form-check-label" for="job-check-{{ $job->id }}"></label>
+                                        <td class="align-middle">{{ $jobs->firstItem() + $loop->index }}</td>
+                                        <td class="align-middle">
+                                            <img class="me-2 rounded-circle" src="{{ $logoUrl }}" alt="{{ $job->company }} logo" width="32" height="32">
+                                        </td>
+                                        <td class="align-middle">
+                                            <div>
+                                                <h6 class="mb-0">{{ $job->title }}</h6>
+                                                <small class="text-muted d-md-none">{{ $job->company }}</small>
+                                                <small class="text-muted d-lg-none">{{ $job->start_date->format('d-m-Y') }} - {{ $job->due_date->format('d-m-Y') }}</small>
                                             </div>
                                         </td>
-                                        <td>
-                                            <h2 class="table-avatar">
-                                                <img class="me-2 rounded-circle" src="{{ $logoUrl }}" alt="{{ $job->company }} logo" width="40" height="40">
-                                            </h2>
-                                        </td>
-                                        <td>{{ $job->title }}</td>
-                                        <td>{{ Illuminate\Support\Str::limit(strip_tags($job->description), 80) }}</td>
-                                        <td>{{ $job->company }}</td>
-                                        <td>{{ $job->start_date->format('d-m-Y') }}</td>
-                                        <td>{{ $job->due_date->format('d-m-Y') }}</td>
-                                        <td>
+                                        <td class="align-middle d-none d-md-table-cell">{{ $job->company }}</td>
+                                        <td class="align-middle d-none d-lg-table-cell">{{ $job->start_date->format('d-m-Y') }}</td>
+                                        <td class="align-middle d-none d-lg-table-cell">{{ $job->due_date->format('d-m-Y') }}</td>
+                                        <td class="align-middle">
                                             <span class="badge {{ $job->status === 'active' ? 'bg-success-light' : 'bg-danger-light' }}">
                                                 {{ ucfirst($job->status) }}
                                             </span>
                                         </td>
-                                        <td class="text-end">
-                                            <button type="button" class="btn btn-sm btn-secondary me-2" data-bs-toggle="modal" data-bs-target="#edit-job-{{ $job->id }}">
-                                                <i class="far fa-edit"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#delete-job-{{ $job->id }}">
-                                                <i class="far fa-trash-alt"></i>
-                                            </button>
+                                        <td class="align-middle text-end">
+                                            <div class="dropdown">
+                                                <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Actions
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                    <li>
+                                                        <button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#edit-job-{{ $job->id }}">
+                                                            <i data-feather="edit" class="me-2"></i> Edit
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <button class="dropdown-item text-danger mb-0" type="button" data-bs-toggle="modal" data-bs-target="#delete-job-{{ $job->id }}">
+                                                            <i data-feather="trash-2" class="me-2"></i> Delete
+                                                        </button>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="8" class="text-center py-4">No jobs found.</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
+
+                    @if ($jobs->hasPages())
+                        <div class="mt-4">
+                            {{ $jobs->links('pagination::bootstrap-5') }}
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -91,7 +109,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Create job</h4>
+                    <h4 class="modal-title">Create Job</h4>
                     <button type="button" class="close" data-bs-dismiss="modal"><span>&times;</span></button>
                 </div>
 
@@ -100,7 +118,7 @@
                         @csrf
                         @include('admin.partials.job-form', ['job' => null])
                         <div class="mt-4">
-                            <button type="submit" class="btn btn-primary btn-block">Create job</button>
+                            <button type="submit" class="btn btn-primary btn-block">Create Job</button>
                         </div>
                     </form>
                 </div>
@@ -113,7 +131,7 @@
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Edit job</h4>
+                        <h4 class="modal-title">Edit Job</h4>
                         <button type="button" class="close" data-bs-dismiss="modal"><span>&times;</span></button>
                     </div>
 
@@ -123,7 +141,7 @@
                             @method('PUT')
                             @include('admin.partials.job-form', ['job' => $job])
                             <div class="mt-4">
-                                <button type="submit" class="btn btn-primary btn-block">Save changes</button>
+                                <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
                             </div>
                         </form>
                     </div>
