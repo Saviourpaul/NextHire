@@ -163,20 +163,41 @@ class UserManagementController extends Controller
         ?UserStatus $status = null,
         bool $showCreate = true,
     ): View {
+        $sortableColumns = ['first_name', 'last_name', 'username', 'email', 'phone', 'created_at'];
+        $sortColumn = $request->input('sort') && in_array($request->input('sort'), $sortableColumns, true)
+            ? $request->input('sort')
+            : 'created_at';
+        $sortDirection = $request->input('direction') === 'asc' ? 'asc' : 'desc';
+
         $users = User::query()
             ->when($role, fn ($query) => $query->role($role))
             ->when($status, fn ($query) => $query->status($status))
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $search = '%'.$request->string('search')->trim().'%';
+
+                $query->where(function ($query) use ($search) {
+                    $query->where('first_name', 'like', $search)
+                        ->orWhere('last_name', 'like', $search)
+                        ->orWhere('username', 'like', $search)
+                        ->orWhere('email', 'like', $search)
+                        ->orWhere('phone', 'like', $search);
+                });
+            })
             ->when($request->filled('name'), function ($query) use ($request) {
                 $name = '%'.$request->string('name')->trim().'%';
 
                 $query->where(function ($query) use ($name) {
                     $query->where('first_name', 'like', $name)
                         ->orWhere('last_name', 'like', $name)
-                        ->orWhere('username', 'like', $name);
+                        ->orWhere('username', 'like', $name)
+                        ->orWhere('phone', 'like', $name);
                 });
             })
             ->when($request->filled('email'), function ($query) use ($request) {
                 $query->where('email', 'like', '%'.$request->string('email')->trim().'%');
+            })
+            ->when($request->filled('phone'), function ($query) use ($request) {
+                $query->where('phone', 'like', '%'.$request->string('phone')->trim().'%');
             })
             ->when(! $role && $request->filled('role'), function ($query) use ($request) {
                 if (in_array($request->input('role'), UserRole::values(), true)) {
@@ -188,7 +209,7 @@ class UserManagementController extends Controller
                     $query->status($request->input('status'));
                 }
             })
-            ->latest()
+            ->orderBy($sortColumn, $sortDirection)
             ->paginate(25)
             ->withQueryString();
 
@@ -202,6 +223,8 @@ class UserManagementController extends Controller
             'defaultStatus' => $status === UserStatus::Suspended ? UserStatus::Suspended : UserStatus::Active,
             'roles' => UserRole::cases(),
             'statuses' => UserStatus::cases(),
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
         ]);
     }
 

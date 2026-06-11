@@ -202,7 +202,7 @@
 				[ 'data1', 'data2']
 			],
 			colors: {
-				data1:'#FF5B37'
+				data1:'#0073b1'
 			},
 			names: {
 				// name of each serie
@@ -239,7 +239,7 @@
 				[ 'data1', 'data2']
 			],
 			colors: {
-				data1:'#FF5B37'
+				data1:'#0073b1'
 			},
 			names: {
 				// name of each serie
@@ -276,7 +276,7 @@
 				[ 'data1', 'data2']
 			],
 			colors: {
-				data1:'#FF5B37'
+				data1:'#0073b1'
 			},
 			names: {
 				// name of each serie
@@ -573,7 +573,7 @@
 				[ 'data1', 'data2']
 			],
 			colors: {
-				data1: '#FF5B37',
+				data1: '#0073b1',
 				data2: '#7E84A3'
 			},
 			names: {
@@ -616,7 +616,7 @@
 			],
 			colors: {
 				data1: '#7E84A3',
-				data2: '#FF5B37'
+				data2: '#0073b1'
 			},
 			names: {
 				// name of each serie

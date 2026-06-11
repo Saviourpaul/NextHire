@@ -66,6 +66,10 @@
                             <input type="text" name="phone" class="form-control" value="{{ old('phone', $user->phone) }}" @required($requiresApplicantProfile)>
                         </div>
                         <div class="form-group">
+                            <label>Date of Birth{{ $requiredMark }}</label>
+                            <input type="date" name="date_of_birth" class="form-control" value="{{ old('date_of_birth', $user->date_of_birth) }}" @required($requiresApplicantProfile)>
+                        </div>
+                        <div class="form-group">
                             <label>Address{{ $requiredMark }}</label>
                             <input type="text" name="address" class="form-control" value="{{ old('address', $user->address) }}" @required($requiresApplicantProfile)>
                         </div>

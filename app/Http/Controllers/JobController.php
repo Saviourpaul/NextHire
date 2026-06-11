@@ -12,14 +12,31 @@ class JobController extends Controller
 {
     public function index(Request $request): View
     {
+        $sortableColumns = ['title', 'company', 'start_date', 'due_date', 'created_at'];
+        $sortColumn = $request->input('sort') && in_array($request->input('sort'), $sortableColumns, true)
+            ? $request->input('sort')
+            : 'created_at';
+        $sortDirection = $request->input('direction') === 'asc' ? 'asc' : 'desc';
+
         $jobs = Job::query()
             ->where('employer_id', $request->user()->id)
-            ->latest()
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $search = '%'.$request->string('search')->trim().'%';
+
+                $query->where(function ($query) use ($search) {
+                    $query->where('title', 'like', $search)
+                        ->orWhere('company', 'like', $search)
+                        ->orWhere('description', 'like', $search);
+                });
+            })
+            ->orderBy($sortColumn, $sortDirection)
             ->paginate(15)
             ->withQueryString();
 
         return view('admin.Jobs', [
             'jobs' => $jobs,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
         ]);
     }
 

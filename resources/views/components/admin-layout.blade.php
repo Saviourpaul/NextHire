@@ -21,31 +21,45 @@
 </head>
 <body>
 	<div class="main-wrapper">
-		@php
-			$currentUser = auth()->user();
-		@endphp
-		<div class="header">
-			<div class="header-left">
-				<a href="{{ route('dashboard') }}" class="logo">
-					<img src="{{ asset('admin/assets/img/logo.png') }}" alt="Logo">
-				</a>
-				<a href="{{ route('dashboard') }}" class="logo logo-small">
-					<img src="{{ asset('admin/assets/img/logo-small.png') }}" alt="Logo" width="30" height="30">
-				</a>
-				<a href="javascript:void(0);" id="toggle_btn">
-					<i class="feather-chevrons-left"></i>
-				</a>
-				<a class="mobile_btn" id="mobile_btn">
-					<i class="feather-chevrons-left"></i>
-				</a>
-			</div>
+@php
+		$currentUser = auth()->user();
+		$searchRoute = match(true) {
+			request()->routeIs('jobs') => route('jobs'),
+			request()->routeIs('applicants') => route('applicants'),
+			request()->routeIs('Employers') => route('Employers'),
+			request()->routeIs('administrators') => route('administrators'),
+			default => ($currentUser->isAdmin() ? route('applicants') : ($currentUser->isEmployer() ? route('jobs') : route('dashboard'))),
+		};
+		$searchPlaceholder = match(true) {
+			request()->routeIs('jobs') => 'Search jobs...',
+			request()->routeIs('applicants') => 'Search applicants...',
+			request()->routeIs('Employers') => 'Search employers...',
+			request()->routeIs('administrators') => 'Search administrators...',
+			default => 'Search...',
+		};
+	@endphp
+	<div class="header">
+		<div class="header-left">
+			<a href="{{ route('dashboard') }}" class="logo">
+				<img src="{{ asset('admin/assets/img/logo.png') }}" alt="Logo">
+			</a>
+			<a href="{{ route('dashboard') }}" class="logo logo-small">
+				<img src="{{ asset('admin/assets/img/logo-small.png') }}" alt="Logo" width="30" height="30">
+			</a>
+			<a href="javascript:void(0);" id="toggle_btn">
+				<i class="feather-chevrons-left"></i>
+			</a>
+			<a class="mobile_btn" id="mobile_btn">
+				<i class="feather-chevrons-left"></i>
+			</a>
+		</div>
 
-			<div class="top-nav-search">
-				<form>
-					<input type="text" class="form-control" placeholder="Start typing your Search...">
-					<button class="btn" type="submit"><i class="feather-search"></i></button>
-				</form>
-			</div>
+		<div class="top-nav-search">
+			<form action="{{ $searchRoute }}" method="GET">
+				<input type="text" class="form-control" name="search" placeholder="{{ $searchPlaceholder }}" value="{{ request('search') }}">
+				<button class="btn" type="submit"><i class="feather-search"></i></button>
+			</form>
+		</div>
 
 			<ul class="nav user-menu">
 				<li class="nav-item dropdown">

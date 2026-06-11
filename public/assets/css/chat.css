@@ -44,7 +44,7 @@
 	justify-content: space-between;
 	margin-bottom: 30px;
 	font-weight: 600;
-	background-color: #E65425;
+	background-color: #0073b1;
 }
 
 .header-top .logo {
@@ -224,7 +224,7 @@
 }
 
 .sidebar .user-list li .users-list-body .last-chat-time .contact-toggle {
-	color: #E65425;
+	color: #0073b1;
 }
 
 .sidebar .user-list li .users-list-body .last-chat-time .new-message-count {
@@ -238,7 +238,7 @@
 	-webkit-justify-content: center;
 	line-height: 0;
 	font-size: 11px;
-	background-color: #E65425;
+	background-color: #0073b1;
 	color: #fff;
 	border-radius: 50%;
 	margin-left: auto;
@@ -298,7 +298,7 @@
 	color: #53BDEB;
 }
 .chat-pin .count-message {
-	background: #E65425;
+	background: #0073b1;
 	width: 20px;
 	height: 20px;
 	border-radius: 50px;
@@ -389,7 +389,7 @@
 	-ms-flex-pack: center;
 }
 .chat-options.chat-option-profile .list-inline-item a:hover {
-	background: #E65425;
+	background: #0073b1;
 	color: #fff;
 }
 .chat-options.chat-option-profile .list-inline {
@@ -868,7 +868,7 @@
 .chat-voice-group ul li span {
 	width: 28px;
 	height: 28px;
-	background: #E65425;
+	background: #0073b1;
 	border-radius: 50px;
 	display: -webkit-box;
     display: -ms-flexbox;
@@ -1089,11 +1089,11 @@
 }
 
 .chat .chat-body .messages .file-download .file-details ul li a {
-	color: #E65425;
+	color: #0073b1;
 }
 
 .chat .chat-body .messages .file-download .download-action a {
-	color: #E65425;
+	color: #0073b1;
 }
 
 .chat-select .select2-container .select2-selection--single {
@@ -1276,13 +1276,13 @@
 }
 
 .chat .chat-footer form .specker-col span {
-	color: #E65425;
+	color: #0073b1;
 	font-size: 25px;
 }
 
 .chat .chat-footer form .attach-col i,
 .chat .chat-footer form .smile-col i {
-	color: #E65425;
+	color: #0073b1;
 	font-size: 20px;
 }
 
@@ -1383,7 +1383,7 @@
 	-ms-flex-pack: space-between;
 }
 .chat-message-grp ul li a:hover .stared-group h6 {
-	color: #E65425;
+	color: #0073b1;
 }
 .stared-group {
 	display: -webkit-box;
@@ -1430,7 +1430,7 @@
 	background: #F8ECFF;
 }
 .report-message i {
-	color: #E65425;
+	color: #0073b1;
 }
 .delete-message {
 	background: #FFE8E9;
@@ -1482,7 +1482,7 @@
 	justify-content: center;
 	align-items: center;
 	color: #fff !important;
-	background-color: #E65425;
+	background-color: #0073b1;
 	margin-left: 10px;
 }
 .set-search {
@@ -1500,10 +1500,10 @@
 }
 .chat .chat-footer form .form-buttons .btn.send-btn:hover {
 	background-color: #fff;
-	border-color: #E65425;
+	border-color: #0073b1;
 }
 .chat .chat-footer form .form-buttons .btn.send-btn:hover i {
-	color: #E65425;
+	color: #0073b1;
 }
 
 .chat .chat-footer form .form-buttons .btn.send-btn:focus {
@@ -1877,7 +1877,7 @@
 .chat-member-details .member-details ul li a {
 	font-size: 15px;
 	font-weight: 500;
-	color: #E65425;
+	color: #0073b1;
 	border-radius: 100px;
 	padding: 5px;
     background: #F5F5F5;
@@ -1966,17 +1966,17 @@
 .tooltip > .tooltip-inner {
     text-align: left;
     max-width: 500px;
-    --bs-tooltip-bg: #E65425;
+    --bs-tooltip-bg: #0073b1;
 }
 .tooltip {
-    --bs-tooltip-bg: #E65425;
+    --bs-tooltip-bg: #0073b1;
 }
 .tooltip .arrow {
 	display: none;
-	background-color: #E65425;
+	background-color: #0073b1;
 }
 .tooltip .tooltip-inner {
-	background-color: #E65425;
+	background-color: #0073b1;
 }
 .chat-cont-type {
    display: flex;
@@ -2034,11 +2034,11 @@
 	font-weight: 500;
   }
   .select2-container--default .select2-results__option--highlighted[aria-selected] {
-	background-color: #E65425 !important;
+	background-color: #0073b1 !important;
   }
   
   .group-type-radio input:checked ~ .checkmark {
-	background-color: #E65425;
+	background-color: #0073b1;
   }
   
   
@@ -2285,10 +2285,10 @@
 	word-break: break-all;
 }
 .media-link-detail a:hover {
-	color: #E65425;
+	color: #0073b1;
 }
 .share-media-blk a {
-	color: #E65425;
+	color: #0073b1;
 	font-weight: 500;
 }
 .link-img img {
@@ -2595,7 +2595,7 @@
 }
 .participants-list .admin-profiles {
 	display: inline-block;
-	color: #E65425;
+	color: #0073b1;
 	border-radius: 6px;
 	font-size: 12px;
 	padding: 2px 10px;
@@ -2603,7 +2603,7 @@
 	background: #F8ECFF;
 }
 .participants-list .admin-profiles:hover {
-	background: #E65425;
+	background: #0073b1;
 	color: #fff;
 }
 .chat-message-grp.group-exits {
@@ -2658,7 +2658,7 @@
 	width: 25px;
 	height: 25px;
 	border-radius: 30px;
-	background-color: #E65425;
+	background-color: #0073b1;
 	color: #fff;
 	font-size: 10px;
 	display: flex;
@@ -2671,7 +2671,7 @@
 }
 
 .group-call-tab .nav-tabs .nav-link {
-	color: #E65425;
+	color: #0073b1;
 	border: 0;
 	border-radius: 10px;
 	font-weight: 500;
@@ -2679,7 +2679,7 @@
 }
 
 .group-call-tab .nav-tabs .nav-link:hover {
-	color: #E65425;
+	color: #0073b1;
 }
 
 .group-call-tab .nav-tabs .nav-link+.nav-link {
@@ -2688,7 +2688,7 @@
 
 .group-call-tab .nav-tabs .nav-link.active {
 	background-color: rgba(90, 7, 139, 0.1);
-	color: #E65425;
+	color: #0073b1;
 }
 
 .group-call-tab nav {
@@ -2763,7 +2763,7 @@
 	-ms-flex-align: center;
 	align-items: center;
 	color: #fff;
-	background-color: #E65425;
+	background-color: #0073b1;
 	border-radius: 50%;
 	transition: .2s;
 	border: 3px solid #FFFFFF;
@@ -2783,12 +2783,12 @@
 }
 
 .profile-country {
-	color: #E65425;
+	color: #0073b1;
 	font-size: 1rem;
 }
 
 .profile-name {
-	color: #E65425;
+	color: #0073b1;
 	font-size: 20px;
 	font-weight: 600;
 }
@@ -2816,7 +2816,7 @@
 	align-items: center;
 }
 .social-icons a:hover i {
-	color: #E65425;
+	color: #0073b1;
 }
 .social-icons a i {
 	font-size: 20px;
@@ -2838,7 +2838,7 @@
 }
 
 .social-nav li a i:hover {
-	color: #E65425;
+	color: #0073b1;
 }
 
 .settings-card {
@@ -2872,7 +2872,7 @@
 	-ms-flex-pack: space-between;
 }
 .settings-control ul li a:hover {
-	color: #E65425;
+	color: #0073b1;
 }
 .settings-control ul li a i {
 	font-size: 16px;
@@ -3005,7 +3005,7 @@
 }
 
 .social-settings h4 {
-	color: #E65425;
+	color: #0073b1;
 	font-size: 18px;
 	font-weight: 600;
 }
@@ -3023,7 +3023,7 @@
 }
 
 .settings-delete h5 {
-	color: #E65425;
+	color: #0073b1;
 	font-size: 18px;
 	font-weight: 600;
 }
@@ -3039,7 +3039,7 @@
 }
 
 .settings-header h5 {
-	color: #E65425;
+	color: #0073b1;
 	font-size: 18px;
 	font-weight: 600;
 	margin-bottom: 7px;
@@ -3384,13 +3384,13 @@
 	align-items: center;
 }
 .connectetappscontent .btn-primary {
-	color: #E65425!important;
-	border: 2px solid #E65425;
+	color: #0073b1!important;
+	border: 2px solid #0073b1;
 	background: #fff !important;
 	margin-right: 10px;
 }
 .connectetappscontent .btn-primary:hover {
-	box-shadow: 0 50px 0 0 #E65425 inset;
+	box-shadow: 0 50px 0 0 #0073b1 inset;
 	color: #fff !important;
 }
 .device-modal.modal .modal-dialog {
@@ -3727,10 +3727,10 @@
 }
 .chat .chat-footer form .form-buttons .btn.send-btn:hover {
 	background-color: #fff;
-	border-color: #E65425;
+	border-color: #0073b1;
 }
 .chat .chat-footer form .form-buttons .btn.send-btn:hover i {
-	color: #E65425;
+	color: #0073b1;
 }
 
 .chat .chat-footer form .form-buttons .btn.send-btn:focus {
@@ -3999,10 +3999,10 @@
 }
 .chat .chat-footer form .form-buttons .btn.send-btn:hover {
 	background-color: #fff;
-	border-color: #E65425;
+	border-color: #0073b1;
 }
 .chat .chat-footer form .form-buttons .btn.send-btn:hover i {
-	color: #E65425;
+	color: #0073b1;
 }
 
 .chat .chat-footer form .form-buttons .btn.send-btn:focus {
@@ -4321,7 +4321,7 @@
 .chat-voice-group ul li span {
 	width: 28px;
 	height: 28px;
-	background: #E65425;
+	background: #0073b1;
 	border-radius: 50px;
 	display: -webkit-box;
     display: -ms-flexbox;
@@ -4542,11 +4542,11 @@
 }
 
 .chat .chat-body .messages .file-download .file-details ul li a {
-	color: #E65425;
+	color: #0073b1;
 }
 
 .chat .chat-body .messages .file-download .download-action a {
-	color: #E65425;
+	color: #0073b1;
 }
 
 .chat-select .select2-container .select2-selection--single {
@@ -4729,13 +4729,13 @@
 }
 
 .chat .chat-footer form .specker-col span {
-	color: #E65425;
+	color: #0073b1;
 	font-size: 25px;
 }
 
 .chat .chat-footer form .attach-col i,
 .chat .chat-footer form .smile-col i {
-	color: #E65425;
+	color: #0073b1;
 	font-size: 20px;
 }
 
@@ -4836,7 +4836,7 @@
 	-ms-flex-pack: space-between;
 }
 .chat-message-grp ul li a:hover .stared-group h6 {
-	color: #E65425;
+	color: #0073b1;
 }
 .stared-group {
 	display: -webkit-box;
@@ -4913,11 +4913,11 @@
 	border-radius: 50px !important;
 }
 .sroll-side-view::-webkit-scrollbar-thumb {
-	background: #E65425;
+	background: #0073b1;
 	border-radius: 50px !important;
 }
 .sroll-side-view::-webkit-scrollbar-thumb:hover {
-	background: #E65425;
+	background: #0073b1;
 }
 .multi-load {
 	border: 2px solid #c8ccc8;
@@ -4995,17 +4995,17 @@
 .tooltip > .tooltip-inner {
     text-align: left;
     max-width: 500px;
-    --bs-tooltip-bg: #E65425;
+    --bs-tooltip-bg: #0073b1;
 }
 .tooltip {
-    --bs-tooltip-bg: #E65425;
+    --bs-tooltip-bg: #0073b1;
 }
 .tooltip .arrow {
 	display: none;
-	background-color: #E65425;
+	background-color: #0073b1;
 }
 .tooltip .tooltip-inner {
-	background-color: #E65425;
+	background-color: #0073b1;
 }
 .chat-cont-type {
    display: flex;
@@ -5063,11 +5063,11 @@
 	font-weight: 500;
   }
   .select2-container--default .select2-results__option--highlighted[aria-selected] {
-	background-color: #E65425 !important;
+	background-color: #0073b1 !important;
   }
   
   .group-type-radio input:checked ~ .checkmark {
-	background-color: #E65425;
+	background-color: #0073b1;
   }
   
   
@@ -5314,10 +5314,10 @@
 	word-break: break-all;
 }
 .media-link-detail a:hover {
-	color: #E65425;
+	color: #0073b1;
 }
 .share-media-blk a {
-	color: #E65425;
+	color: #0073b1;
 	font-weight: 500;
 }
 .link-img img {

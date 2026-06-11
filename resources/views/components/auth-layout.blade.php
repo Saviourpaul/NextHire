@@ -19,7 +19,7 @@
 
     <style>
         :root {
-            --auth-primary: #f05023;
+            --auth-primary: #0073b1;
             --auth-ink: #07072f;
             --auth-muted: #647084;
             --auth-border: #dde2ec;

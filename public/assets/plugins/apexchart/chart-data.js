@@ -101,15 +101,15 @@ $(document).ready(function() {
         dataLabels: {
           enabled: false
         },
-		colors: ["#FF5B37"],
+		colors: ["#0073b1"],
         stroke: {
           curve: 'straight',
 		  width: [1]
         },
 		markers: {
           size: 4,
-          colors: ["#FF5B37"],
-          strokeColors: "#FF5B37",
+          colors: ["#0073b1"],
+          strokeColors: "#0073b1",
           strokeWidth: 1,
           hover: {
             size: 7,

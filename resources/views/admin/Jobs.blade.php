@@ -1,4 +1,13 @@
 <x-admin-layout title="Jobs">
+    @php
+        $sortIcon = fn ($column) => $sortColumn === $column
+            ? ($sortDirection === 'asc' ? '↑' : '↓')
+            : '↕';
+        $sortUrl = fn ($column) => request()->fullUrlWithQuery([
+            'sort' => $column,
+            'direction' => $sortColumn === $column && $sortDirection === 'asc' ? 'desc' : 'asc',
+        ]);
+    @endphp
     <div class="row">
         <div class="col-lg-12">
             <div class="card bg-white projects-card">
@@ -8,6 +17,17 @@
                         <button class="btn add-user" type="button" data-bs-toggle="modal" data-bs-target="#create-job" style="background-color: #1e1e2d; color: #fff;">
                             <i class="fas fa-plus"></i> Create
                         </button>
+                    </div>
+
+                    <div class="p-3 bg-light border-bottom">
+                        <form action="{{ url()->current() }}" method="GET" class="d-flex gap-2 align-items-end">
+                            <div class="flex-grow-1">
+                                <label class="form-label small text-muted">Search Jobs</label>
+                                <input type="text" name="search" class="form-control form-control-sm" placeholder="Title, company, or description..." value="{{ request('search') }}">
+                            </div>
+                            <button class="btn btn-sm btn-primary" type="submit">Search</button>
+                            <a href="{{ url()->current() }}" class="btn btn-sm btn-outline-secondary">Clear</a>
+                        </form>
                     </div>
 
                     @if (session('success'))
@@ -32,10 +52,26 @@
                                 <tr>
                                     <th class="align-middle">#</th>
                                     <th class="align-middle">Logo</th>
-                                    <th class="align-middle">Title</th>
-                                    <th class="align-middle d-none d-md-table-cell">Company</th>
-                                    <th class="align-middle d-none d-lg-table-cell">Start Date</th>
-                                    <th class="align-middle d-none d-lg-table-cell">Due Date</th>
+                                    <th class="align-middle">
+                                        <a href="{{ $sortUrl('title') }}" class="text-decoration-none">
+                                            Title<span class="ms-1">{{ $sortIcon('title') }}</span>
+                                        </a>
+                                    </th>
+                                    <th class="align-middle d-none d-md-table-cell">
+                                        <a href="{{ $sortUrl('company') }}" class="text-decoration-none">
+                                            Company<span class="ms-1">{{ $sortIcon('company') }}</span>
+                                        </a>
+                                    </th>
+                                    <th class="align-middle d-none d-lg-table-cell">
+                                        <a href="{{ $sortUrl('start_date') }}" class="text-decoration-none">
+                                            Start Date<span class="ms-1">{{ $sortIcon('start_date') }}</span>
+                                        </a>
+                                    </th>
+                                    <th class="align-middle d-none d-lg-table-cell">
+                                        <a href="{{ $sortUrl('due_date') }}" class="text-decoration-none">
+                                            Due Date<span class="ms-1">{{ $sortIcon('due_date') }}</span>
+                                        </a>
+                                    </th>
                                     <th class="align-middle">Status</th>
                                     <th class="align-middle text-end">Actions</th>
                                 </tr>
