@@ -60,7 +60,7 @@ class UserManagementController extends Controller
             'username' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => ['required', Rule::in(UserRole::values())],
+            'role' => ['required', Rule::in($this->getAllowedRoles())],
             'status' => ['required', Rule::in(UserStatus::values())],
         ]);
 
@@ -70,7 +70,7 @@ class UserManagementController extends Controller
             'username' => $data['username'],
             'email' => $data['email'],
             'password' => $data['password'],
-            'role' => UserRole::from($data['role']),
+            'role' => UserRole::from($data['role' ]),
         ]);
 
         $this->setStatus($user, UserStatus::from($data['status']));
@@ -86,7 +86,7 @@ class UserManagementController extends Controller
             'last_name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user)],
-            'role' => ['required', Rule::in(UserRole::values())],
+            'role' => ['required', Rule::in($this->getAllowedRoles())],
             'status' => ['required', Rule::in(UserStatus::values())],
         ]);
 
@@ -132,7 +132,7 @@ class UserManagementController extends Controller
     public function destroy(Request $request, User $user): RedirectResponse
     {
         if ($user->is($request->user())) {
-            return back()->withErrors(['user' => 'You cannot delete your own administrator account.']);
+            return back()->withErrors(['user' => 'You cannot delete your  administrator account.']);
         }
 
         if ($this->wouldRemoveLastActiveAdmin($user, $user->role, UserStatus::Suspended)) {
@@ -219,9 +219,9 @@ class UserManagementController extends Controller
             'roleConstraint' => $role,
             'statusConstraint' => $status,
             'showCreate' => $showCreate,
-            'defaultRole' => $role ?? UserRole::Applicant,
+            'defaultRole' => $role ?? UserRole::Employer,
             'defaultStatus' => $status === UserStatus::Suspended ? UserStatus::Suspended : UserStatus::Active,
-            'roles' => UserRole::cases(),
+            'roles' => $this->getAllowedRolesAsEnums(),
             'statuses' => UserStatus::cases(),
             'sortColumn' => $sortColumn,
             'sortDirection' => $sortDirection,
@@ -276,5 +276,20 @@ class UserManagementController extends Controller
             ->role(UserRole::Admin)
             ->active()
             ->count() <= 1;
+    }
+
+    private function getAllowedRoles(): array
+    {
+        return collect(UserRole::cases())
+            ->reject(fn($role) => $role === UserRole::Applicant)
+            ->pluck('value')
+            ->toArray();
+    }
+
+    private function getAllowedRolesAsEnums(): array
+    {
+        return collect(UserRole::cases())
+            ->reject(fn($role) => $role === UserRole::Applicant)
+            ->toArray();
     }
 }

@@ -1,4 +1,4 @@
-<x-auth-layout title="Register - KofeJob" card-width="640px">
+<x-auth-layout title="Register - NextHire" card-width="640px">
     <h1 class="auth-title">Create your Applicant account</h1>
 
     <form method="POST" action="{{ route('register') }}">
@@ -59,7 +59,7 @@
         />
 
         <p class="auth-terms">
-            You agree to the KofeJob
+            You agree to the NextHire
             <a class="auth-link" href="javascript:void(0);">User Agreement,</a>
             <a class="auth-link" href="javascript:void(0);">Privacy Policy,</a>
             and <a class="auth-link" href="javascript:void(0);">Cookie Policy</a>.

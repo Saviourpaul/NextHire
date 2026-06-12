@@ -1,4 +1,4 @@
-<x-auth-layout title="Login - KofeJob" card-width="600px">
+<x-auth-layout title="Login - NextHire" card-width="600px">
     <h1 class="auth-title">Welcome! Nice to see you again</h1>
 
     <x-auth-session-status class="alert alert-success auth-status mb-4" :status="session('status')" />
@@ -35,7 +35,7 @@
        
 
         <div class="auth-footer-row">
-            <div>New to Kofejob&nbsp; <a href="{{ route('register') }}">Signup?</a></div>
+            <div>New to NextHire&nbsp; <a href="{{ route('register') }}">Signup?</a></div>
             @if (Route::has('password.request'))
                 <a href="{{ route('password.request') }}">forgot Password?</a>
             @endif

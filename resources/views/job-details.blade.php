@@ -1,4 +1,4 @@
-<x-app :title="$job->title . ' - KofeJob'">
+<x-app :title="$job->title . ' - NextHire'">
 	@php
 		$defaultLogo = 'assets/img/default-logo.svg';
 		$logoPath = $job->logo ?: $defaultLogo;
@@ -13,7 +13,7 @@
 					<div class="row align-items-center inner-banner">
 						<div class="col-md-12 col-12 text-center">
 							<div class="breadcrumb-list">
-								<h2>Project Details</h2>
+								<h2>Job Details</h2>
 								<nav aria-label="breadcrumb" class="page-breadcrumb">
 									<ol class="breadcrumb">
 										<li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>

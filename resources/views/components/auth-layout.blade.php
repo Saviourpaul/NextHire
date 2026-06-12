@@ -1,5 +1,5 @@
 @props([
-    'title' => 'KofeJob',
+    'title' => 'NextHire',
     'cardWidth' => '600px',
 ])
 
@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     <title>{{ $title }}</title>
 
-    <link rel="shortcut icon" href="{{ asset('assets/img/favicon.png') }}">
+    <link rel="shortcut icon" href="{{ asset('assets/img/favicon.ico') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/fontawesome/css/fontawesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/fontawesome/css/all.min.css') }}">
@@ -274,8 +274,8 @@
 <body class="auth-page">
     <main class="auth-screen">
         <section class="auth-card">
-            <a class="auth-logo" href="{{ url('/') }}" aria-label="KofeJob home">
-                <img src="{{ asset('assets/img/logo-01.png') }}" alt="KofeJob">
+            <a class="auth-logo" href="{{ url('/') }}" aria-label="NextHire home">
+                <img src="{{ asset('assets/img/logo.png') }}" alt="NextHire">
             </a>
 
             {{ $slot }}

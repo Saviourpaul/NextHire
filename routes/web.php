@@ -2,17 +2,27 @@
 
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\JobController;
+use App\Http\Controllers\ProfileController;
 use App\Models\Job;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     $jobs = Job::active()->latest()->take(3)->get();
+
     return view('Home', [
         'jobs' => $jobs,
     ]);
 });
+
+Route::get('find-jobs', function () {
+    $jobs = Job::active()->latest()->paginate(12);
+
+    return view('Jobs', [
+        'jobs' => $jobs,
+    ]);
+})->name('jobs.public');
+
 Route::get('job-details/{job}', [JobController::class, 'show'])->name('job-details');
 Route::get('about', function () {
     return view('about');
@@ -64,7 +74,6 @@ Route::middleware(['auth', 'active.account'])->group(function () {
         Route::get('permission-management', fn () => view('admin/permission-management'))->name('permission-management');
     });
 });
-
 
 Route::middleware(['auth', 'active.account'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -50,7 +50,7 @@
 						<div class="col-md-12 col-sm-12 col-12 mx-auto text-center">
 							<div class="section-header aos  " data-aos="fade-up">
 								<h2 class="header-title">What’s great about it?</h2>
-								<p>All the features of kofejob below</p>
+								<p>All the features of NextHire below</p>
 							</div>
 						</div>		
 						<!-- Feature Item --> 
@@ -89,7 +89,7 @@
 								</div>
 								<div class="feature-content course-count text-center">
 									<h3>Quality Work</h3>
-									<p>Kofejob.com has by far the largest pool of quality freelancers globally- over 50 million to choose from.</p>
+									<p>NextHire.com has by far the largest pool of quality freelancers globally- over 50 million to choose from.</p>
 								</div>
 							</div>
 						</div>

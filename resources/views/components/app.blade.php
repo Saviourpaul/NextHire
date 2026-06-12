@@ -1,4 +1,4 @@
-@props(['bodyClass' => 'home-page bg-one', 'title' => 'KofeJob'])
+@props(['bodyClass' => 'home-page bg-one', 'title' => 'NextHire'])
 
 
 
@@ -10,10 +10,10 @@
 		<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-		<title>{{ $title ?? 'KofeJob' }}</title>
+		<title>{{ $title ?? 'NextHire' }}</title>
 		
 		<!-- Favicon -->
-		<link rel="shortcut icon" href="{{ asset('assets/img/favicon.png') }}" type="image/x-icon">
+		<link rel="shortcut icon" href="{{ asset('assets/img/favicon.ico') }}" type="image/x-icon" height="32" width="32">
 		
 		<!-- Bootstrap CSS -->
 		<link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
@@ -69,13 +69,13 @@
 								</span>
 							</a>
 							<a href="/" class="navbar-brand logo">
-								<img src="{{ asset('assets/img/logo.svg') }}" class="img-fluid" alt="Logo">
+								<img src="{{ asset('assets/img/logo.png') }}" class="img-fluid" alt="Logo" height="40" width="60">
 							</a>
 						</div>
 						<div class="main-menu-wrapper">
 							<div class="menu-header">
 								<a href="/" class="menu-logo">
-									<img src="{{ asset('assets/img/logo.svg') }}" class="img-fluid" alt="Logo">
+									<img src="{{ asset('assets/img/logo.png') }}" class="img-fluid" alt="Logo" height="30" width="60">
 								</a>
 								<a id="menu_close" class="menu-close" href="javascript:void(0);">
 									<i class="fas fa-times"></i>
@@ -85,8 +85,8 @@
 								<li class="{{ request()->is('/') ? 'active' : '' }}">
 									<a href="/">Home</a>
 								</li>
-								<li class="">
-									<a href="">Jobs</a>
+								<li class="{{ request()->is('find-jobs') ? 'active' : '' }}">
+									<a href="{{ route('jobs.public') }}">Jobs</a>
 								</li>
 								<li class="{{ request()->is('about') ? 'active' : '' }}">
 									<a href="/about">About</a>
@@ -132,7 +132,7 @@
 							<div class=" col-lg-4 col-md-12">
 								<div class="footer-bottom-logo">
 									<a href="/" class="menu-logo">
-										<img src="{{ asset('assets/img/logo.svg') }}" class="img-fluid" alt="Logo">
+										<img src="{{ asset('assets/img/logo.png') }}" class="img-fluid" alt="Logo" height="50" width="90">
 									</a>
 									<p>We’re always in search for talented and motivated people. Don’t be shy introduce yourself!</p>
 									<ul>
@@ -218,7 +218,7 @@
 							<div class="row">
 								<div class="col-md-12">
 									<div class="copyright-text text-center">
-										<p class="mb-0">Copyright 2024 © KofeJob. All right reserved.</p>
+										<script>document.write(new Date().getFullYear());</script> &copy; NextHire. All rights reserved.
 									</div>
 								</div>
 							</div>

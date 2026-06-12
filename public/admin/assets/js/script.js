@@ -1,6 +1,6 @@
 /*
 Author       : Dreamguys
-Template Name: Kofejob - Bootstrap Admin Template
+Template Name: NextHire - Bootstrap Admin Template
 Version      : 1.0
 */
 
@@ -235,7 +235,7 @@ Version      : 1.0
 	      data: [31, 40, 28, 51, 42, 109, 100]
 	    }, {
 	      name: 'Developers per project',
-	      color: '#ffb8a8',
+	      color: '#0073b1',
 	      data: [11, 32, 45, 32, 34, 52, 41]
 	    },{
 	      name: 'completed projects',

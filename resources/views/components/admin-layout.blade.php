@@ -7,7 +7,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
 	<title>{{ $title }}</title>
 
-	<link rel="shortcut icon" href="{{ asset('admin/assets/img/favicon.png') }}">
+	<link rel="shortcut icon" href="{{ asset('admin/assets/img/favicon.ico') }}">
 	<link rel="stylesheet" href="{{ asset('admin/assets/css/bootstrap.min.css') }}">
 	<link rel="stylesheet" href="{{ asset('admin/assets/plugins/fontawesome/css/fontawesome.min.css') }}">
 	<link rel="stylesheet" href="{{ asset('admin/assets/plugins/fontawesome/css/all.min.css') }}">
@@ -41,10 +41,10 @@
 	<div class="header">
 		<div class="header-left">
 			<a href="{{ route('dashboard') }}" class="logo">
-				<img src="{{ asset('admin/assets/img/logo.png') }}" alt="Logo">
+				<img src="{{ asset('admin/assets/img/logo.png') }}" alt="Logo" width="300" height="200">
 			</a>
 			<a href="{{ route('dashboard') }}" class="logo logo-small">
-				<img src="{{ asset('admin/assets/img/logo-small.png') }}" alt="Logo" width="30" height="30">
+				<img src="{{ asset('admin/assets/img/logo.png') }}" alt="Logo" width="300" height="200">
 			</a>
 			<a href="javascript:void(0);" id="toggle_btn">
 				<i class="feather-chevrons-left"></i>

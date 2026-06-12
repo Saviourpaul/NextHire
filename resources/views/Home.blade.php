@@ -18,7 +18,7 @@
 								<h1>Get The Perfect <span class="orange-text"><br>Developers & Projects</span></h1>
 								<p>There are many variations of passages of the Ipsum available, but the majority have 
 									suffered alteration in some form, by injected humour.</p>
-								<form class="form"  name="store" id="store" method="post" action="https://kofejob.dreamstechnologies.com/html/template/project.html">
+								<form class="form"  name="store" id="store" method="post" action="https://NextHire.dreamstechnologies.com/html/template/project.html">
 									<div class="form-inner">
 										<div class="input-group">
 											<span class="drop-detail">
@@ -44,6 +44,54 @@
 				</div>
 			</section>
 			<!-- /Home Banner -->
+			<!-- jobs -->
+			<section class="section news">
+				<div class="container">				
+					<div class="row">
+						<div class="col-12">
+							<div class="section-header text-center aos" data-aos="fade-up">
+								<h2 class="header-title">Jobs</h2>
+							</div>
+						</div>
+					</div>
+					<div class="row blog-grid-row g-4">
+						@foreach($jobs->take(3) as $job)
+						<div class="col-xl-4 col-md-6 col-sm-12 d-flex">
+							<!-- job Post -->
+							<div class="blog grid-blog aos flex-fill w-100" data-aos="fade-up">
+								<div class="blog-image">
+									<a href="{{ route('job-details', $job) }}"><img class="img-fluid" src="assets/img/blog/blog-01.jpg" alt="Post Image"></a>
+								</div>
+								
+								<div class="blog-content d-flex flex-column h-100">
+									<ul class="entry-meta meta-item mb-2">
+										<li class="mb-0">
+											<div class="post-author">
+												<a href="{{ route('job-details', $job) }}"> <span>{{ $job->company }}</span></a>
+											</div>
+										</li>
+										<li><i class="feather-calendar me-1"></i> {{ $job->created_at->format('d M Y') }}</li>
+									</ul>
+									<div class="blog-read mt-auto">
+										<a href="{{ route('job-details', $job) }}">Apply <i class="fas fa-arrow-right ms-1"></i></a>
+									</div>
+									<h3 class="blog-title"><a href="{{ route('job-details', $job) }}">{{ $job->title }}</a></h3>
+									<p class="mb-0 flex-grow-1">{{ Str::limit(strip_tags($job->description), 150) }}</p>
+									
+								</div>
+							</div>
+							<!-- /job Post -->
+						</div>
+						@endforeach
+					</div>
+					<div class="row mt-4">
+						<div class="col-12 text-center">
+							<a href="/find-jobs" class="btn btn-primary">View All Jobs</a>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- /Projects -->
 
 			<section class="section review">
 				<div class="container">
@@ -307,47 +355,7 @@
 			</section>
 			
 			
-			<!-- jobs -->
-			<section class="section news">
-				<div class="container">				
-					<div class="row">
-						<div class="col-12">
-							<div class="section-header text-center aos" data-aos="fade-up">
-								<h2 class="header-title">Jobs</h2>
-							</div>
-						</div>
-					</div>
-					<div class="row blog-grid-row">
-						@foreach($jobs as $job)
-						<div class="col-xl-4 col-md-6 d-flex">
-							<!-- job Post -->
-							<div class="blog grid-blog aos" data-aos="fade-up">
-								<div class="blog-image">
-									<a href="{{ route('job-details', $job) }}"><img class="img-fluid" src="assets/img/blog/blog-01.jpg" alt="Post Image"></a>
-								</div>
-								<div class="blog-content">
-									<ul class="entry-meta meta-item mb-2">
-										<li class="mb-0">
-											<div class="post-author">
-												<a href="{{ route('job-details', $job) }}"> <span>{{ $job->company }}</span></a>
-											</div>
-										</li>
-										<li><i class="feather-calendar me-1"></i> {{ $job->created_at->format('d M Y') }}</li>
-									</ul>
-									<h3 class="blog-title"><a href="{{ route('job-details', $job) }}">{{ $job->title }}</a></h3>
-									<p class="mb-0">{{ Str::limit(strip_tags($job->description), 150) }}</p>
-									<div class="blog-read">
-										<a href="{{ route('job-details', $job) }}">Read More <i class="fas fa-arrow-right ms-1"></i></a>
-									</div>
-								</div>
-							</div>
-							<!-- /job Post -->
-						</div>
-						@endforeach
-					</div>        
-				</div>
-			</section>
-			<!-- /Projects -->
+			
 			
 		
 		

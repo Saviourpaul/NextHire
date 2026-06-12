@@ -1,6 +1,6 @@
 /*
 Author       : Dreamguys
-Template Name: Kofejob - Bootstrap Template
+Template Name: NextHire - Bootstrap Template
 Version      : 1.0
 */
 
