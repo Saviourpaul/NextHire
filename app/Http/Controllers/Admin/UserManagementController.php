@@ -168,30 +168,51 @@ class UserManagementController extends Controller
             ? $request->input('sort')
             : 'created_at';
         $sortDirection = $request->input('direction') === 'asc' ? 'asc' : 'desc';
+        $perPageOptions = [15, 25, 50, 100];
+        $perPage = (int) $request->input('per_page', 15);
+        $perPage = in_array($perPage, $perPageOptions, true) ? $perPage : 15;
+        $search = trim((string) $request->input('search', $request->input('name', '')));
 
         $users = User::query()
+            ->select([
+                'id',
+                'first_name',
+                'last_name',
+                'username',
+                'email',
+                'role',
+                'status',
+                'phone',
+                'profile_image_path',
+                'created_at',
+                'approved_at',
+                'suspended_at',
+            ])
             ->when($role, fn ($query) => $query->role($role))
             ->when($status, fn ($query) => $query->status($status))
-            ->when($request->filled('search'), function ($query) use ($request) {
-                $search = '%'.$request->string('search')->trim().'%';
+            ->when($search !== '', function ($query) use ($search) {
+                collect(preg_split('/\s+/', $search) ?: [])
+                    ->filter()
+                    ->each(function (string $term) use ($query) {
+                        $term = '%'.$term.'%';
 
-                $query->where(function ($query) use ($search) {
-                    $query->where('first_name', 'like', $search)
-                        ->orWhere('last_name', 'like', $search)
-                        ->orWhere('username', 'like', $search)
-                        ->orWhere('email', 'like', $search)
-                        ->orWhere('phone', 'like', $search);
-                });
+                        $query->where(function ($query) use ($term) {
+                            $query->where('first_name', 'like', $term)
+                                ->orWhere('last_name', 'like', $term)
+                                ->orWhere('username', 'like', $term)
+                                ->orWhere('email', 'like', $term)
+                                ->orWhere('phone', 'like', $term)
+                                ->orWhere('city', 'like', $term)
+                                ->orWhere('state', 'like', $term)
+                                ->orWhere('country', 'like', $term);
+                        });
+                    });
             })
-            ->when($request->filled('name'), function ($query) use ($request) {
-                $name = '%'.$request->string('name')->trim().'%';
-
-                $query->where(function ($query) use ($name) {
-                    $query->where('first_name', 'like', $name)
-                        ->orWhere('last_name', 'like', $name)
-                        ->orWhere('username', 'like', $name)
-                        ->orWhere('phone', 'like', $name);
-                });
+            ->when($request->filled('created_from'), function ($query) use ($request) {
+                $query->whereDate('created_at', '>=', $request->input('created_from'));
+            })
+            ->when($request->filled('created_to'), function ($query) use ($request) {
+                $query->whereDate('created_at', '<=', $request->input('created_to'));
             })
             ->when($request->filled('email'), function ($query) use ($request) {
                 $query->where('email', 'like', '%'.$request->string('email')->trim().'%');
@@ -210,7 +231,7 @@ class UserManagementController extends Controller
                 }
             })
             ->orderBy($sortColumn, $sortDirection)
-            ->paginate(25)
+            ->paginate($perPage)
             ->withQueryString();
 
         return view($view, [
@@ -225,6 +246,17 @@ class UserManagementController extends Controller
             'statuses' => UserStatus::cases(),
             'sortColumn' => $sortColumn,
             'sortDirection' => $sortDirection,
+            'perPageOptions' => $perPageOptions,
+            'filterValues' => [
+                'search' => $search,
+                'email' => $request->input('email'),
+                'phone' => $request->input('phone'),
+                'role' => $request->input('role'),
+                'status' => $request->input('status'),
+                'created_from' => $request->input('created_from'),
+                'created_to' => $request->input('created_to'),
+                'per_page' => $perPage,
+            ],
         ]);
     }
 
@@ -280,16 +312,11 @@ class UserManagementController extends Controller
 
     private function getAllowedRoles(): array
     {
-        return collect(UserRole::cases())
-            ->reject(fn($role) => $role === UserRole::Applicant)
-            ->pluck('value')
-            ->toArray();
+        return UserRole::values();
     }
 
     private function getAllowedRolesAsEnums(): array
     {
-        return collect(UserRole::cases())
-            ->reject(fn($role) => $role === UserRole::Applicant)
-            ->toArray();
+        return UserRole::cases();
     }
 }

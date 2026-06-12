@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Job;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -42,7 +43,11 @@ class JobController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $data = $request->validate($this->rules());
+        $data = $request->validate($this->rules($request));
+
+        if ($request->hasFile('logo')) {
+            $data['logo'] = $request->file('logo')->store('job-logos', 'public');
+        }
 
         $request->user()->jobs()->create($data);
 
@@ -55,7 +60,16 @@ class JobController extends Controller
     {
         $this->ensureEmployerOwnsJob($request, $job);
 
-        $job->update($request->validate($this->rules()));
+        $data = $request->validate($this->rules($request));
+
+        if ($request->hasFile('logo')) {
+            $this->deleteStoredLogo($job);
+            $data['logo'] = $request->file('logo')->store('job-logos', 'public');
+        } elseif (array_key_exists('logo', $data) && $data['logo'] !== $job->logo) {
+            $this->deleteStoredLogo($job);
+        }
+
+        $job->update($data);
 
         return redirect()
             ->route('jobs')
@@ -66,6 +80,7 @@ class JobController extends Controller
     {
         $this->ensureEmployerOwnsJob($request, $job);
 
+        $this->deleteStoredLogo($job);
         $job->delete();
 
         return redirect()
@@ -83,17 +98,26 @@ class JobController extends Controller
     /**
      * @return array<string, mixed>
      */
-    private function rules(): array
+    private function rules(Request $request): array
     {
         return [
             'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'company' => ['required', 'string', 'max:255'],
-            'logo' => ['nullable', 'string', 'max:2048'],
+            'logo' => $request->hasFile('logo')
+                ? ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,gif,svg', 'max:2048']
+                : ['nullable', 'string', 'max:2048'],
             'start_date' => ['required', 'date'],
             'due_date' => ['required', 'date', 'after_or_equal:start_date'],
             'status' => ['required', Rule::in(['active', 'inactive'])],
         ];
+    }
+
+    private function deleteStoredLogo(Job $job): void
+    {
+        if ($path = $job->storedLogoPath()) {
+            Storage::disk('public')->delete($path);
+        }
     }
 
     private function ensureEmployerOwnsJob(Request $request, Job $job): void

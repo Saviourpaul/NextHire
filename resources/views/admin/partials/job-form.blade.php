@@ -18,8 +18,15 @@
 </div>
 
 <div class="form-group">
-    <label>Logo URL or path</label>
-    <input type="text" name="logo" class="form-control" value="{{ old('logo', $job?->logo) }}" placeholder="admin/assets/img/company/img-10.png">
+    <label>Company Logo</label>
+    <input type="file" name="logo" class="form-control" accept=".jpg,.jpeg,.png,.webp,.gif,.svg,image/*">
+    @if ($job?->logo)
+        <div class="d-flex align-items-center gap-2 mt-2">
+            <img src="{{ $job->logoUrl() }}" alt="{{ $job->company }} logo" width="44" height="44"
+                class="rounded border" style="object-fit: contain;">
+            <span class="text-muted small">Current logo</span>
+        </div>
+    @endif
 </div>
 
 <div class="row">

@@ -32,6 +32,12 @@ Route::get('Dashboard', DashboardController::class)
     ->middleware('auth')
     ->name('dashboard');
 
+Route::get('client/Job-Application.', DashboardController::class)
+    ->middleware(['auth', 'role:applicant'])
+    ->name('client.Job-Application.');
+
+   
+
 Route::get('account/pending-approval', [DashboardController::class, 'pending'])
     ->middleware('auth')
     ->name('account.pending');

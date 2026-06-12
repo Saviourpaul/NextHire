@@ -1,12 +1,4 @@
 <x-app :title="$job->title . ' - NextHire'">
-	@php
-		$defaultLogo = 'assets/img/default-logo.svg';
-		$logoPath = $job->logo ?: $defaultLogo;
-		$logoUrl = filter_var($logoPath, FILTER_VALIDATE_URL)
-			? $logoPath
-			: asset(file_exists(public_path($logoPath)) ? $logoPath : $defaultLogo);
-	@endphp
-			
 			<!-- Breadcrumb -->
 			<div class="bread-crumb-bar">
 				<div class="container">
@@ -35,7 +27,7 @@
 							<div class="company-detail-block pt-0">
 								<div class="company-detail">
 									<div class="company-detail-image">
-										<img src="{{ $logoUrl }}" class="img-fluid" alt="{{ $job->company }} logo">
+										<img src="{{ $job->logoUrl() }}" class="img-fluid" alt="{{ $job->company }} logo">
 									</div>
 									<div class="company-title">
 										<p>{{ $job->company }}</p>

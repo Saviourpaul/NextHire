@@ -121,6 +121,14 @@
 						<li class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
 							<a href="{{ route('dashboard') }}"><i data-feather="home"></i> <span>Dashboard</span></a>
 						</li>
+						
+						
+						@if ($currentUser?->isApplicant())
+						<li class="">
+							<a href="{{ route('client.Job-Application.') }}"><i data-feather="pie-chart"></i> <span>Job Application</span></a>
+						</li>
+						@endif
+						
 						@if ($currentUser?->isAdmin())
 							<li class="submenu">
 									<a href="javascript:void(0);"><i data-feather="users"></i> <span>User Management</span> <span class="menu-arrow"></span></a>

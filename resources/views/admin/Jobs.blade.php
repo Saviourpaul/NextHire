@@ -5,7 +5,7 @@
             : '↕';
         $sortUrl = fn ($column) => request()->fullUrlWithQuery([
             'sort' => $column,
-            'direction' => $sortColumn === $column && $sortDirection === 'asc' ? 'desc' : 'asc',
+            'direction' => ($sortColumn === $column && $sortDirection === 'asc') ? 'desc' : 'asc',
         ]);
     @endphp
     <div class="row">
@@ -78,14 +78,10 @@
                             </thead>
                             <tbody>
                                 @forelse ($jobs as $index => $job)
-                                    @php
-                                        $logoPath = $job->logo ?: 'admin/assets/img/company/img-10.png';
-                                        $logoUrl = filter_var($logoPath, FILTER_VALIDATE_URL) ? $logoPath : asset($logoPath);
-                                    @endphp
                                     <tr>
                                         <td class="align-middle">{{ $jobs->firstItem() + $loop->index }}</td>
                                         <td class="align-middle">
-                                            <img class="me-2 rounded-circle" src="{{ $logoUrl }}" alt="{{ $job->company }} logo" width="32" height="32">
+                                            <img class="me-2 rounded-circle border" src="{{ $job->logoUrl() }}" alt="{{ $job->company }} logo" width="36" height="36" style="object-fit: contain;">
                                         </td>
                                         <td class="align-middle">
                                             <div>
@@ -150,7 +146,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <form action="{{ route('jobs.store') }}" method="POST">
+                    <form action="{{ route('jobs.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @include('admin.partials.job-form', ['job' => null])
                         <div class="mt-4">
@@ -172,7 +168,7 @@
                     </div>
 
                     <div class="modal-body">
-                        <form action="{{ route('jobs.update', $job) }}" method="POST">
+                        <form action="{{ route('jobs.update', $job) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             @include('admin.partials.job-form', ['job' => $job])

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
 class Job extends Model
 {
@@ -36,5 +37,57 @@ class Job extends Model
     public function scopeActive($query)
     {
         return $query->where('status', 'active');
+    }
+
+    public function logoUrl(): string
+    {
+        $defaultLogo = 'assets/img/default-logo.svg';
+
+        if (! $this->logo) {
+            return asset($defaultLogo);
+        }
+
+        $path = ltrim($this->logo, '/');
+
+        if (filter_var($path, FILTER_VALIDATE_URL)) {
+            return $path;
+        }
+
+        if (str_starts_with($path, 'storage/')) {
+            return asset($path);
+        }
+
+        if (str_starts_with($path, 'public/')) {
+            $path = substr($path, strlen('public/'));
+        }
+
+        if (Storage::disk('public')->exists($path)) {
+            return asset('storage/'.$path);
+        }
+
+        if (file_exists(public_path($path))) {
+            return asset($path);
+        }
+
+        return asset($defaultLogo);
+    }
+
+    public function storedLogoPath(): ?string
+    {
+        if (! $this->logo || filter_var($this->logo, FILTER_VALIDATE_URL)) {
+            return null;
+        }
+
+        $path = ltrim($this->logo, '/');
+
+        if (str_starts_with($path, 'storage/')) {
+            $path = substr($path, strlen('storage/'));
+        }
+
+        if (str_starts_with($path, 'public/')) {
+            $path = substr($path, strlen('public/'));
+        }
+
+        return Storage::disk('public')->exists($path) ? $path : null;
     }
 }

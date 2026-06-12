@@ -60,7 +60,7 @@
 							<!-- job Post -->
 							<div class="blog grid-blog aos flex-fill w-100" data-aos="fade-up">
 								<div class="blog-image">
-									<a href="{{ route('job-details', $job) }}"><img class="img-fluid" src="assets/img/blog/blog-01.jpg" alt="Post Image"></a>
+									<a href="{{ route('job-details', $job) }}"><img class="img-fluid w-100" src="{{ $job->logoUrl() }}" alt="{{ $job->company }} logo" style="height: 220px; object-fit: contain;"></a>
 								</div>
 								
 								<div class="blog-content d-flex flex-column h-100">

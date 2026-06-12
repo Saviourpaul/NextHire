@@ -62,6 +62,30 @@
 						</div>
 					</div>
 				</div>
+				<div class="col-md-4 d-flex">
+					<div class="card wizard-card flex-fill">
+						<div class="card-body">
+							<p class="text-primary mt-0 mb-2">Approved Applicant</p>
+							<h5>1568</h5>
+							<p><a href="javascript:void(0);">view details</a></p>
+							<span class="dash-widget-icon bg-1">
+								<i class="fas fa-bezier-curve"></i>
+							</span>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4 d-flex">
+					<div class="card wizard-card flex-fill">
+						<div class="card-body">
+							<p class="text-primary mt-0 mb-2">Reject Applicant</p>
+							<h5>3367</h5>
+							<p><a href="javascript:void(0);">view details</a></p>
+							<span class="dash-widget-icon bg-1">
+								<i class="fas fa-bezier-curve"></i>
+							</span>
+						</div>
+					</div>
+				</div>
 			</div>
 
 			<div class="row">
