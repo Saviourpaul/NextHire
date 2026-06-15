@@ -13,7 +13,7 @@ Route::get('/', function () {
     return view('Home', [
         'jobs' => $jobs,
     ]);
-});
+})->name('home');
 
 Route::get('find-jobs', function () {
     $jobs = Job::active()->latest()->paginate(12);

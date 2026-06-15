@@ -224,6 +224,8 @@ class UserManagementController extends Controller
                 if (in_array($request->input('role'), UserRole::values(), true)) {
                     $query->role($request->input('role'));
                 }
+                
+
             })
             ->when(! $status && $request->filled('status'), function ($query) use ($request) {
                 if (in_array($request->input('status'), UserStatus::values(), true)) {

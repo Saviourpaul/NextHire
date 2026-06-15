@@ -17,13 +17,14 @@
     ];
     $perPageOptions = $perPageOptions ?? [15, 25, 50, 100];
 
-    $sortIcon = fn ($column) => $sortColumn === $column
-        ? ($sortDirection === 'asc' ? '↑' : '↓')
-        : '↕';
-    $sortUrl = fn ($column) => request()->fullUrlWithQuery([
-        'sort' => $column,
-        'direction' => ($sortColumn === $column && $sortDirection === 'asc') ? 'desc' : 'asc',
-    ]);
+   $sortIcon = fn ($column) => $sortColumn === $column
+    ? ($sortDirection === 'asc' ? '↑' : '↓')
+    : '↕';
+
+$sortUrl = fn ($column) => request()->fullUrlWithQuery([
+    'sort' => $column,
+    'direction' => $sortColumn === $column && $sortDirection === 'asc' ? 'desc' : 'asc',
+]);
 @endphp
 
 <div class="page-header subscribe-head">
