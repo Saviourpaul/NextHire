@@ -45,11 +45,13 @@ class ProfileController extends Controller
         $data = $request->safe()->except('profile_image', 'email');
 
         if ($request->hasFile('profile_image')) {
+            $uploadedImagePath = $request->file('profile_image')->store('profile-images', 'public');
+
             if ($user->profile_image_path) {
                 Storage::disk('public')->delete($user->profile_image_path);
             }
 
-            $data['profile_image_path'] = $request->file('profile_image')->store('profile-images', 'public');
+            $data['profile_image_path'] = $uploadedImagePath;
         }
 
         $user->fill($data);

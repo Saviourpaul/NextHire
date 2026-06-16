@@ -42,6 +42,19 @@ test('profile page is displayed', function () {
     $response->assertOk();
 });
 
+test('profile edit page starts in read only mode with edit controls', function () {
+    $user = User::factory()->create();
+
+    $this
+        ->actingAs($user)
+        ->get('/profile')
+        ->assertOk()
+        ->assertSee('Update Profile')
+        ->assertSee('Save Changes')
+        ->assertSee('Cancel')
+        ->assertSee('id="profile-actions" class="d-none mt-3"', false);
+});
+
 test('applicant profile information can be updated with required setup fields', function () {
     Storage::fake('public');
 
@@ -70,6 +83,51 @@ test('applicant profile information can be updated with required setup fields', 
     $this->assertSame('Nigeria', $user->country);
     $this->assertEquals($verifiedAt, $user->email_verified_at);
     Storage::disk('public')->assertExists($user->profile_image_path);
+    $this->assertStringContainsString('storage/'.$user->profile_image_path, $user->profileImageUrl());
+});
+
+test('uploaded profile image displays on the profile edit page', function () {
+    Storage::fake('public');
+
+    $user = User::factory()->create();
+
+    $this
+        ->actingAs($user)
+        ->patch('/profile', validApplicantProfilePayload([
+            'email' => $user->email,
+        ]))
+        ->assertRedirect('/profile');
+
+    $user->refresh();
+
+    $this
+        ->actingAs($user)
+        ->get('/profile')
+        ->assertOk()
+        ->assertSee('storage/'.$user->profile_image_path, false);
+});
+
+test('profile image updates replace the previous stored image', function () {
+    Storage::fake('public');
+
+    $user = User::factory()->completeApplicantProfile()->create([
+        'profile_image_path' => 'profile-images/old.png',
+    ]);
+    Storage::disk('public')->put('profile-images/old.png', 'old-image');
+
+    $this
+        ->actingAs($user)
+        ->patch('/profile', validApplicantProfilePayload([
+            'email' => $user->email,
+        ]))
+        ->assertRedirect('/profile');
+
+    $user->refresh();
+
+    $this->assertNotSame('profile-images/old.png', $user->profile_image_path);
+    Storage::disk('public')->assertMissing('profile-images/old.png');
+    Storage::disk('public')->assertExists($user->profile_image_path);
+    $this->assertStringContainsString('storage/'.$user->profile_image_path, $user->profileImageUrl());
 });
 
 test('applicants must provide setup fields before saving profile changes', function () {

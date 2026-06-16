@@ -102,14 +102,23 @@
 							<li><a href="/login" class="log-btn"><img src="{{ asset('assets/img/icon/lock.svg') }}" class="me-1" alt="img"> Login</a></li>
 							@endguest
 							@auth
-							<li>
-								<form action="/logout" method="POST">
+							<li class="nav-item dropdown ">
+							<a href="javascript:void(0);" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+								<span class="user-img">
+									<img src="{{ auth()->user()->profileImageUrl() }}" alt="{{ auth()->user()->first_name }}">
+									<span class="status online"></span>
+								</span>
+							</a>
+							<div class="dropdown-menu">
+								<a class="dropdown-item" href="{{ route('profile.edit') }}"><i data-feather="user" class="me-1"></i> Profile</a>
+								<form action="{{ route('logout') }}" method="POST">
 									@csrf
-									<button type="submit" class="log-btn border-0">Logout</button>
+									<button type="submit" class="dropdown-item"><i data-feather="log-out" class="me-1"></i> Logout</button>
 								</form>
-							</li>
+							</div>
+				            </li>
 							@endauth
-            	<li><a href="/register" class="login-btn"><img src="{{ asset('assets/img/icon/users.svg') }}" class="me-1" alt="img">Get Started</a></li>
+            	         <li><a href="/register" class="login-btn"><img src="{{ asset('assets/img/icon/users.svg') }}" class="me-1" alt="img">Get Started</a></li>
 
 						</ul>
 					</nav>

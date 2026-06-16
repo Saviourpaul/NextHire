@@ -6365,3 +6365,70 @@ table.table-inbox tbody tr.checked {
 		display: flex;
 	}
 }
+/* Container holding the picture and the upload button */
+.pro-form-img {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 24px;
+    padding: 15px;
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+/* The circular profile picture placeholder */
+.profile-pic {
+    width: 120px;
+    height: 120px;
+    background-color: #f8fafc;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    border: 2px dashed #cbd5e1;
+    flex-shrink: 0;
+    overflow: hidden; /* Ensures uploaded images stay circular */
+}
+
+/* Wrapper for the button and text */
+.upload-files {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* The custom upload button */
+.image-upbtn {
+    background-color: #0ea5e9; /* Light blue */
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 600;
+    width: fit-content;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.image-upbtn:hover {
+    background-color: #0284c7;
+}
+
+/* Hide the default browser file input completely */
+.image-upbtn input[type="file"] {
+    display: none; 
+}
+
+/* Helper text styling */
+.upload-files span {
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.5;
+}

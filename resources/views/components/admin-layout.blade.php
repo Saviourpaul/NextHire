@@ -124,9 +124,21 @@
 						
 						
 						@if ($currentUser?->isApplicant())
-						<li class="">
-							<a href="{{ route('client.Job-Application.') }}"><i data-feather="pie-chart"></i> <span>Job Application</span></a>
-						</li>
+						
+								<li class="{{ request()->routeIs('profile.edit') ? 'active' : '' }}">
+									<a href="{{ route('profile.edit') }}"><i data-feather="user"></i> <span>My Profile</span></a>
+								</li>
+								<li class="{{ request()->routeIs('client.documents') ? 'active' : '' }}">
+									<a href="{{ route('client.documents') }}"><i data-feather="file-text"></i> <span>Documents</span></a>
+								</li>
+								<li class="{{ request()->routeIs('client.jobs') ? 'active' : '' }}">
+									<a href="{{ route('client.jobs') }}"><i data-feather="briefcase"></i> <span>Jobs</span></a>
+								</li>
+								<li class="{{ request()->routeIs('client.notifications') ? 'active' : '' }}">
+									<a href="{{ route('client.notifications') }}"><i data-feather="bell"></i> <span>Notifications</span></a>
+								</li>
+							
+						
 						@endif
 						
 						@if ($currentUser?->isAdmin())

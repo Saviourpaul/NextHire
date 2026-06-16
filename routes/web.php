@@ -36,6 +36,13 @@ Route::get('client/Job-Application.', DashboardController::class)
     ->middleware(['auth', 'role:applicant'])
     ->name('client.Job-Application.');
 
+Route::middleware(['auth', 'active.account', 'role:applicant'])->group(function () {
+    Route::get('client/profile', fn () => view('client.profile'))->name('client.profile');
+    Route::get('client/documents', fn () => view('client.documents'))->name('client.documents');
+    Route::get('client/jobs', fn () => view('client.jobs'))->name('client.jobs');
+    Route::get('client/notifications', fn () => view('client.notifications'))->name('client.notifications');
+});
+
    
 
 Route::get('account/pending-approval', [DashboardController::class, 'pending'])
