@@ -77,7 +77,7 @@
 									<a href="javascript:void(0);">
 										<div class="media d-flex">
 											<span class="avatar avatar-sm flex-shrink-0">
-												<img class="avatar-img rounded-circle" alt="Img" src="{{ asset('admin/assets/img/profiles/avatar-02.jpg') }}">
+												<img class="avatar-img rounded-circle" alt="Img" src="{{ asset('admin/assets/img/Avatar.png') }}">
 											</span>
 											<div class="media-body flex-grow-1">
 												<p class="noti-details"><span class="noti-title">New admin notification</span></p>

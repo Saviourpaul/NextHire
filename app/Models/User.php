@@ -91,7 +91,7 @@ class User extends Authenticatable
     public function profileImageUrl(): string
     {
         if (! $this->profile_image_path) {
-            return asset('admin/assets/img/profiles/avatar-14.jpg');
+            return asset('admin/assets/img/Avatar.png');
         }
 
         $path = ltrim($this->profile_image_path, '/');
@@ -109,7 +109,7 @@ class User extends Authenticatable
         }
 
         if (! Storage::disk('public')->exists($path)) {
-            return asset('admin/assets/img/profiles/avatar-14.jpg');
+            return asset('admin/assets/img/Avatar.png');
         }
 
         return asset('storage/'.$path);

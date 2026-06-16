@@ -1,6 +1,6 @@
 {
     "agents": [
-        "copilot"
+        "codex"
     ],
     "cloud": false,
     "mcp": true,
