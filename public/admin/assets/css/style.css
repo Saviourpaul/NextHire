@@ -6432,3 +6432,269 @@ table.table-inbox tbody tr.checked {
     color: #64748b;
     line-height: 1.5;
 }
+
+/*Applicantions style*/
+/* Main Container */
+.multistep-form {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0;
+}
+
+/* Progress Section */
+.multistep-progress {
+    background: #fff;
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 40px rgba(0,0,0,.05);
+}
+
+/* Progress Bar */
+.progressbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.progressbar li {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    position: relative;
+}
+
+.progressbar li:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 28px;
+    left: 75%;
+    width: 100%;
+    height: 3px;
+    background: #e5e7eb;
+    z-index: 0;
+}
+
+.progressbar li.active:not(:last-child)::after {
+    background: linear-gradient(
+        90deg,
+        #4f46e5,
+        #6366f1
+    );
+}
+
+/* Step Circle */
+.progress-active,
+.multi-step {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+}
+
+.progressbar li.active .progress-active,
+.progressbar li.active .multi-step {
+    background: linear-gradient(
+        135deg,
+        #4f46e5,
+        #6366f1
+    );
+    border: none;
+}
+
+.progressbar li.active img {
+    filter: brightness(0) invert(1);
+}
+
+.steps-count span {
+    color: #64748b;
+    font-size: 13px;
+}
+
+.steps-count h5 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 4px 0 0;
+}
+
+/* Step Card */
+.field-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 15px 45px rgba(0,0,0,.05);
+}
+
+/* Header */
+.onboard-head h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.onboard-head p {
+    color: #6b7280;
+    max-width: 700px;
+    margin: 10px auto 35px;
+}
+
+/* Section Titles */
+.field-card h4,
+.field-card h5 {
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 20px;
+}
+
+/* Inputs */
+.form-control,
+.select2-container--default .select2-selection--single {
+    height: 54px;
+    border-radius: 12px;
+    border: 1px solid #dbe2ea;
+    background: #fff;
+    transition: all .3s ease;
+}
+
+textarea.form-control {
+    height: auto;
+    min-height: 140px;
+}
+
+.form-control:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 4px rgba(79,70,229,.1);
+}
+
+/* Labels */
+.form-label {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+/* Upload Area */
+.upload-files,
+.upload-sets {
+    border: 2px dashed #d1d5db;
+    border-radius: 16px;
+    padding: 25px;
+    text-align: center;
+    background: #f9fafb;
+    transition: .3s;
+}
+
+.upload-files:hover,
+.upload-sets:hover {
+    border-color: #4f46e5;
+    background: #f5f3ff;
+}
+
+/* Profile Photo Circle */
+.profile-pic {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    font-weight: 600;
+    color: #6b7280;
+    border: 4px solid #fff;
+    box-shadow: 0 5px 20px rgba(0,0,0,.08);
+}
+
+/* Add New Buttons */
+.add-new {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #4f46e5;
+    font-weight: 600;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+/* Section Cards */
+.media-set {
+    background: #f8fafc;
+    padding: 25px;
+    border-radius: 16px;
+    margin-bottom: 25px;
+    border: 1px solid #edf2f7;
+}
+
+/* Navigation Buttons */
+.btn-next,
+.btn-back {
+    min-width: 160px;
+    height: 55px;
+    border-radius: 14px;
+    font-weight: 600;
+    margin: 10px;
+}
+
+.btn-next {
+    background: linear-gradient(
+        135deg,
+        #4f46e5,
+        #6366f1
+    );
+    border: none;
+}
+
+.btn-next:hover {
+    transform: translateY(-2px);
+}
+
+.btn-back {
+    background: #fff;
+    border: 1px solid #d1d5db;
+    color: #374151;
+}
+
+/* Working Hours Pills */
+.other-info-list li {
+    list-style: none;
+    padding: 10px 15px;
+    border-radius: 10px;
+    background: #e5e7eb;
+    font-weight: 600;
+}
+
+.active-hour {
+    background: #4f46e5 !important;
+    color: white;
+}
+
+/* Responsive */
+@media(max-width:768px){
+
+    .field-card{
+        padding:20px;
+    }
+
+    .progressbar{
+        flex-direction:column;
+        gap:20px;
+    }
+
+    .progressbar li::after{
+        display:none;
+    }
+
+    .onboard-head h2{
+        font-size:24px;
+    }
+}

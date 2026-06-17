@@ -23,6 +23,8 @@ Route::get('find-jobs', function () {
     ]);
 })->name('jobs.public');
 
+
+
 Route::get('job-details/{job}', [JobController::class, 'show'])->name('job-details');
 Route::get('about', function () {
     return view('about');
@@ -38,9 +40,11 @@ Route::get('client/Job-Application.', DashboardController::class)
 
 Route::middleware(['auth', 'active.account', 'role:applicant'])->group(function () {
     Route::get('client/profile', fn () => view('client.profile'))->name('client.profile');
+    Route::get('Client/Application', fn () => view('Client.Application'))->name('Client.Application');
     Route::get('client/documents', fn () => view('client.documents'))->name('client.documents');
     Route::get('client/jobs', fn () => view('client.jobs'))->name('client.jobs');
     Route::get('client/notifications', fn () => view('client.notifications'))->name('client.notifications');
+    Route::get('client/settings', fn () => view('client.settings'))->name('client.settings');
 });
 
    
@@ -59,6 +63,13 @@ Route::middleware(['auth', 'active.account'])->group(function () {
         Route::post('jobs', [JobController::class, 'store'])->name('jobs.store');
         Route::put('jobs/{job}', [JobController::class, 'update'])->name('jobs.update');
         Route::delete('jobs/{job}', [JobController::class, 'destroy'])->name('jobs.destroy');
+        Route::get('employer/profile', fn () => view('employer.profile'))->name('employer.profile');
+        Route::get('employer/Applied-Candidates', fn () => view('employer.Applied-Candidates'))->name('employer.Applied-Candidates');
+        Route::get('employer/Approved-Candidates', fn () => view('employer.Approved-Candidates'))->name('employer.Approved-Candidates');
+        Route::get('employer/Rejected-Candidate', fn () => view('employer.Rejected-Candidate'))->name('employer.Rejected-Candidate');
+        Route::get('employer/notifications', fn () => view('employer.notifications'))->name('employer.notifications');
+        Route::get('employer/settings', fn () => view('employer.settings'))->name('employer.settings');
+
     });
 
     Route::middleware('role:admin')->group(function () {

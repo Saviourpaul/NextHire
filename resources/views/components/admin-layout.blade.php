@@ -128,6 +128,9 @@
 								<li class="{{ request()->routeIs('profile.edit') ? 'active' : '' }}">
 									<a href="{{ route('profile.edit') }}"><i data-feather="user"></i> <span>My Profile</span></a>
 								</li>
+								<li class="{{ request()->routeIs('Client.Application') ? 'active' : '' }}">
+									<a href="{{ route('Client.Application') }}"><i data-feather="file-minus"></i> <span>Application</span></a>
+								</li>
 								<li class="{{ request()->routeIs('client.documents') ? 'active' : '' }}">
 									<a href="{{ route('client.documents') }}"><i data-feather="file-text"></i> <span>Documents</span></a>
 								</li>
@@ -137,11 +140,17 @@
 								<li class="{{ request()->routeIs('client.notifications') ? 'active' : '' }}">
 									<a href="{{ route('client.notifications') }}"><i data-feather="bell"></i> <span>Notifications</span></a>
 								</li>
+								<li class="{{ request()->routeIs('client.settings') ? 'active' : '' }}">
+									<a href="{{ route('client.settings') }}"><i data-feather="settings"></i> <span>Settings</span></a>
+								</li>
 							
 						
 						@endif
 						
 						@if ($currentUser?->isAdmin())
+						<li class="{{ request()->routeIs('profile.edit') ? 'active' : '' }}">
+									<a href="{{ route('profile.edit') }}"><i data-feather="user"></i> <span>My Profile</span></a>
+								</li>
 							<li class="submenu">
 									<a href="javascript:void(0);"><i data-feather="users"></i> <span>User Management</span> <span class="menu-arrow"></span></a>
 									<ul>
@@ -153,13 +162,11 @@
 									</ul>
 							</li>
 						@endif
-						@if ($currentUser?->isAdmin() || $currentUser?->isEmployer())
+						@if ($currentUser?->isAdmin() )
 							<li class="submenu">
 									<a href="javascript:void(0);"><i data-feather="align-justify"></i> <span>Job Management</span> <span class="menu-arrow"></span></a>
 									<ul>
-										@if ($currentUser?->isEmployer())
-											<li><a href="{{ route('jobs') }}">All Jobs</a></li>
-										@endif
+										
 										@if ($currentUser?->isAdmin())
 											<li><a href="{{ route('approved-jobs') }}">Approved Jobs</a></li>
 											<li><a href="{{ route('rejected-jobs') }}">Rejected Jobs</a></li>
@@ -167,7 +174,33 @@
 										@endif
 									</ul>
 								</li>
+								
 						@endif
+						@if ($currentUser?->isEmployer())
+								
+								<li class="{{ request()->routeIs('profile.edit') ? 'active' : '' }}">
+									<a href="{{ route('profile.edit') }}"><i data-feather="user"></i> <span>My Profile</span></a>
+								</li>
+								<li class="{{ request()->routeIs('jobs') ? 'active' : '' }}">
+									<a href="{{ route('jobs') }}"><i data-feather="briefcase"></i> <span>Jobs</span></a>
+								</li>
+								<li class="submenu {{ request()->routeIs('employer.candidates') ? 'active' : '' }}">
+									<a href="javascript:void(0);"><i data-feather="users"></i> <span>Manage Applicants</span> <span class="menu-arrow"></span></a>
+									<ul>
+										<li><a href="{{ route('employer.Applied-Candidates') }}">Applied Candidates</a></li>
+										<li><a href="{{ route('employer.Approved-Candidates') }}">Approved Candidates</a></li>
+										<li><a href="{{ route('employer.Rejected-Candidate') }}">Rejected Candidates</a></li>
+									</ul>
+								</li>
+								<li class="{{ request()->routeIs('employer.notifications') ? 'active' : '' }}">
+									<a href="{{ route('employer.notifications') }}"><i data-feather="bell"></i> <span>Notifications</span></a>
+								</li>
+								<li class="{{ request()->routeIs('employer.settings') ? 'active' : '' }}">
+									<a href="{{ route('employer.settings') }}"><i data-feather="settings"></i> <span>Settings</span></a>
+								</li>
+
+								
+								@endif
 						
 						@if ($currentUser?->isAdmin())
 							<li class="submenu">
@@ -213,6 +246,7 @@
 	<script src="{{ asset('assets/plugins/apexchart/apexcharts.min.js') }}"></script>
 	<script src="{{ asset('assets/plugins/summernote/dist/summernote-lite.min.js') }}"></script>
 	<script src="{{ asset('admin/assets/js/script.js') }}"></script>
+	<script src="{{ asset('admin/assets/js/Application.js') }}"></script>
 		
 	@stack('scripts')
 </body>

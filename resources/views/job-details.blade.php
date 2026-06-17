@@ -116,20 +116,30 @@
 							
 						</div>
 					
-						<!-- Blog Sidebar -->
+						<!-- Apply Button -->
 						<div class="col-lg-4 col-md-12 sidebar-right theiaStickySidebar project-client-view">	
-							<div class="card budget-widget">
-								<div class="login-btn">
-									<h6>apply</h6>
-									
-								</div>
+							<div class="job-apply-det">
+								<div class="job-apply-det-inner">
+							@if($job->status === 'inactive')
+								<p class="text-danger">This job is closed and no longer accepting applications.</p>
 								
-							</div>
-							
-						
-						
+							@elseif($job->status === 'active')
+								<h3 class="mb-0">Apply for this job</h3>
+								<p>Click the button below to submit your application.</p>
+								
+								@auth
+									{{-- User is logged in, send them to the application form --}}
+									<a href="{{ route('Client.Application') }}" class="btn btn-primary apply-btn">Apply Now</a>
+								@else
+									{{-- User is NOT logged in, send them to register --}}
+									<a href="{{ route('register') }}" class="btn btn-primary apply-btn">Apply</a>
+								@endauth
+								
+							@endif
 						</div>
-						<!-- /Blog Sidebar -->
+						
+						
+						<!-- /Apply Button -->
 						
 					</div>
 				</div>
