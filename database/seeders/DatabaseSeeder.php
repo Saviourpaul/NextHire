@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(NigeriaLocationSeeder::class);
+
         User::factory()->admin()->create([
             'first_name' => 'Admin',
             'last_name' => 'User',
@@ -44,5 +46,6 @@ class DatabaseSeeder extends Seeder
 
         // Run the job seeder
         $this->call(JobSeeder::class);
+        $this->call(ApplicationForm::class);
     }
 }

@@ -70,7 +70,7 @@ class UserManagementController extends Controller
             'username' => $data['username'],
             'email' => $data['email'],
             'password' => $data['password'],
-            'role' => UserRole::from($data['role' ]),
+            'role' => UserRole::from($data['role']),
         ]);
 
         $this->setStatus($user, UserStatus::from($data['status']));
@@ -202,9 +202,9 @@ class UserManagementController extends Controller
                                 ->orWhere('username', 'like', $term)
                                 ->orWhere('email', 'like', $term)
                                 ->orWhere('phone', 'like', $term)
-                                ->orWhere('city', 'like', $term)
-                                ->orWhere('state', 'like', $term)
-                                ->orWhere('country', 'like', $term);
+                                ->orWhere('local_government_area', 'like', $term)
+                                ->orWhere('state_of_origin', 'like', $term)
+                                ->orWhere('nationality', 'like', $term);
                         });
                     });
             })
@@ -224,7 +224,6 @@ class UserManagementController extends Controller
                 if (in_array($request->input('role'), UserRole::values(), true)) {
                     $query->role($request->input('role'));
                 }
-                
 
             })
             ->when(! $status && $request->filled('status'), function ($query) use ($request) {

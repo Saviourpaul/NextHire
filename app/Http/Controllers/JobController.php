@@ -88,10 +88,19 @@ class JobController extends Controller
             ->with('success', 'Job deleted successfully.');
     }
 
-    public function show(Job $job): View
+    public function show(Request $request, Job $job): View
     {
+        $existingApplication = null;
+
+        if ($request->user()?->isApplicant()) {
+            $existingApplication = $job->applications()
+                ->where('user_id', $request->user()->id)
+                ->first();
+        }
+
         return view('job-details', [
             'job' => $job,
+            'existingApplication' => $existingApplication,
         ]);
     }
 

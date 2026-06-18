@@ -38,9 +38,9 @@ class User extends Authenticatable
         'profile_image_path',
         'phone',
         'address',
-        'country',
-        'state',
-        'city',
+        'nationality',
+        'state_of_origin',
+        'local_government_area',
         'zipcode',
     ];
 
@@ -88,6 +88,11 @@ class User extends Authenticatable
         return $this->hasMany(Job::class, 'employer_id');
     }
 
+    public function applications(): HasMany
+    {
+        return $this->hasMany(ApplicationForm::class);
+    }
+
     public function profileImageUrl(): string
     {
         if (! $this->profile_image_path) {
@@ -125,9 +130,9 @@ class User extends Authenticatable
             'date_of_birth' => 'Date of birth',
             'phone' => 'Phone number',
             'address' => 'Address',
-            'country' => 'Country',
-            'state' => 'State',
-            'city' => 'City',
+            'nationality' => 'Nationality',
+            'state_of_origin' => 'State of origin',
+            'local_government_area' => 'Local government area',
             'zipcode' => 'Zipcode',
         ];
     }

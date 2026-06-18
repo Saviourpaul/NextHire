@@ -3,8 +3,13 @@
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Models\User;
+use Database\Seeders\NigeriaLocationSeeder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+
+beforeEach(function () {
+    $this->seed(NigeriaLocationSeeder::class);
+});
 
 function fakeProfileImage(): UploadedFile
 {
@@ -25,9 +30,9 @@ function validApplicantProfilePayload(array $overrides = []): array
         'profile_image' => fakeProfileImage(),
         'phone' => '+2348012345678',
         'address' => '12 Market Road',
-        'country' => 'Nigeria',
-        'state' => 'Lagos',
-        'city' => 'Ikeja',
+        'nationality' => 'Nigeria',
+        'state_of_origin' => 'Lagos',
+        'local_government_area' => 'Ikeja',
         'zipcode' => '100001',
     ], $overrides);
 }
@@ -80,7 +85,9 @@ test('applicant profile information can be updated with required setup fields', 
     $this->assertSame($email, $user->email);
     $this->assertSame('1995-05-15', $user->date_of_birth->format('Y-m-d'));
     $this->assertSame('+2348012345678', $user->phone);
-    $this->assertSame('Nigeria', $user->country);
+    $this->assertSame('Nigeria', $user->nationality);
+    $this->assertSame('Lagos', $user->state_of_origin);
+    $this->assertSame('Ikeja', $user->local_government_area);
     $this->assertEquals($verifiedAt, $user->email_verified_at);
     Storage::disk('public')->assertExists($user->profile_image_path);
     $this->assertStringContainsString('storage/'.$user->profile_image_path, $user->profileImageUrl());
@@ -146,9 +153,9 @@ test('applicants must provide setup fields before saving profile changes', funct
             'date_of_birth',
             'phone',
             'address',
-            'country',
-            'state',
-            'city',
+            'nationality',
+            'state_of_origin',
+            'local_government_area',
             'zipcode',
         ]);
 });

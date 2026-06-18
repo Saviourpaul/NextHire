@@ -14,27 +14,21 @@
                     <h5 class="card-title mb-3">Recent Notifications</h5>
 
                     <div class="list-group">
-                        <a class="list-group-item list-group-item-action" href="{{ route('client.jobs') }}">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1">Job updates</h6>
-                                <small>Just now</small>
-                            </div>
-                            <p class="mb-1">Track applications and new job opportunities from one place.</p>
-                        </a>
-                        <a class="list-group-item list-group-item-action" href="{{ route('client.documents') }}">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1">Documents</h6>
-                                <small>Today</small>
-                            </div>
-                            <p class="mb-1">Upload your documents to complete your applicant profile.</p>
-                        </a>
-                        <a class="list-group-item list-group-item-action" href="{{ route('client.profile') }}">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1">Profile completion</h6>
-                                <small>Today</small>
-                            </div>
-                            <p class="mb-1">Keep your profile details current for better visibility.</p>
-                        </a>
+                        @forelse ($notifications as $notification)
+                            <a class="list-group-item list-group-item-action" href="{{ $notification->data['action_url'] ?? route('client.jobs') }}">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ $notification->data['title'] ?? 'Application update' }}</h6>
+                                    <small>{{ $notification->created_at->diffForHumans() }}</small>
+                                </div>
+                                <p class="mb-1">{{ $notification->data['message'] ?? 'Your application status changed.' }}</p>
+                            </a>
+                        @empty
+                            <div class="list-group-item text-muted">No notifications yet.</div>
+                        @endforelse
+                    </div>
+
+                    <div class="mt-3">
+                        {{ $notifications->links() }}
                     </div>
                 </div>
             </div>

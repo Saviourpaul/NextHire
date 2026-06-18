@@ -2,12 +2,18 @@
 
 namespace App\Models;
 
+use Database\Factories\JobFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 
 class Job extends Model
 {
+    /** @use HasFactory<JobFactory> */
+    use HasFactory;
+
     protected $table = 'job_posts';
 
     protected $fillable = [
@@ -32,6 +38,11 @@ class Job extends Model
     public function employer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'employer_id');
+    }
+
+    public function applications(): HasMany
+    {
+        return $this->hasMany(ApplicationForm::class);
     }
 
     public function scopeActive($query)

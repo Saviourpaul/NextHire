@@ -28,6 +28,13 @@
                     @php
                         $requiresApplicantProfile = $user->isApplicant();
                         $requiredMark = $requiresApplicantProfile ? ' *' : '';
+                        $selectedState = old('state_of_origin', $user->state_of_origin);
+                        $selectedLga = old('local_government_area', $user->local_government_area);
+                        $selectedStateModel = $states->firstWhere('name', $selectedState);
+                        $selectedLgas = $selectedStateModel?->localGovernmentAreas ?? collect();
+                        $locationOptions = $states->mapWithKeys(
+                            fn ($state) => [$state->name => $state->localGovernmentAreas->pluck('name')->values()]
+                        );
                         $originalProfile = [
                             'first_name' => $user->first_name,
                             'last_name' => $user->last_name,
@@ -36,9 +43,9 @@
                             'phone' => $user->phone,
                             'date_of_birth' => $user->date_of_birth?->format('Y-m-d'),
                             'address' => $user->address,
-                            'country' => $user->country,
-                            'state' => $user->state,
-                            'city' => $user->city,
+                            'nationality' => $user->nationality,
+                            'state_of_origin' => $user->state_of_origin,
+                            'local_government_area' => $user->local_government_area,
                             'zipcode' => $user->zipcode,
                             'profile_image_src' => $user->profileImageUrl(),
                             'profile_image_path' => $user->profile_image_path,
@@ -103,22 +110,32 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Country{{ $requiredMark }}</label>
-                                    <input type="text" name="country" class="form-control" value="{{ old('country', $user->country) }}" @required($requiresApplicantProfile) readonly>
+                                    <label>Nationality{{ $requiredMark }}</label>
+                                    <input type="text" name="nationality" class="form-control" value="{{ old('nationality', $user->nationality ?? 'Nigeria') }}" @required($requiresApplicantProfile) readonly>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>State{{ $requiredMark }}</label>
-                                    <input type="text" name="state" class="form-control" value="{{ old('state', $user->state) }}" @required($requiresApplicantProfile) readonly>
+                                    <label>State of Origin{{ $requiredMark }}</label>
+                                    <select name="state_of_origin" class="form-control" @required($requiresApplicantProfile) data-profile-state disabled>
+                                        <option value="">Select state</option>
+                                        @foreach ($states as $state)
+                                            <option value="{{ $state->name }}" @selected($selectedState === $state->name)>{{ $state->name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>City{{ $requiredMark }}</label>
-                                    <input type="text" name="city" class="form-control" value="{{ old('city', $user->city) }}" @required($requiresApplicantProfile) readonly>
+                                    <label>Local Government Area{{ $requiredMark }}</label>
+                                    <select name="local_government_area" class="form-control" @required($requiresApplicantProfile) data-profile-lga data-selected-lga="{{ $selectedLga }}" disabled>
+                                        <option value="">Select LGA</option>
+                                        @foreach ($selectedLgas as $lga)
+                                            <option value="{{ $lga->name }}" @selected($selectedLga === $lga->name)>{{ $lga->name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -167,15 +184,36 @@
                 const profileActions = document.getElementById('profile-actions');
                 const profileImageInput = document.getElementById('profile-image-input');
                 const profileImagePreview = document.getElementById('profile-image-preview');
+                const stateSelect = form?.querySelector('[data-profile-state]');
+                const lgaSelect = form?.querySelector('[data-profile-lga]');
                 const originalProfile = @json($originalProfile);
+                const lgaOptions = @json($locationOptions);
 
                 if (!form) {
                     return;
                 }
 
+                const populateLgas = (state, selectedLga = '') => {
+                    if (!lgaSelect) {
+                        return;
+                    }
+
+                    lgaSelect.innerHTML = '';
+                    lgaSelect.append(new Option('Select LGA', ''));
+
+                    (lgaOptions[state] || []).forEach((lga) => {
+                        lgaSelect.append(new Option(lga, lga, false, lga === selectedLga));
+                    });
+                };
+
                 const setReadonly = (readonly) => {
-                    form.querySelectorAll('input').forEach((field) => {
+                    form.querySelectorAll('input, select').forEach((field) => {
                         if (field.name === 'profile_image') {
+                            field.disabled = readonly;
+                            return;
+                        }
+
+                        if (field.tagName === 'SELECT') {
                             field.disabled = readonly;
                             return;
                         }
@@ -185,13 +223,15 @@
                 };
 
                 const resetToOriginalValues = () => {
-                    form.querySelectorAll('input').forEach((field) => {
+                    form.querySelectorAll('input, select').forEach((field) => {
                         if (!originalProfile.hasOwnProperty(field.name)) {
                             return;
                         }
 
                         field.value = originalProfile[field.name] || '';
                     });
+
+                    populateLgas(originalProfile.state_of_origin || '', originalProfile.local_government_area || '');
 
                     if (profileImageInput) {
                         profileImageInput.value = '';
@@ -202,6 +242,7 @@
                     }
                 };
 
+                populateLgas(stateSelect?.value || '', lgaSelect?.dataset.selectedLga || '');
                 setReadonly(true);
 
                 editButton?.addEventListener('click', () => {
@@ -232,6 +273,10 @@
                     };
 
                     reader.readAsDataURL(file);
+                });
+
+                stateSelect?.addEventListener('change', () => {
+                    populateLgas(stateSelect.value);
                 });
             })();
         </script>

@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EmployerApplicationController;
+use App\Http\Controllers\EmployerApplicationDocumentController;
+use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Job;
@@ -23,8 +26,6 @@ Route::get('find-jobs', function () {
     ]);
 })->name('jobs.public');
 
-
-
 Route::get('job-details/{job}', [JobController::class, 'show'])->name('job-details');
 Route::get('about', function () {
     return view('about');
@@ -40,14 +41,15 @@ Route::get('client/Job-Application.', DashboardController::class)
 
 Route::middleware(['auth', 'active.account', 'role:applicant'])->group(function () {
     Route::get('client/profile', fn () => view('client.profile'))->name('client.profile');
-    Route::get('Client/Application', fn () => view('Client.Application'))->name('Client.Application');
-    Route::get('client/documents', fn () => view('client.documents'))->name('client.documents');
-    Route::get('client/jobs', fn () => view('client.jobs'))->name('client.jobs');
-    Route::get('client/notifications', fn () => view('client.notifications'))->name('client.notifications');
+    Route::get('Client/Application', [JobApplicationController::class, 'index'])->name('Client.Application');
+    Route::get('jobs/{job}/apply', [JobApplicationController::class, 'create'])->name('applications.create');
+    Route::post('jobs/{job}/apply', [JobApplicationController::class, 'store'])->name('applications.store');
+    Route::get('client/applications/{applicationForm}', [JobApplicationController::class, 'show'])->name('client.applications.show');
+    Route::get('client/documents', [JobApplicationController::class, 'documents'])->name('client.documents');
+    Route::get('client/jobs', [JobApplicationController::class, 'index'])->name('client.jobs');
+    Route::get('client/notifications', [JobApplicationController::class, 'notifications'])->name('client.notifications');
     Route::get('client/settings', fn () => view('client.settings'))->name('client.settings');
 });
-
-   
 
 Route::get('account/pending-approval', [DashboardController::class, 'pending'])
     ->middleware('auth')
@@ -64,9 +66,12 @@ Route::middleware(['auth', 'active.account'])->group(function () {
         Route::put('jobs/{job}', [JobController::class, 'update'])->name('jobs.update');
         Route::delete('jobs/{job}', [JobController::class, 'destroy'])->name('jobs.destroy');
         Route::get('employer/profile', fn () => view('employer.profile'))->name('employer.profile');
-        Route::get('employer/Applied-Candidates', fn () => view('employer.Applied-Candidates'))->name('employer.Applied-Candidates');
-        Route::get('employer/Approved-Candidates', fn () => view('employer.Approved-Candidates'))->name('employer.Approved-Candidates');
-        Route::get('employer/Rejected-Candidate', fn () => view('employer.Rejected-Candidate'))->name('employer.Rejected-Candidate');
+        Route::get('employer/Applied-Candidates', [EmployerApplicationController::class, 'applied'])->name('employer.Applied-Candidates');
+        Route::get('employer/Approved-Candidates', [EmployerApplicationController::class, 'approved'])->name('employer.Approved-Candidates');
+        Route::get('employer/Rejected-Candidate', [EmployerApplicationController::class, 'rejected'])->name('employer.Rejected-Candidate');
+        Route::get('employer/applications/{applicationForm}', [EmployerApplicationController::class, 'show'])->name('employer.applications.show');
+        Route::patch('employer/applications/{applicationForm}/status', [EmployerApplicationController::class, 'review'])->name('employer.applications.review');
+        Route::patch('employer/application-documents/{applicationDocument}/status', [EmployerApplicationDocumentController::class, 'update'])->name('employer.application-documents.review');
         Route::get('employer/notifications', fn () => view('employer.notifications'))->name('employer.notifications');
         Route::get('employer/settings', fn () => view('employer.settings'))->name('employer.settings');
 

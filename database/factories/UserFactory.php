@@ -42,9 +42,9 @@ class UserFactory extends Factory
             'profile_image_path' => null,
             'phone' => null,
             'address' => null,
-            'country' => null,
-            'state' => null,
-            'city' => null,
+            'nationality' => null,
+            'state_of_origin' => null,
+            'local_government_area' => null,
             'zipcode' => null,
             'remember_token' => Str::random(10),
         ];
@@ -101,9 +101,9 @@ class UserFactory extends Factory
             'date_of_birth' => fake()->dateTimeBetween('-60 years', '-18 years')->format('Y-m-d'),
             'phone' => fake()->phoneNumber(),
             'address' => fake()->streetAddress(),
-            'country' => fake()->country(),
-            'state' => fake()->state(),
-            'city' => fake()->city(),
+            'nationality' => 'Nigeria',
+            'state_of_origin' => 'Lagos',
+            'local_government_area' => 'Ikeja',
             'zipcode' => fake()->postcode(),
         ]);
     }

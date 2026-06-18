@@ -2,10 +2,12 @@
 
 namespace App\Http\Requests;
 
+use App\Models\NigeriaState;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\File;
+use Illuminate\Validation\Validator;
 
 class ProfileUpdateRequest extends FormRequest
 {
@@ -41,10 +43,38 @@ class ProfileUpdateRequest extends FormRequest
             'date_of_birth' => $dateOfBirthRule,
             'phone' => $profileFieldRule,
             'address' => $profileFieldRule,
-            'country' => $profileFieldRule,
-            'state' => $profileFieldRule,
-            'city' => $profileFieldRule,
+            'nationality' => $profileFieldRule,
+            'state_of_origin' => [
+                ...$profileFieldRule,
+                Rule::exists('nigeria_states', 'name'),
+            ],
+            'local_government_area' => $profileFieldRule,
             'zipcode' => $profileFieldRule,
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator) {
+            if (! $this->filled('state_of_origin') || ! $this->filled('local_government_area')) {
+                return;
+            }
+
+            $state = NigeriaState::query()
+                ->where('name', (string) $this->input('state_of_origin'))
+                ->first();
+
+            if (! $state) {
+                return;
+            }
+
+            $hasLga = $state->localGovernmentAreas()
+                ->where('name', (string) $this->input('local_government_area'))
+                ->exists();
+
+            if (! $hasLga) {
+                $validator->errors()->add('local_government_area', 'Select a local government area in the selected state.');
+            }
+        });
     }
 }

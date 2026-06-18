@@ -1,0 +1,200 @@
+<?php
+
+use App\Enums\ApplicationDocumentType;
+use App\Enums\ApplicationStatus;
+use App\Models\ApplicationDocument;
+use App\Models\ApplicationForm;
+use App\Models\Job;
+use App\Models\User;
+use Database\Seeders\NigeriaLocationSeeder;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+
+beforeEach(function () {
+    $this->seed(NigeriaLocationSeeder::class);
+});
+
+function validApplicationPayload(array $overrides = []): array
+{
+    return [
+        'first_name' => 'Ada',
+        'middle_name' => 'M',
+        'last_name' => 'Lovelace',
+        'email' => 'ada@example.com',
+        'phone' => '+2348012345678',
+        'nationality' => 'Nigeria',
+        'date_of_birth' => '1995-01-01',
+        'gender' => 'female',
+        'marital_status' => 'single',
+        'state_of_origin' => 'Lagos',
+        'local_government_area' => 'Ikeja',
+        'address' => '12 Market Road',
+        'zipcode' => '100001',
+        'nin_number' => '12345678901',
+        'nin_document' => UploadedFile::fake()->create('nin.pdf', 100, 'application/pdf'),
+        'bvn_number' => '22345678901',
+        'bvn_document' => UploadedFile::fake()->create('bvn.pdf', 100, 'application/pdf'),
+        'education_documents' => [
+            [
+                'type' => 'bsc',
+                'file' => UploadedFile::fake()->create('degree.pdf', 100, 'application/pdf'),
+            ],
+            [
+                'type' => 'nysc',
+                'file' => UploadedFile::fake()->create('nysc.pdf', 100, 'application/pdf'),
+            ],
+        ],
+        ...$overrides,
+    ];
+}
+
+it('renders the application wizard with dependent location and document controls', function () {
+    $employer = User::factory()->employer()->create();
+    $job = Job::factory()->for($employer, 'employer')->create();
+    $applicant = User::factory()->applicant()->create();
+
+    $this->actingAs($applicant)
+        ->get(route('applications.create', $job))
+        ->assertOk()
+        ->assertSee('Personal Information')
+        ->assertSee('Identification')
+        ->assertSee('Educational Qualification')
+        ->assertSee('Application Summary')
+        ->assertSee('data-state-of-origin', false)
+        ->assertSee('data-local-government-area', false)
+        ->assertSee('Add another document');
+});
+
+it('stores applications, synchronizes applicant profile, and prevents duplicate applications', function () {
+    Storage::fake('public');
+
+    $employer = User::factory()->employer()->create();
+    $job = Job::factory()->for($employer, 'employer')->create();
+    $applicant = User::factory()->applicant()->create([
+        'first_name' => 'Old',
+        'last_name' => 'Name',
+        'phone' => null,
+        'profile_image_path' => 'profile-images/existing.jpg',
+    ]);
+
+    $this->actingAs($applicant)
+        ->post(route('applications.store', $job), validApplicationPayload())
+        ->assertRedirect();
+
+    $application = ApplicationForm::query()->firstOrFail();
+
+    expect($application->job_id)->toBe($job->id)
+        ->and($application->user_id)->toBe($applicant->id)
+        ->and($application->status)->toBe(ApplicationStatus::Pending)
+        ->and($application->documents)->toHaveCount(4)
+        ->and($application->statusHistories)->toHaveCount(1);
+
+    $applicant->refresh();
+
+    expect($applicant->first_name)->toBe('Ada')
+        ->and($applicant->last_name)->toBe('Lovelace')
+        ->and($applicant->phone)->toBe('+2348012345678')
+        ->and($applicant->nationality)->toBe('Nigeria')
+        ->and($applicant->state_of_origin)->toBe('Lagos')
+        ->and($applicant->local_government_area)->toBe('Ikeja')
+        ->and($applicant->profile_image_path)->toBe('profile-images/existing.jpg');
+
+    $this->assertDatabaseHas('application_forms', [
+        'job_id' => $job->id,
+        'user_id' => $applicant->id,
+        'email' => 'ada@example.com',
+    ]);
+
+    $duplicatePayload = validApplicationPayload();
+    unset($duplicatePayload['profile_image']);
+
+    $this->actingAs($applicant)
+        ->from(route('applications.create', $job))
+        ->post(route('applications.store', $job), $duplicatePayload)
+        ->assertRedirect(route('applications.create', $job))
+        ->assertSessionHasErrors('job');
+
+    expect(ApplicationForm::count())->toBe(1);
+});
+
+it('lets only the owning employer review applications and notifies the applicant', function () {
+    $owner = User::factory()->employer()->create();
+    $otherEmployer = User::factory()->employer()->create();
+    $applicant = User::factory()->applicant()->create();
+    $job = Job::factory()->for($owner, 'employer')->create();
+    $application = ApplicationForm::factory()
+        ->for($job, 'job')
+        ->for($applicant, 'applicant')
+        ->create();
+
+    $this->actingAs($otherEmployer)
+        ->patch(route('employer.applications.review', $application), [
+            'status' => 'approved',
+            'remarks' => 'Looks good.',
+        ])
+        ->assertForbidden();
+
+    $this->actingAs($owner)
+        ->patch(route('employer.applications.review', $application), [
+            'status' => 'approved',
+            'remarks' => 'Looks good.',
+        ])
+        ->assertRedirect();
+
+    $application->refresh();
+
+    expect($application->status)->toBe(ApplicationStatus::Approved)
+        ->and($application->reviewed_by)->toBe($owner->id)
+        ->and($application->statusHistories()->count())->toBe(1);
+
+    $this->assertDatabaseHas('notifications', [
+        'notifiable_id' => $applicant->id,
+        'notifiable_type' => User::class,
+    ]);
+
+    $this->actingAs($applicant)
+        ->get(route('client.jobs'))
+        ->assertOk()
+        ->assertSee('Approved');
+});
+
+it('tracks document review status separately and enforces ownership', function () {
+    $owner = User::factory()->employer()->create();
+    $otherEmployer = User::factory()->employer()->create();
+    $applicant = User::factory()->applicant()->create();
+    $job = Job::factory()->for($owner, 'employer')->create();
+    $application = ApplicationForm::factory()
+        ->for($job, 'job')
+        ->for($applicant, 'applicant')
+        ->create();
+    $document = ApplicationDocument::factory()
+        ->for($application, 'applicationForm')
+        ->type(ApplicationDocumentType::Nin)
+        ->create();
+
+    $this->actingAs($otherEmployer)
+        ->patch(route('employer.application-documents.review', $document), [
+            'status' => 'rejected',
+            'remarks' => 'Unreadable.',
+        ])
+        ->assertForbidden();
+
+    $this->actingAs($owner)
+        ->patch(route('employer.application-documents.review', $document), [
+            'status' => 'rejected',
+            'remarks' => 'Unreadable.',
+        ])
+        ->assertRedirect();
+
+    $document->refresh();
+
+    expect($document->status)->toBe(ApplicationStatus::Rejected)
+        ->and($document->reviewed_by)->toBe($owner->id)
+        ->and($document->statusHistories()->count())->toBe(1);
+
+    $this->actingAs($applicant)
+        ->get(route('client.documents'))
+        ->assertOk()
+        ->assertSee('Rejected')
+        ->assertSee('Unreadable.');
+});

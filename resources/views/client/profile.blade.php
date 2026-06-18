@@ -35,8 +35,8 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Location</label>
-                                <input class="form-control" value="{{ collect([auth()->user()->city, auth()->user()->state, auth()->user()->country])->filter()->implode(', ') }}" readonly>
+                                <label>Origin</label>
+                                <input class="form-control" value="{{ collect([auth()->user()->local_government_area, auth()->user()->state_of_origin, auth()->user()->nationality])->filter()->implode(', ') }}" readonly>
                             </div>
                         </div>
                     </div>

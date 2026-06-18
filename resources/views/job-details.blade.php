@@ -128,8 +128,17 @@
 								<p>Click the button below to submit your application.</p>
 								
 								@auth
-									{{-- User is logged in, send them to the application form --}}
-									<a href="{{ route('Client.Application') }}" class="btn btn-primary apply-btn">Apply Now</a>
+									@if (auth()->user()->isApplicant())
+										@if ($existingApplication)
+											<p class="mb-2">You applied for this job on {{ $existingApplication->submitted_at->format('M d, Y') }}.</p>
+											<span class="badge {{ $existingApplication->status->badgeClass() }}">{{ $existingApplication->status->label() }}</span>
+											<a href="{{ route('client.applications.show', $existingApplication) }}" class="btn btn-primary apply-btn mt-3">View Application</a>
+										@else
+											<a href="{{ route('applications.create', $job) }}" class="btn btn-primary apply-btn">Apply Now</a>
+										@endif
+									@else
+										<p class="text-muted">Only applicant accounts can apply for jobs.</p>
+									@endif
 								@else
 									{{-- User is NOT logged in, send them to register --}}
 									<a href="{{ route('register') }}" class="btn btn-primary apply-btn">Apply</a>

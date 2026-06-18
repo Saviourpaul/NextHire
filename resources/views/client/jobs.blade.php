@@ -23,15 +23,38 @@
                                     <th>Job Title</th>
                                     <th>Company</th>
                                     <th>Applied On</th>
+                                    <th>Reference ID</th>
                                     <th>Status</th>
+                                    <th>Documents</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td colspan="4" class="text-center text-muted py-4">No applied jobs yet</td>
-                                </tr>
+                                @forelse ($applications as $application)
+                                    <tr>
+                                        <td>{{ $application->job->title }}</td>
+                                        <td>{{ $application->job->company }}</td>
+                                        <td>{{ $application->submitted_at->format('M d, Y') }}</td>
+                                        <td>{{ $application->reference }}</td>
+                                        <td><span class="badge {{ $application->status->badgeClass() }}">{{ $application->status->label() }}</span></td>
+                                        <td>
+                                            {{ $application->documents->where('status', \App\Enums\ApplicationStatus::Approved)->count() }}/{{ $application->documents->count() }} approved
+                                        </td>
+                                        <td class="text-end">
+                                            <a href="{{ route('client.applications.show', $application) }}" class="btn btn-sm btn-outline-primary">View</a>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="7" class="text-center text-muted py-4">No applied jobs yet</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
+                    </div>
+
+                    <div class="mt-3">
+                        {{ $applications->links() }}
                     </div>
                 </div>
             </div>

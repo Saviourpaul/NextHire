@@ -25,6 +25,9 @@
 		$currentUser = auth()->user();
 		$searchRoute = match(true) {
 			request()->routeIs('jobs') => route('jobs'),
+			request()->routeIs('employer.Applied-Candidates') => route('employer.Applied-Candidates'),
+			request()->routeIs('employer.Approved-Candidates') => route('employer.Approved-Candidates'),
+			request()->routeIs('employer.Rejected-Candidate') => route('employer.Rejected-Candidate'),
 			request()->routeIs('applicants') => route('applicants'),
 			request()->routeIs('Employers') => route('Employers'),
 			request()->routeIs('administrators') => route('administrators'),
@@ -32,6 +35,9 @@
 		};
 		$searchPlaceholder = match(true) {
 			request()->routeIs('jobs') => 'Search jobs...',
+			request()->routeIs('employer.Applied-Candidates') => 'Search applied candidates...',
+			request()->routeIs('employer.Approved-Candidates') => 'Search approved candidates...',
+			request()->routeIs('employer.Rejected-Candidate') => 'Search rejected candidates...',
 			request()->routeIs('applicants') => 'Search applicants...',
 			request()->routeIs('Employers') => 'Search employers...',
 			request()->routeIs('administrators') => 'Search administrators...',

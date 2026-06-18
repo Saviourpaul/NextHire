@@ -12,29 +12,45 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Uploaded Documents</h5>
-                    <p class="text-muted">Manage your CV, certificates, and identification documents here.</p>
-
-                    <div class="alert alert-info mb-3">No documents uploaded yet.</div>
+                    <p class="text-muted">Track the review status of documents submitted with your job applications.</p>
 
                     <div class="table-responsive">
                         <table class="table table-center table-hover mb-0">
                             <thead>
                                 <tr>
                                     <th>Document</th>
+                                    <th>Application</th>
                                     <th>Status</th>
+                                    <th>Remarks</th>
                                     <th>Uploaded</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td colspan="3" class="text-center text-muted py-4">No documents available</td>
-                                </tr>
+                                @forelse ($documents as $document)
+                                    <tr>
+                                        <td>
+                                            <div>{{ $document->document_name }}</div>
+                                            <div class="text-muted small">{{ $document->original_name }}</div>
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('client.applications.show', $document->applicationForm) }}">{{ $document->applicationForm->reference }}</a>
+                                            <div class="text-muted small">{{ $document->applicationForm->job->title }}</div>
+                                        </td>
+                                        <td><span class="badge {{ $document->status->badgeClass() }}">{{ $document->status->label() }}</span></td>
+                                        <td>{{ $document->employer_remarks ?: 'No remarks yet' }}</td>
+                                        <td>{{ $document->created_at->format('M d, Y') }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted py-4">No documents available</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
 
                     <div class="mt-3">
-                        <button class="btn btn-primary" type="button" disabled>Upload Documents</button>
+                        {{ $documents->links() }}
                     </div>
                 </div>
             </div>
