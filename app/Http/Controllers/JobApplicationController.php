@@ -33,7 +33,19 @@ class JobApplicationController extends Controller
     {
         abort_unless($job->status === 'active', 404);
 
-        $existingApplication = $request->user()
+        $user = $request->user();
+
+        if (! $user) {
+            $request->session()->put('url.intended', route('applications.create', $job));
+
+            return redirect()
+                ->route('register')
+                ->with('info', 'Create an applicant account to continue your job application.');
+        }
+
+        abort_unless($user->isApplicant(), 403);
+
+        $existingApplication = $user
             ->applications()
             ->where('job_id', $job->id)
             ->first();
@@ -46,7 +58,7 @@ class JobApplicationController extends Controller
 
         return view('client.Application', [
             'job' => $job,
-            'user' => $request->user(),
+            'user' => $user,
             'states' => NigeriaState::query()
                 ->with('localGovernmentAreas')
                 ->ordered()

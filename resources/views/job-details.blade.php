@@ -140,8 +140,7 @@
 										<p class="text-muted">Only applicant accounts can apply for jobs.</p>
 									@endif
 								@else
-									{{-- User is NOT logged in, send them to register --}}
-									<a href="{{ route('register') }}" class="btn btn-primary apply-btn">Apply</a>
+									<a href="{{ route('applications.create', $job) }}" class="btn btn-primary apply-btn">Apply</a>
 								@endauth
 								
 							@endif

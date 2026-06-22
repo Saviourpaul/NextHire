@@ -69,9 +69,25 @@
                                             <div class="fw-semibold">{{ $document->document_name }}</div>
                                             <div class="text-muted small">{{ $document->original_name }}</div>
                                         </td>
-                                        <td>{{ $document->document_number ?: 'N/A' }}</td>
+                                        <td>{{ $document->maskedDocumentNumber() ?: 'N/A' }}</td>
                                         <td><span class="badge {{ $document->status->badgeClass() }}">{{ $document->status->label() }}</span></td>
-                                        <td><a href="{{ $document->downloadUrl() }}" target="_blank" rel="noopener">Open</a></td>
+                                        <td>
+                                            <div class="d-flex flex-wrap gap-2">
+                                                @if ($document->canPreviewInline())
+                                                    <a
+                                                        href="{{ $document->previewUrl() }}"
+                                                        class="btn btn-sm btn-outline-primary"
+                                                        data-document-preview
+                                                        data-preview-url="{{ $document->previewUrl() }}"
+                                                        data-preview-title="{{ $document->document_name }} - {{ $document->original_name }}"
+                                                        data-download-url="{{ $document->downloadUrl() }}"
+                                                    >
+                                                        Preview
+                                                    </a>
+                                                @endif
+                                                <a href="{{ $document->downloadUrl() }}" class="btn btn-sm btn-outline-secondary">Download</a>
+                                            </div>
+                                        </td>
                                         <td style="min-width: 260px;">
                                             <form action="{{ route('employer.application-documents.review', $document) }}" method="POST" class="d-flex flex-column gap-2">
                                                 @csrf
@@ -143,4 +159,55 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="document-preview-modal" tabindex="-1" aria-labelledby="document-preview-title" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="document-preview-title">Document Preview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <iframe id="document-preview-frame" title="Document preview" src="about:blank" style="width: 100%; height: 75vh; border: 0;"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <a id="document-preview-download" href="#" class="btn btn-outline-secondary">Download</a>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const previewModal = document.getElementById('document-preview-modal');
+                const previewFrame = document.getElementById('document-preview-frame');
+                const previewTitle = document.getElementById('document-preview-title');
+                const previewDownload = document.getElementById('document-preview-download');
+
+                if (!previewModal || !previewFrame || !window.bootstrap) {
+                    return;
+                }
+
+                const modal = new bootstrap.Modal(previewModal);
+
+                document.querySelectorAll('[data-document-preview]').forEach((trigger) => {
+                    trigger.addEventListener('click', function (event) {
+                        event.preventDefault();
+
+                        previewFrame.src = trigger.dataset.previewUrl;
+                        previewTitle.textContent = trigger.dataset.previewTitle || 'Document Preview';
+                        previewDownload.href = trigger.dataset.downloadUrl || trigger.href;
+
+                        modal.show();
+                    });
+                });
+
+                previewModal.addEventListener('hidden.bs.modal', function () {
+                    previewFrame.src = 'about:blank';
+                });
+            });
+        </script>
+    @endpush
 </x-admin-layout>

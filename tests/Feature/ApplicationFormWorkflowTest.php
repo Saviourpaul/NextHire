@@ -65,6 +65,34 @@ it('renders the application wizard with dependent location and document controls
         ->assertSee('Add another document');
 });
 
+it('redirects guest applicants to registration and resumes the intended application after registration', function () {
+    $employer = User::factory()->employer()->create();
+    $job = Job::factory()->for($employer, 'employer')->create();
+
+    $this->get(route('job-details', $job))
+        ->assertOk()
+        ->assertSee(route('applications.create', $job), false);
+
+    $this->get(route('applications.create', $job))
+        ->assertRedirect(route('register'))
+        ->assertSessionHas('url.intended', route('applications.create', $job));
+
+    $this->post(route('register'), [
+        'first_name' => 'Grace',
+        'last_name' => 'Hopper',
+        'username' => 'grace-hopper',
+        'email' => 'grace@example.com',
+        'password' => 'password',
+        'password_confirmation' => 'password',
+    ])->assertRedirect(route('applications.create', $job));
+
+    $this->assertAuthenticated();
+
+    $this->get(route('applications.create', $job))
+        ->assertOk()
+        ->assertSee('Apply for '.$job->title);
+});
+
 it('stores applications, synchronizes applicant profile, and prevents duplicate applications', function () {
     Storage::fake('public');
     Storage::fake('local');
@@ -131,6 +159,32 @@ it('stores applications, synchronizes applicant profile, and prevents duplicate 
         ->assertSessionHasErrors('job');
 
     expect(ApplicationForm::count())->toBe(1);
+});
+
+it('requires nin and bvn numbers to be exactly eleven numeric digits', function () {
+    $employer = User::factory()->employer()->create();
+    $job = Job::factory()->for($employer, 'employer')->create();
+    $applicant = User::factory()->applicant()->create();
+
+    $this->actingAs($applicant)
+        ->from(route('applications.create', $job))
+        ->post(route('applications.store', $job), validApplicationPayload([
+            'nin_number' => '1234567890',
+            'bvn_number' => '223456789012',
+        ]))
+        ->assertRedirect(route('applications.create', $job))
+        ->assertSessionHasErrors(['nin_number', 'bvn_number']);
+
+    $this->actingAs($applicant)
+        ->from(route('applications.create', $job))
+        ->post(route('applications.store', $job), validApplicationPayload([
+            'nin_number' => '1234567890A',
+            'bvn_number' => '2234567890B',
+        ]))
+        ->assertRedirect(route('applications.create', $job))
+        ->assertSessionHasErrors(['nin_number', 'bvn_number']);
+
+    expect(ApplicationForm::count())->toBe(0);
 });
 
 it('lets only the owning employer review applications and notifies the applicant', function () {

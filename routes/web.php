@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\ApplicationDocumentDownloadController;
+use App\Http\Controllers\ApplicationDocumentPreviewController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployerApplicationController;
 use App\Http\Controllers\EmployerApplicationDocumentController;
@@ -28,6 +29,9 @@ Route::get('find-jobs', function () {
 })->name('jobs.public');
 
 Route::get('job-details/{job}', [JobController::class, 'show'])->name('job-details');
+Route::get('jobs/{job}/apply', [JobApplicationController::class, 'create'])
+    ->middleware('active.account')
+    ->name('applications.create');
 Route::get('about', function () {
     return view('about');
 });
@@ -43,7 +47,6 @@ Route::get('client/Job-Application.', DashboardController::class)
 Route::middleware(['auth', 'active.account', 'role:applicant'])->group(function () {
     Route::get('client/profile', fn () => view('client.profile'))->name('client.profile');
     Route::get('Client/Application', [JobApplicationController::class, 'index'])->name('Client.Application');
-    Route::get('jobs/{job}/apply', [JobApplicationController::class, 'create'])->name('applications.create');
     Route::post('jobs/{job}/apply', [JobApplicationController::class, 'store'])
         ->middleware('throttle:application-submit')
         ->name('applications.store');
@@ -59,6 +62,10 @@ Route::get('account/pending-approval', [DashboardController::class, 'pending'])
     ->name('account.pending');
 
 Route::middleware(['auth', 'active.account'])->group(function () {
+    Route::get('application-documents/{applicationDocument}/preview', ApplicationDocumentPreviewController::class)
+        ->middleware('throttle:downloads')
+        ->name('application-documents.preview');
+
     Route::get('application-documents/{applicationDocument}/download', ApplicationDocumentDownloadController::class)
         ->middleware('throttle:downloads')
         ->name('application-documents.download');

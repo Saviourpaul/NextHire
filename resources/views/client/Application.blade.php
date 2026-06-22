@@ -315,7 +315,7 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">NIN Number</label>
-                            <input type="text" name="nin_number" class="form-control @error('nin_number') is-invalid @enderror" value="{{ old('nin_number') }}" required>
+                            <input type="text" name="nin_number" class="form-control @error('nin_number') is-invalid @enderror" value="{{ old('nin_number') }}" inputmode="numeric" pattern="[0-9]{11}" minlength="11" maxlength="11" required>
                             @error('nin_number')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
@@ -327,7 +327,7 @@
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">BVN Number</label>
-                            <input type="text" name="bvn_number" class="form-control @error('bvn_number') is-invalid @enderror" value="{{ old('bvn_number') }}" required>
+                            <input type="text" name="bvn_number" class="form-control @error('bvn_number') is-invalid @enderror" value="{{ old('bvn_number') }}" inputmode="numeric" pattern="[0-9]{11}" minlength="11" maxlength="11" required>
                             @error('bvn_number')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 

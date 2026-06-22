@@ -49,12 +49,12 @@ class StoreApplicationFormRequest extends FormRequest
             'local_government_area' => ['required', 'string', 'max:255'],
             'address' => ['required', 'string', 'max:255'],
             'zipcode' => ['required', 'string', 'max:30'],
-            'nin_number' => ['required', 'string', 'max:50'],
+            'nin_number' => ['required', 'digits:11'],
             'nin_document' => [
                 'required',
                 File::types(['pdf', 'jpg', 'jpeg', 'png'])->max(5 * 1024),
             ],
-            'bvn_number' => ['required', 'string', 'max:50'],
+            'bvn_number' => ['required', 'digits:11'],
             'bvn_document' => [
                 'required',
                 File::types(['pdf', 'jpg', 'jpeg', 'png'])->max(5 * 1024),
@@ -68,6 +68,17 @@ class StoreApplicationFormRequest extends FormRequest
                 'required',
                 File::types(['pdf', 'jpg', 'jpeg', 'png'])->max(5 * 1024),
             ],
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'nin_number.digits' => 'The NIN number must be exactly 11 numeric digits.',
+            'bvn_number.digits' => 'The BVN number must be exactly 11 numeric digits.',
         ];
     }
 

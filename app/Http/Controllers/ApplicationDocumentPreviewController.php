@@ -7,7 +7,7 @@ use App\Services\ApplicationDocumentFileService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class ApplicationDocumentDownloadController extends Controller
+class ApplicationDocumentPreviewController extends Controller
 {
     public function __invoke(
         Request $request,
@@ -17,11 +17,13 @@ class ApplicationDocumentDownloadController extends Controller
         $documents->authorize($request->user(), $applicationDocument);
 
         $disk = $documents->diskFor($applicationDocument);
+        $documents->assertPreviewable($applicationDocument, $disk);
 
-        return $disk->download(
+        return $disk->response(
             $applicationDocument->file_path,
             $applicationDocument->original_name,
-            $documents->responseHeaders($applicationDocument, $disk)
+            $documents->responseHeaders($applicationDocument, $disk),
+            'inline'
         );
     }
 }
