@@ -1,12 +1,4 @@
 <x-admin-layout title="Application Status">
-    @if (session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-
-    @if (session('info'))
-        <div class="alert alert-info">{{ session('info') }}</div>
-    @endif
-
     <div class="page-header">
         <div class="row align-items-center">
             <div class="col">

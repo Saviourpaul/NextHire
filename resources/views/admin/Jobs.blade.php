@@ -30,22 +30,6 @@
                         </form>
                     </div>
 
-                    @if (session('success'))
-                        <div class="alert alert-success mt-3 mb-0">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-
-                    @if ($errors->any())
-                        <div class="alert alert-danger mt-3 mb-0">
-                            <ul class="mb-0">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
                     <div class="table-responsive mt-3">
                         <table class="table table-hover mb-0 jobs-table">
                             <thead>
@@ -146,7 +130,15 @@
                 </div>
 
                 <div class="modal-body">
-                    <form action="{{ route('jobs.store') }}" method="POST" enctype="multipart/form-data">
+                    <form
+                        action="{{ route('jobs.store') }}"
+                        method="POST"
+                        enctype="multipart/form-data"
+                        data-confirm
+                        data-confirm-title="Create job?"
+                        data-confirm-text="This job will be available based on the status you selected."
+                        data-confirm-button="Create Job"
+                    >
                         @csrf
                         @include('admin.partials.job-form', ['job' => null])
                         <div class="mt-4">
@@ -168,7 +160,15 @@
                     </div>
 
                     <div class="modal-body">
-                        <form action="{{ route('jobs.update', $job) }}" method="POST" enctype="multipart/form-data">
+                        <form
+                            action="{{ route('jobs.update', $job) }}"
+                            method="POST"
+                            enctype="multipart/form-data"
+                            data-confirm
+                            data-confirm-title="Update job?"
+                            data-confirm-text="Your changes will be saved for this job."
+                            data-confirm-button="Save Changes"
+                        >
                             @csrf
                             @method('PUT')
                             @include('admin.partials.job-form', ['job' => $job])
@@ -192,7 +192,14 @@
                         <div class="modal-btn delete-action">
                             <div class="row">
                                 <div class="col-6">
-                                    <form action="{{ route('jobs.destroy', $job) }}" method="POST">
+                                    <form
+                                        action="{{ route('jobs.destroy', $job) }}"
+                                        method="POST"
+                                        data-confirm
+                                        data-confirm-title="Delete job?"
+                                        data-confirm-text="This job will be permanently removed."
+                                        data-confirm-button="Delete Job"
+                                    >
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-primary continue-btn w-100">Delete</button>

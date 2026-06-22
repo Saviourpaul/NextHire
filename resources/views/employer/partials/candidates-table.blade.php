@@ -6,10 +6,6 @@
     ];
 @endphp
 
-@if (session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-@endif
-
 <div class="page-header">
     <div class="row align-items-center">
         <div class="col">
@@ -89,7 +85,14 @@
                                     <a href="{{ route('employer.applications.show', $application) }}" class="btn btn-sm btn-outline-primary">View</a>
 
                                     @if ($application->status !== \App\Enums\ApplicationStatus::Approved)
-                                        <form action="{{ route('employer.applications.review', $application) }}" method="POST">
+                                        <form
+                                            action="{{ route('employer.applications.review', $application) }}"
+                                            method="POST"
+                                            data-confirm
+                                            data-confirm-title="Approve application?"
+                                            data-confirm-text="The applicant will be marked as approved."
+                                            data-confirm-button="Approve"
+                                        >
                                             @csrf
                                             @method('PATCH')
                                             <input type="hidden" name="status" value="approved">
@@ -98,7 +101,14 @@
                                     @endif
 
                                     @if ($application->status !== \App\Enums\ApplicationStatus::Rejected)
-                                        <form action="{{ route('employer.applications.review', $application) }}" method="POST">
+                                        <form
+                                            action="{{ route('employer.applications.review', $application) }}"
+                                            method="POST"
+                                            data-confirm
+                                            data-confirm-title="Reject application?"
+                                            data-confirm-text="The applicant will be marked as rejected."
+                                            data-confirm-button="Reject"
+                                        >
                                             @csrf
                                             @method('PATCH')
                                             <input type="hidden" name="status" value="rejected">

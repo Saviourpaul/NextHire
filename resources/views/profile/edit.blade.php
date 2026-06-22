@@ -9,20 +9,6 @@
 
     <div class="row">
         <div class="col-lg-8">
-            @if (session('status') === 'profile-updated')
-                <div class="alert alert-success">Profile updated.</div>
-            @endif
-
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul class="mb-0">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
             <div class="card">
                 <div class="card-body">
                     @php
@@ -52,7 +38,16 @@
                         ];
                     @endphp
 
-                    <form id="profile-form" action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
+                    <form
+                        id="profile-form"
+                        action="{{ route('profile.update') }}"
+                        method="POST"
+                        enctype="multipart/form-data"
+                        data-confirm
+                        data-confirm-title="Save profile changes?"
+                        data-confirm-text="Your profile information will be updated."
+                        data-confirm-button="Save Changes"
+                    >
                         @csrf
                         @method('PATCH')
 
@@ -158,7 +153,14 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Delete Account</h5>
-                    <form action="{{ route('profile.destroy') }}" method="POST">
+                    <form
+                        action="{{ route('profile.destroy') }}"
+                        method="POST"
+                        data-confirm
+                        data-confirm-title="Delete account?"
+                        data-confirm-text="This action is permanent and will remove your account."
+                        data-confirm-button="Delete Account"
+                    >
                         @csrf
                         @method('DELETE')
                         <div class="form-group">

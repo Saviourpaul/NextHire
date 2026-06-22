@@ -53,22 +53,6 @@ $sortUrl = fn ($column) => request()->fullUrlWithQuery([
             </ul>
         </div>
 
-        @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul class="mb-0">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
         <div class="card filter-card mb-4" id="filter_inputs">
             <div class="card-body">
                 <form action="{{ url()->current() }}" method="GET">
@@ -255,7 +239,11 @@ $sortUrl = fn ($column) => request()->fullUrlWithQuery([
                                                 </li>
                                                 <li>
                                                     <form action="{{ route('admin.users.password-reset', $user) }}"
-                                                        method="POST" class="d-grid">
+                                                        method="POST" class="d-grid"
+                                                        data-confirm
+                                                        data-confirm-title="Send password reset?"
+                                                        data-confirm-text="A reset link will be emailed to this user."
+                                                        data-confirm-button="Send Link">
                                                         @csrf
                                                         <button class="dropdown-item" type="submit">
                                                             <i data-feather="key" class="me-2"></i> Reset Password
@@ -265,7 +253,11 @@ $sortUrl = fn ($column) => request()->fullUrlWithQuery([
                                                 @if (!$user->is(auth()->user()) && !$user->isSuspended())
                                                     <li>
                                                         <form action="{{ route('admin.users.suspend', $user) }}"
-                                                            method="POST" class="d-grid">
+                                                            method="POST" class="d-grid"
+                                                            data-confirm
+                                                            data-confirm-title="Suspend user?"
+                                                            data-confirm-text="This user will lose access until reactivated."
+                                                            data-confirm-button="Suspend">
                                                             @csrf
                                                             @method('PATCH')
                                                             <button class="dropdown-item text-danger" type="submit">
@@ -277,7 +269,11 @@ $sortUrl = fn ($column) => request()->fullUrlWithQuery([
                                                 @if ($user->isSuspended() || $user->isPending())
                                                     <li>
                                                         <form action="{{ route('admin.users.activate', $user) }}"
-                                                            method="POST" class="d-grid">
+                                                            method="POST" class="d-grid"
+                                                            data-confirm
+                                                            data-confirm-title="Activate user?"
+                                                            data-confirm-text="This user will be allowed to access the system."
+                                                            data-confirm-button="Activate">
                                                             @csrf
                                                             @method('PATCH')
                                                             <button class="dropdown-item text-success" type="submit">
@@ -328,7 +324,14 @@ $sortUrl = fn ($column) => request()->fullUrlWithQuery([
                     <button type="button" class="close" data-bs-dismiss="modal"><span>&times;</span></button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('admin.users.store') }}" method="POST">
+                    <form
+                        action="{{ route('admin.users.store') }}"
+                        method="POST"
+                        data-confirm
+                        data-confirm-title="Create user?"
+                        data-confirm-text="A new user account will be created with these details."
+                        data-confirm-button="Create User"
+                    >
                         @csrf
                         <div class="row">
                             <div class="col-md-6">
@@ -397,7 +400,14 @@ $sortUrl = fn ($column) => request()->fullUrlWithQuery([
                     <button type="button" class="close" data-bs-dismiss="modal"><span>&times;</span></button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('admin.users.update', $user) }}" method="POST">
+                    <form
+                        action="{{ route('admin.users.update', $user) }}"
+                        method="POST"
+                        data-confirm
+                        data-confirm-title="Update user?"
+                        data-confirm-text="This user's role and status will be updated."
+                        data-confirm-button="Save Changes"
+                    >
                         @csrf
                         @method('PUT')
                         <div class="row">
@@ -474,7 +484,14 @@ $sortUrl = fn ($column) => request()->fullUrlWithQuery([
                         <div class="modal-btn delete-action">
                             <div class="row">
                                 <div class="col-6">
-                                    <form action="{{ route('admin.users.destroy', $user) }}" method="POST">
+                                    <form
+                                        action="{{ route('admin.users.destroy', $user) }}"
+                                        method="POST"
+                                        data-confirm
+                                        data-confirm-title="Delete user?"
+                                        data-confirm-text="This user account will be permanently removed."
+                                        data-confirm-button="Delete User"
+                                    >
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"

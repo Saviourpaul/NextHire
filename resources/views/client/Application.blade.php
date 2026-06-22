@@ -181,15 +181,19 @@
             </div>
         </div>
 
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <strong>Please review the highlighted fields.</strong>
-            </div>
-        @endif
-
         <x-application-wizard-progress :steps="$wizardSteps" />
 
-        <form action="{{ route('applications.store', $job) }}" method="POST" enctype="multipart/form-data" data-application-wizard>
+        <form
+            action="{{ route('applications.store', $job) }}"
+            method="POST"
+            enctype="multipart/form-data"
+            data-application-wizard
+            data-confirm
+            data-confirm-title="Submit application?"
+            data-confirm-text="Please confirm your information and uploaded documents are correct."
+            data-confirm-icon="question"
+            data-confirm-button="Submit Application"
+        >
             @csrf
 
             <x-application-wizard-step title="Personal Information" :index="0">

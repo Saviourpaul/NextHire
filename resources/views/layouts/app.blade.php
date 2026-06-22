@@ -235,6 +235,9 @@
 
 		<!-- Custom JS -->
 		<script src="{{ asset('assets/js/script.js') }}" type="18b84708be462f27f6eca174-text/javascript"></script>
+		@include('components.sweet-alerts')
+		<script src="{{ asset('assets/js/sweetalert.js') }}"></script>
+		<script src="{{ asset('assets/js/app-alerts.js') }}"></script>
 
 </body>
 

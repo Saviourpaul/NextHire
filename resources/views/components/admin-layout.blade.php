@@ -110,7 +110,14 @@
 					<div class="dropdown-menu">
 						<a class="dropdown-item" href="{{ route('profile.edit') }}"><i data-feather="user" class="me-1"></i> Profile</a>
 						<a class="dropdown-item" href="javascript:void(0);"><i data-feather="settings" class="me-1"></i> Settings</a>
-						<form action="{{ route('logout') }}" method="POST">
+						<form
+							action="{{ route('logout') }}"
+							method="POST"
+							data-confirm
+							data-confirm-title="Sign out?"
+							data-confirm-text="You will need to sign in again to continue."
+							data-confirm-button="Logout"
+						>
 							@csrf
 							<button type="submit" class="dropdown-item"><i data-feather="log-out" class="me-1"></i> Logout</button>
 						</form>
@@ -253,6 +260,9 @@
 	<script src="{{ asset('assets/plugins/summernote/dist/summernote-lite.min.js') }}"></script>
 	<script src="{{ asset('admin/assets/js/script.js') }}"></script>
 	<script src="{{ asset('admin/assets/js/Application.js') }}"></script>
+	@include('components.sweet-alerts')
+	<script src="{{ asset('assets/js/sweetalert.js') }}"></script>
+	<script src="{{ asset('assets/js/app-alerts.js') }}"></script>
 		
 	@stack('scripts')
 </body>

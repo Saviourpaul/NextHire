@@ -26,5 +26,8 @@
                 {{ $slot }}
             </div>
         </div>
+        @include('components.sweet-alerts')
+        <script src="{{ asset('assets/js/sweetalert.js') }}"></script>
+        <script src="{{ asset('assets/js/app-alerts.js') }}"></script>
     </body>
 </html>

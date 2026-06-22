@@ -1,8 +1,4 @@
 <x-admin-layout title="Review Application">
-    @if (session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-
     <div class="page-header">
         <div class="row align-items-center">
             <div class="col">
@@ -89,7 +85,15 @@
                                             </div>
                                         </td>
                                         <td style="min-width: 260px;">
-                                            <form action="{{ route('employer.application-documents.review', $document) }}" method="POST" class="d-flex flex-column gap-2">
+                                            <form
+                                                action="{{ route('employer.application-documents.review', $document) }}"
+                                                method="POST"
+                                                class="d-flex flex-column gap-2"
+                                                data-confirm
+                                                data-confirm-title="Update document review?"
+                                                data-confirm-text="This document status will be saved."
+                                                data-confirm-button="Update Document"
+                                            >
                                                 @csrf
                                                 @method('PATCH')
                                                 <select name="status" class="form-control form-control-sm">
@@ -114,7 +118,15 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Application Decision</h5>
-                    <form action="{{ route('employer.applications.review', $application) }}" method="POST" class="d-flex flex-column gap-3">
+                    <form
+                        action="{{ route('employer.applications.review', $application) }}"
+                        method="POST"
+                        class="d-flex flex-column gap-3"
+                        data-confirm
+                        data-confirm-title="Save application decision?"
+                        data-confirm-text="The applicant's application status will be updated."
+                        data-confirm-button="Save Decision"
+                    >
                         @csrf
                         @method('PATCH')
                         <div>

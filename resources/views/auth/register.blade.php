@@ -1,7 +1,15 @@
 <x-auth-layout title="Register - NextHire" card-width="640px">
     <h1 class="auth-title">Create your Applicant account</h1>
 
-    <form method="POST" action="{{ route('register') }}">
+    <form
+        method="POST"
+        action="{{ route('register') }}"
+        data-confirm
+        data-confirm-title="Create account?"
+        data-confirm-text="Please confirm your details are correct before registering."
+        data-confirm-icon="question"
+        data-confirm-button="Register"
+    >
         @csrf
 
 

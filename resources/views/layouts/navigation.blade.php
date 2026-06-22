@@ -39,12 +39,20 @@
                         </x-dropdown-link>
 
                         <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
+                        <form
+                            method="POST"
+                            action="{{ route('logout') }}"
+                            data-confirm
+                            data-confirm-title="Sign out?"
+                            data-confirm-text="You will need to sign in again to continue."
+                            data-confirm-button="Logout"
+                        >
                             @csrf
 
                             <x-dropdown-link :href="route('logout')"
                                     onclick="event.preventDefault();
-                                                this.closest('form').submit();">
+                                                const form = this.closest('form');
+                                                form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));">
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
                         </form>
@@ -85,12 +93,20 @@
                 </x-responsive-nav-link>
 
                 <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
+                <form
+                    method="POST"
+                    action="{{ route('logout') }}"
+                    data-confirm
+                    data-confirm-title="Sign out?"
+                    data-confirm-text="You will need to sign in again to continue."
+                    data-confirm-button="Logout"
+                >
                     @csrf
 
                     <x-responsive-nav-link :href="route('logout')"
                             onclick="event.preventDefault();
-                                        this.closest('form').submit();">
+                                        const form = this.closest('form');
+                                        form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>
                 </form>

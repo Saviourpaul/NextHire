@@ -111,7 +111,14 @@
 							</a>
 							<div class="dropdown-menu">
 								<a class="dropdown-item" href="{{ route('profile.edit') }}"><i data-feather="user" class="me-1"></i> Profile</a>
-								<form action="{{ route('logout') }}" method="POST">
+								<form
+									action="{{ route('logout') }}"
+									method="POST"
+									data-confirm
+									data-confirm-title="Sign out?"
+									data-confirm-text="Are you Sure You Want to Logout."
+									data-confirm-button="Logout"
+								>
 									@csrf
 									<button type="submit" class="dropdown-item"><i data-feather="log-out" class="me-1"></i> Logout</button>
 								</form>
@@ -269,6 +276,9 @@
 		
 		<!-- Custom JS -->
 		<script src="{{ asset('assets/js/script.js') }}"></script>
+		@include('components.sweet-alerts')
+		<script src="{{ asset('assets/js/sweetalert.js') }}"></script>
+		<script src="{{ asset('assets/js/app-alerts.js') }}"></script>
 	</body>
 
 </html>

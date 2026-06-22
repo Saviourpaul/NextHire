@@ -1,9 +1,15 @@
 <x-auth-layout title="Login - NextHire" card-width="600px">
     <h1 class="auth-title">Welcome! Nice to see you again</h1>
 
-    <x-auth-session-status class="alert alert-success auth-status mb-4" :status="session('status')" />
-
-    <form method="POST" action="{{ route('login') }}">
+    <form
+        method="POST"
+        action="{{ route('login') }}"
+        data-confirm
+        data-confirm-title="Login now?"
+        data-confirm-text="We will sign you in with these details."
+        data-confirm-icon="question"
+        data-confirm-button="Login"
+    >
         @csrf
 
         <x-auth-field

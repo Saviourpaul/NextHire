@@ -286,5 +286,8 @@
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/js/feather.min.js') }}"></script>
     <script src="{{ asset('assets/js/script.js') }}"></script>
+    @include('components.sweet-alerts')
+    <script src="{{ asset('assets/js/sweetalert.js') }}"></script>
+    <script src="{{ asset('assets/js/app-alerts.js') }}"></script>
 </body>
 </html>
