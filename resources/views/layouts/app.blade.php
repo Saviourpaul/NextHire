@@ -226,6 +226,10 @@
 		<!-- Datatables JS -->
 		<script src="{{ asset('assets/plugins/datatables/jquery.dataTables.min.js') }}" type="18b84708be462f27f6eca174-text/javascript"></script>
 		<script src="{{ asset('assets/plugins/datatables/datatables.min.js') }}" type="18b84708be462f27f6eca174-text/javascript"></script>
+
+		<!-- Sticky Sidebar JS -->
+		<script src="{{ asset('assets/plugins/theia-sticky-sidebar/ResizeSensor.js') }}" type="18b84708be462f27f6eca174-text/javascript"></script>
+		<script src="{{ asset('assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js') }}" type="18b84708be462f27f6eca174-text/javascript"></script>
 		
 		<script src="https://cdn.jsdelivr.net/npm/apexcharts" type="18b84708be462f27f6eca174-text/javascript"></script>
 

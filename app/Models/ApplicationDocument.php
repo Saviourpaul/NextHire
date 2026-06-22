@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Storage;
 
 class ApplicationDocument extends Model
 {
@@ -57,6 +56,6 @@ class ApplicationDocument extends Model
 
     public function downloadUrl(): string
     {
-        return Storage::disk('public')->url($this->file_path);
+        return route('application-documents.download', $this);
     }
 }

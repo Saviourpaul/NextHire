@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\UserManagementController;
+use App\Http\Controllers\ApplicationDocumentDownloadController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployerApplicationController;
 use App\Http\Controllers\EmployerApplicationDocumentController;
@@ -43,7 +44,9 @@ Route::middleware(['auth', 'active.account', 'role:applicant'])->group(function 
     Route::get('client/profile', fn () => view('client.profile'))->name('client.profile');
     Route::get('Client/Application', [JobApplicationController::class, 'index'])->name('Client.Application');
     Route::get('jobs/{job}/apply', [JobApplicationController::class, 'create'])->name('applications.create');
-    Route::post('jobs/{job}/apply', [JobApplicationController::class, 'store'])->name('applications.store');
+    Route::post('jobs/{job}/apply', [JobApplicationController::class, 'store'])
+        ->middleware('throttle:application-submit')
+        ->name('applications.store');
     Route::get('client/applications/{applicationForm}', [JobApplicationController::class, 'show'])->name('client.applications.show');
     Route::get('client/documents', [JobApplicationController::class, 'documents'])->name('client.documents');
     Route::get('client/jobs', [JobApplicationController::class, 'index'])->name('client.jobs');
@@ -56,14 +59,22 @@ Route::get('account/pending-approval', [DashboardController::class, 'pending'])
     ->name('account.pending');
 
 Route::middleware(['auth', 'active.account'])->group(function () {
+    Route::get('application-documents/{applicationDocument}/download', ApplicationDocumentDownloadController::class)
+        ->middleware('throttle:downloads')
+        ->name('application-documents.download');
+
     Route::get('applicants/{user}/profile', [ProfileController::class, 'showApplicant'])
         ->middleware('role:admin,employer')
         ->name('applicants.profile.show');
 
     Route::middleware('role:employer')->group(function () {
         Route::get('jobs', [JobController::class, 'index'])->name('jobs');
-        Route::post('jobs', [JobController::class, 'store'])->name('jobs.store');
-        Route::put('jobs/{job}', [JobController::class, 'update'])->name('jobs.update');
+        Route::post('jobs', [JobController::class, 'store'])
+            ->middleware('throttle:uploads')
+            ->name('jobs.store');
+        Route::put('jobs/{job}', [JobController::class, 'update'])
+            ->middleware('throttle:uploads')
+            ->name('jobs.update');
         Route::delete('jobs/{job}', [JobController::class, 'destroy'])->name('jobs.destroy');
         Route::get('employer/profile', fn () => view('employer.profile'))->name('employer.profile');
         Route::get('employer/Applied-Candidates', [EmployerApplicationController::class, 'applied'])->name('employer.Applied-Candidates');
@@ -106,7 +117,9 @@ Route::middleware(['auth', 'active.account'])->group(function () {
 
 Route::middleware(['auth', 'active.account'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('/profile', [ProfileController::class, 'update'])
+        ->middleware('throttle:uploads')
+        ->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 

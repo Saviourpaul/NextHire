@@ -109,7 +109,7 @@
 							</div>
 							<div class="company-detail-block company-description">
 								<h4 class="company-detail-title">Description</h4>
-								{!! $job->description !!}
+								{!! nl2br(e(strip_tags($job->description))) !!}
 							</div>
 							
 							

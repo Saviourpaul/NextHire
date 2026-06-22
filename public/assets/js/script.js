@@ -11,7 +11,7 @@ Version      : 1.0
 	
 	// Stick Sidebar
 	
-	if ($(window).width() > 767) {
+	if ($(window).width() > 767 && $.fn.theiaStickySidebar) {
 		if($('.theiaStickySidebar').length > 0) {
 			$('.theiaStickySidebar').theiaStickySidebar({
 			  // Settings
@@ -1840,4 +1840,3 @@ Version      : 1.0
 		});
 
 })(jQuery);
-

@@ -262,6 +262,10 @@
 		<script src="{{ asset('assets/plugins/summernote/dist/summernote-lite.min.js') }}"></script>
 		<!-- Slick JS -->
 		<script src="{{ asset('assets/js/slick.js') }}"></script>
+
+		<!-- Sticky Sidebar JS -->
+		<script src="{{ asset('assets/plugins/theia-sticky-sidebar/ResizeSensor.js') }}"></script>
+		<script src="{{ asset('assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js') }}"></script>
 		
 		<!-- Custom JS -->
 		<script src="{{ asset('assets/js/script.js') }}"></script>

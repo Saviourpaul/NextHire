@@ -114,7 +114,7 @@ class JobController extends Controller
             'description' => ['required', 'string'],
             'company' => ['required', 'string', 'max:255'],
             'logo' => $request->hasFile('logo')
-                ? ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,gif,svg', 'max:2048']
+                ? ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048']
                 : ['nullable', 'string', 'max:2048'],
             'start_date' => ['required', 'date'],
             'due_date' => ['required', 'date', 'after_or_equal:start_date'],

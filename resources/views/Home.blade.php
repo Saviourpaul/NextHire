@@ -15,7 +15,7 @@
 									<i class="fas fa-star checked"></i>
 									<h5>Trused by over 2M+ users</h5> 
 								</div>
-								<h1>Get The Perfect <span class="orange-text"><br>Developers & Projects</span></h1>
+								<h1>Get The Perfect <span class="orange-text"><br>Government Jobs</span></h1>
 								<p>There are many variations of passages of the Ipsum available, but the majority have 
 									suffered alteration in some form, by injected humour.</p>
 								<form class="form"  name="store" id="store" method="post" action="https://NextHire.dreamstechnologies.com/html/template/project.html">

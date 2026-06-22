@@ -17,7 +17,7 @@
                             <h5 class="card-title mb-1">{{ $user->first_name }} {{ $user->last_name }}</h5>
                             <p class="mb-0">{{ $user->email }}</p>
                             <span class="badge bg-success-light">{{ $user->status->label() }}</span>
-                            <span class="text-muted ms-2">(This profile is read-only.)</span>
+                            <span class="text-muted ms-2">This profile is read-only.</span>
                         </div>
                     </div>
 

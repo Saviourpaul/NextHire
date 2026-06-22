@@ -198,7 +198,6 @@
                         <div class="col-md-12 mb-3">
                             <label class="form-label">Profile Photo</label>
                             <input type="file" name="profile_image" class="form-control @error('profile_image') is-invalid @enderror" accept="image/*" @required(blank($user->profile_image_path)) data-file-input>
-                            <small class="text-muted d-block mt-1">Required only if your profile does not already have a photo.</small>
                             @error('profile_image')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 

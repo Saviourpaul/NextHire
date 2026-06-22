@@ -2,6 +2,8 @@
 
 use App\Models\Job;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 it('allows an authenticated employer to manage jobs', function () {
     $employer = User::factory()->employer()->create();
@@ -45,7 +47,10 @@ it('allows an authenticated employer to manage jobs', function () {
 
     $this->get(route('job-details', $job))
         ->assertOk()
-        ->assertSee($description, false);
+        ->assertSee('Build and maintain Laravel services.')
+        ->assertSee('Own APIs')
+        ->assertDontSee($description, false)
+        ->assertDontSee('<strong>Laravel</strong>', false);
 
     $this->actingAs($employer)
         ->put(route('jobs.update', $job), [
@@ -92,6 +97,26 @@ it('prevents employers from changing another employers jobs', function () {
         ->assertForbidden();
 
     expect($job->fresh()->title)->toBe('Frontend Developer');
+});
+
+it('rejects svg job logo uploads', function () {
+    Storage::fake('public');
+
+    $employer = User::factory()->employer()->create();
+
+    $this->actingAs($employer)
+        ->post(route('jobs.store'), [
+            'title' => 'Backend Developer',
+            'description' => 'Build secure services.',
+            'company' => 'Nexhire Labs',
+            'logo' => UploadedFile::fake()->create('logo.svg', 1, 'image/svg+xml'),
+            'start_date' => '2026-06-01',
+            'due_date' => '2026-06-30',
+            'status' => 'active',
+        ])
+        ->assertSessionHasErrors('logo');
+
+    expect(Job::count())->toBe(0);
 });
 
 it('prevents applicants from managing jobs', function () {

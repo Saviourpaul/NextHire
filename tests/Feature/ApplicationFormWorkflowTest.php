@@ -67,6 +67,7 @@ it('renders the application wizard with dependent location and document controls
 
 it('stores applications, synchronizes applicant profile, and prevents duplicate applications', function () {
     Storage::fake('public');
+    Storage::fake('local');
 
     $employer = User::factory()->employer()->create();
     $job = Job::factory()->for($employer, 'employer')->create();
@@ -82,6 +83,7 @@ it('stores applications, synchronizes applicant profile, and prevents duplicate 
         ->assertRedirect();
 
     $application = ApplicationForm::query()->firstOrFail();
+    $document = $application->documents()->firstOrFail();
 
     expect($application->job_id)->toBe($job->id)
         ->and($application->user_id)->toBe($applicant->id)
@@ -104,6 +106,20 @@ it('stores applications, synchronizes applicant profile, and prevents duplicate 
         'user_id' => $applicant->id,
         'email' => 'ada@example.com',
     ]);
+
+    Storage::disk('local')->assertExists($document->file_path);
+
+    $this->actingAs($applicant)
+        ->get(route('application-documents.download', $document))
+        ->assertOk();
+
+    $this->actingAs($employer)
+        ->get(route('application-documents.download', $document))
+        ->assertOk();
+
+    $this->actingAs(User::factory()->applicant()->create())
+        ->get(route('application-documents.download', $document))
+        ->assertForbidden();
 
     $duplicatePayload = validApplicationPayload();
     unset($duplicatePayload['profile_image']);

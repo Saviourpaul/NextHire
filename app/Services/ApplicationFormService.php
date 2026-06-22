@@ -33,17 +33,17 @@ class ApplicationFormService
             ]);
         }
 
-        $storedPaths = [];
+        $storedFiles = [];
         $oldProfileImagePath = $applicant->profile_image_path;
         $newProfileImagePath = null;
 
         try {
-            $application = DB::transaction(function () use ($job, $applicant, $data, &$storedPaths, &$newProfileImagePath): ApplicationForm {
+            $application = DB::transaction(function () use ($job, $applicant, $data, &$storedFiles, &$newProfileImagePath): ApplicationForm {
                 $profileImagePath = $applicant->profile_image_path;
 
                 if (($data['profile_image'] ?? null) instanceof UploadedFile) {
                     $profileImagePath = $data['profile_image']->store('profile-images', 'public');
-                    $storedPaths[] = $profileImagePath;
+                    $storedFiles[] = ['disk' => 'public', 'path' => $profileImagePath];
                     $newProfileImagePath = $profileImagePath;
                 }
 
@@ -77,7 +77,7 @@ class ApplicationFormService
                     ApplicationDocumentType::Nin,
                     ApplicationDocumentType::Nin->label(),
                     $data['nin_number'],
-                    $storedPaths
+                    $storedFiles
                 );
 
                 $this->createDocument(
@@ -86,7 +86,7 @@ class ApplicationFormService
                     ApplicationDocumentType::Bvn,
                     ApplicationDocumentType::Bvn->label(),
                     $data['bvn_number'],
-                    $storedPaths
+                    $storedFiles
                 );
 
                 foreach ($data['education_documents'] as $document) {
@@ -96,7 +96,7 @@ class ApplicationFormService
                         ApplicationDocumentType::Education,
                         Str::headline($document['type']),
                         null,
-                        $storedPaths
+                        $storedFiles
                     );
                 }
 
@@ -113,7 +113,7 @@ class ApplicationFormService
                 return $application->load(['job', 'documents']);
             });
         } catch (Throwable $throwable) {
-            Storage::disk('public')->delete($storedPaths);
+            $this->deleteStoredFiles($storedFiles);
 
             throw $throwable;
         }
@@ -208,7 +208,7 @@ class ApplicationFormService
     }
 
     /**
-     * @param  array<int, string>  $storedPaths
+     * @param  array<int, array{disk: string, path: string}>  $storedFiles
      */
     private function createDocument(
         ApplicationForm $application,
@@ -216,10 +216,10 @@ class ApplicationFormService
         ApplicationDocumentType $type,
         string $name,
         ?string $number,
-        array &$storedPaths
+        array &$storedFiles
     ): ApplicationDocument {
-        $path = $file->store('application-documents/'.$application->id, 'public');
-        $storedPaths[] = $path;
+        $path = $file->store('application-documents/'.$application->id, 'local');
+        $storedFiles[] = ['disk' => 'local', 'path' => $path];
 
         return $application->documents()->create([
             'document_type' => $type,
@@ -231,6 +231,16 @@ class ApplicationFormService
             'size' => $file->getSize(),
             'status' => ApplicationStatus::Pending,
         ]);
+    }
+
+    /**
+     * @param  array<int, array{disk: string, path: string}>  $storedFiles
+     */
+    private function deleteStoredFiles(array $storedFiles): void
+    {
+        foreach ($storedFiles as $file) {
+            Storage::disk($file['disk'])->delete($file['path']);
+        }
     }
 
     private function generateReference(): string
