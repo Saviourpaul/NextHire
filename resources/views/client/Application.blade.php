@@ -1,11 +1,6 @@
 <x-admin-layout title="Job Application">
     @php
-        $wizardSteps = [
-            'Personal Information',
-            'Identification',
-            'Educational Qualification',
-            'Application Summary',
-        ];
+        $wizardSteps = ['Personal Information', 'Identification', 'Educational Qualification', 'Application Summary'];
 
         $educationDocumentTypes = [
             'ssce' => 'SSCE',
@@ -25,7 +20,7 @@
         $selectedStateModel = $states->firstWhere('name', $selectedState);
         $selectedLgas = $selectedStateModel?->localGovernmentAreas ?? collect();
         $locationOptions = $states->mapWithKeys(
-            fn ($state) => [$state->name => $state->localGovernmentAreas->pluck('name')->values()]
+            fn($state) => [$state->name => $state->localGovernmentAreas->pluck('name')->values()],
         );
     @endphp
 
@@ -148,6 +143,7 @@
             }
 
             @media (max-width: 767.98px) {
+
                 .application-wizard-progress,
                 .application-summary-list {
                     grid-template-columns: 1fr;
@@ -183,68 +179,107 @@
 
         <x-application-wizard-progress :steps="$wizardSteps" />
 
-        <form
-            action="{{ route('applications.store', $job) }}"
-            method="POST"
-            enctype="multipart/form-data"
-            data-application-wizard
-            data-confirm
-            data-confirm-title="Submit application?"
+        <form action="{{ route('applications.store', $job) }}" method="POST" enctype="multipart/form-data"
+            data-application-wizard data-confirm data-confirm-title="Submit application?"
             data-confirm-text="Please confirm your information and uploaded documents are correct."
-            data-confirm-icon="question"
-            data-confirm-button="Submit Application"
-        >
+            data-confirm-icon="question" data-confirm-button="Submit Application">
             @csrf
 
             <x-application-wizard-step title="Personal Information" :index="0">
                 <div class="application-form-panel">
                     <div class="row">
-                        <div class="col-md-12 mb-3">
-                            <label class="form-label">Profile Photo</label>
-                            <input type="file" name="profile_image" class="form-control @error('profile_image') is-invalid @enderror" accept="image/*" @required(blank($user->profile_image_path)) data-file-input>
-                            @error('profile_image')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <div class="col-md-12 col-lg-12">
+                            <div class="pro-form-img">
+                                <div class="profile-pic">
+
+                                    <img id="profile-image-preview" class="rounded-circle"
+                                        src="{{ $user->profileImageUrl() }}" alt="Profile image" width="100"
+                                        height="100" style="object-fit: cover;">
+                                </div>
+
+                                <div class="upload-files">
+                                    <label class="file-upload image-upbtn">
+                                        <i class="feather-upload me-2"></i>Upload Photo
+                                        <input id="profile-image-input" type="file" name="profile_image"
+                                            class="form-control @error('profile_image') is-invalid @enderror"
+                                            accept="image/*" @required(blank($user->profile_image_path)) data-file-input>
+                                        @error('profile_image')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </label>
+                                    <span>For better preview recommended size is 450px x 450px. Max size 5mb.</span>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="col-md-4 mb-3">
                             <label class="form-label">First Name</label>
-                            <input type="text" name="first_name" class="form-control @error('first_name') is-invalid @enderror" value="{{ old('first_name', $user->first_name) }}" required>
-                            @error('first_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <input type="text" name="first_name"
+                                class="form-control @error('first_name') is-invalid @enderror"
+                                value="{{ old('first_name', $user->first_name) }}" required>
+                            @error('first_name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Middle Name</label>
-                            <input type="text" name="middle_name" class="form-control @error('middle_name') is-invalid @enderror" value="{{ old('middle_name') }}">
-                            @error('middle_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <input type="text" name="middle_name"
+                                class="form-control @error('middle_name') is-invalid @enderror"
+                                value="{{ old('middle_name') }}">
+                            @error('middle_name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Last Name</label>
-                            <input type="text" name="last_name" class="form-control @error('last_name') is-invalid @enderror" value="{{ old('last_name', $user->last_name) }}" required>
-                            @error('last_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <input type="text" name="last_name"
+                                class="form-control @error('last_name') is-invalid @enderror"
+                                value="{{ old('last_name', $user->last_name) }}" required>
+                            @error('last_name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Phone Number</label>
-                            <input type="text" name="phone" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone', $user->phone) }}" required>
-                            @error('phone')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <input type="text" name="phone"
+                                class="form-control @error('phone') is-invalid @enderror"
+                                value="{{ old('phone', $user->phone) }}" required>
+                            @error('phone')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Email Address</label>
-                            <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email', $user->email) }}" required>
-                            @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <input type="email" name="email"
+                                class="form-control @error('email') is-invalid @enderror"
+                                value="{{ old('email', $user->email) }}" required>
+                            @error('email')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Nationality</label>
-                            <input type="text" name="nationality" class="form-control @error('nationality') is-invalid @enderror" value="{{ old('nationality', $user->nationality ?? 'Nigeria') }}" required>
-                            @error('nationality')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <input type="text" name="nationality"
+                                class="form-control @error('nationality') is-invalid @enderror"
+                                value="{{ old('nationality', $user->nationality ?? 'Nigeria') }}" required>
+                            @error('nationality')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Date of Birth</label>
-                            <input type="date" name="date_of_birth" class="form-control @error('date_of_birth') is-invalid @enderror" value="{{ old('date_of_birth', $user->date_of_birth?->format('Y-m-d')) }}" required>
-                            @error('date_of_birth')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <input type="date" name="date_of_birth"
+                                class="form-control @error('date_of_birth') is-invalid @enderror"
+                                value="{{ old('date_of_birth', $user->date_of_birth?->format('Y-m-d')) }}" required>
+                            @error('date_of_birth')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-md-4 mb-3">
@@ -252,55 +287,80 @@
                             <select name="gender" class="form-control @error('gender') is-invalid @enderror">
                                 <option value="">Select gender</option>
                                 @foreach (['male' => 'Male', 'female' => 'Female', 'other' => 'Other'] as $value => $label)
-                                    <option value="{{ $value }}" @selected(old('gender') === $value)>{{ $label }}</option>
+                                    <option value="{{ $value }}" @selected(old('gender') === $value)>
+                                        {{ $label }}</option>
                                 @endforeach
                             </select>
-                            @error('gender')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            @error('gender')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Marital Status</label>
-                            <select name="marital_status" class="form-control @error('marital_status') is-invalid @enderror">
+                            <select name="marital_status"
+                                class="form-control @error('marital_status') is-invalid @enderror">
                                 <option value="">Select status</option>
                                 @foreach (['single' => 'Single', 'married' => 'Married', 'divorced' => 'Divorced', 'widowed' => 'Widowed'] as $value => $label)
-                                    <option value="{{ $value }}" @selected(old('marital_status') === $value)>{{ $label }}</option>
+                                    <option value="{{ $value }}" @selected(old('marital_status') === $value)>
+                                        {{ $label }}</option>
                                 @endforeach
                             </select>
-                            @error('marital_status')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            @error('marital_status')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Zipcode</label>
-                            <input type="text" name="zipcode" class="form-control @error('zipcode') is-invalid @enderror" value="{{ old('zipcode', $user->zipcode) }}" required>
-                            @error('zipcode')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <input type="text" name="zipcode"
+                                class="form-control @error('zipcode') is-invalid @enderror"
+                                value="{{ old('zipcode', $user->zipcode) }}" required>
+                            @error('zipcode')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">State of Origin</label>
-                            <select name="state_of_origin" class="form-control @error('state_of_origin') is-invalid @enderror" required data-state-of-origin>
+                            <select name="state_of_origin"
+                                class="form-control @error('state_of_origin') is-invalid @enderror" required
+                                data-state-of-origin>
                                 <option value="">Select state</option>
                                 @foreach ($states as $state)
-                                    <option value="{{ $state->name }}" @selected($selectedState === $state->name)>{{ $state->name }}</option>
+                                    <option value="{{ $state->name }}" @selected($selectedState === $state->name)>
+                                        {{ $state->name }}</option>
                                 @endforeach
                             </select>
-                            @error('state_of_origin')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            @error('state_of_origin')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Local Government Area</label>
-                            <select name="local_government_area" class="form-control @error('local_government_area') is-invalid @enderror" required data-local-government-area data-selected-lga="{{ $selectedLga }}">
+                            <select name="local_government_area"
+                                class="form-control @error('local_government_area') is-invalid @enderror" required
+                                data-local-government-area data-selected-lga="{{ $selectedLga }}">
                                 <option value="">Select LGA</option>
                                 @foreach ($selectedLgas as $lga)
-                                    <option value="{{ $lga->name }}" @selected($selectedLga === $lga->name)>{{ $lga->name }}</option>
+                                    <option value="{{ $lga->name }}" @selected($selectedLga === $lga->name)>
+                                        {{ $lga->name }}</option>
                                 @endforeach
                             </select>
-                            @error('local_government_area')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            @error('local_government_area')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-md-12 mb-3">
                             <label class="form-label">Address</label>
-                            <input type="text" name="address" class="form-control @error('address') is-invalid @enderror" value="{{ old('address', $user->address) }}" required>
-                            @error('address')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <input type="text" name="address"
+                                class="form-control @error('address') is-invalid @enderror"
+                                value="{{ old('address', $user->address) }}" required>
+                            @error('address')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -319,26 +379,44 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">NIN Number</label>
-                            <input type="text" name="nin_number" class="form-control @error('nin_number') is-invalid @enderror" value="{{ old('nin_number') }}" inputmode="numeric" pattern="[0-9]{11}" minlength="11" maxlength="11" required>
-                            @error('nin_number')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <input type="text" name="nin_number"
+                                class="form-control @error('nin_number') is-invalid @enderror"
+                                value="{{ old('nin_number') }}" inputmode="numeric" pattern="[0-9]{11}"
+                                minlength="11" maxlength="11" required>
+                            @error('nin_number')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">NIN Document</label>
-                            <input type="file" name="nin_document" class="form-control @error('nin_document') is-invalid @enderror" accept=".pdf,.jpg,.jpeg,.png" required data-file-input>
-                            @error('nin_document')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <input type="file" name="nin_document"
+                                class="form-control @error('nin_document') is-invalid @enderror"
+                                accept=".pdf,.jpg,.jpeg,.png" required data-file-input>
+                            @error('nin_document')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">BVN Number</label>
-                            <input type="text" name="bvn_number" class="form-control @error('bvn_number') is-invalid @enderror" value="{{ old('bvn_number') }}" inputmode="numeric" pattern="[0-9]{11}" minlength="11" maxlength="11" required>
-                            @error('bvn_number')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <input type="text" name="bvn_number"
+                                class="form-control @error('bvn_number') is-invalid @enderror"
+                                value="{{ old('bvn_number') }}" inputmode="numeric" pattern="[0-9]{11}"
+                                minlength="11" maxlength="11" required>
+                            @error('bvn_number')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">BVN Document</label>
-                            <input type="file" name="bvn_document" class="form-control @error('bvn_document') is-invalid @enderror" accept=".pdf,.jpg,.jpeg,.png" required data-file-input>
-                            @error('bvn_document')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <input type="file" name="bvn_document"
+                                class="form-control @error('bvn_document') is-invalid @enderror"
+                                accept=".pdf,.jpg,.jpeg,.png" required data-file-input>
+                            @error('bvn_document')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -361,8 +439,10 @@
                         @foreach ($educationRows as $index => $row)
                             <div class="qualification-document" data-education-document>
                                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                                    <h6 class="mb-0" data-document-title>Qualification Document {{ $index + 1 }}</h6>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary" data-remove-document>
+                                    <h6 class="mb-0" data-document-title>Qualification Document {{ $index + 1 }}
+                                    </h6>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                                        data-remove-document>
                                         <i data-feather="x"></i>
                                         Remove
                                     </button>
@@ -370,27 +450,42 @@
 
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label" for="education-document-type-{{ $index }}">Document Type</label>
-                                        <select id="education-document-type-{{ $index }}" name="education_documents[{{ $index }}][type]" class="form-control @error('education_documents.'.$index.'.type') is-invalid @enderror" required data-document-type>
+                                        <label class="form-label"
+                                            for="education-document-type-{{ $index }}">Document Type</label>
+                                        <select id="education-document-type-{{ $index }}"
+                                            name="education_documents[{{ $index }}][type]"
+                                            class="form-control @error('education_documents.' . $index . '.type') is-invalid @enderror"
+                                            required data-document-type>
                                             <option value="">Select document type</option>
                                             @foreach ($educationDocumentTypes as $value => $label)
-                                                <option value="{{ $value }}" @selected(($row['type'] ?? '') === $value)>{{ $label }}</option>
+                                                <option value="{{ $value }}" @selected(($row['type'] ?? '') === $value)>
+                                                    {{ $label }}</option>
                                             @endforeach
                                         </select>
-                                        @error('education_documents.'.$index.'.type')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                        @error('education_documents.' . $index . '.type')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
 
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label" for="education-document-file-{{ $index }}">Upload Document</label>
-                                        <input id="education-document-file-{{ $index }}" type="file" name="education_documents[{{ $index }}][file]" class="form-control @error('education_documents.'.$index.'.file') is-invalid @enderror" accept=".pdf,.jpg,.jpeg,.png" required data-document-file data-file-input>
-                                        @error('education_documents.'.$index.'.file')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                        <label class="form-label"
+                                            for="education-document-file-{{ $index }}">Upload Document</label>
+                                        <input id="education-document-file-{{ $index }}" type="file"
+                                            name="education_documents[{{ $index }}][file]"
+                                            class="form-control @error('education_documents.' . $index . '.file') is-invalid @enderror"
+                                            accept=".pdf,.jpg,.jpeg,.png" required data-document-file data-file-input>
+                                        @error('education_documents.' . $index . '.file')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
                             </div>
                         @endforeach
                     </div>
 
-                    @error('education_documents')<div class="text-danger mb-3">{{ $message }}</div>@enderror
+                    @error('education_documents')
+                        <div class="text-danger mb-3">{{ $message }}</div>
+                    @enderror
 
                     <button type="button" class="btn btn-outline-primary" data-add-document>
                         <i data-feather="plus"></i>
@@ -427,7 +522,9 @@
                         </div>
                         <div>
                             <dt>Applicant</dt>
-                            <dd data-summary-full-name>{{ trim(old('first_name', $user->first_name).' '.old('last_name', $user->last_name)) ?: 'Not provided' }}</dd>
+                            <dd data-summary-full-name>
+                                {{ trim(old('first_name', $user->first_name) . ' ' . old('last_name', $user->last_name)) ?: 'Not provided' }}
+                            </dd>
                         </div>
                         <div>
                             <dt>Contact</dt>
@@ -435,7 +532,9 @@
                         </div>
                         <div>
                             <dt>Origin</dt>
-                            <dd data-summary-origin>{{ collect([$selectedLga, $selectedState])->filter()->implode(', ') ?: 'Not provided' }}</dd>
+                            <dd data-summary-origin>
+                                {{ collect([$selectedLga, $selectedState])->filter()->implode(', ') ?:'Not provided' }}
+                            </dd>
                         </div>
                         <div>
                             <dt>Qualification Documents</dt>
@@ -443,7 +542,8 @@
                         </div>
                         <div>
                             <dt>Nationality</dt>
-                            <dd data-summary-nationality>{{ old('nationality', $user->nationality ?? 'Nigeria') ?: 'Not provided' }}</dd>
+                            <dd data-summary-nationality>
+                                {{ old('nationality', $user->nationality ?? 'Nigeria') ?: 'Not provided' }}</dd>
                         </div>
                     </dl>
                 </div>
@@ -482,7 +582,8 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label" data-document-file-label>Upload Document</label>
-                        <input type="file" class="form-control" accept=".pdf,.jpg,.jpeg,.png" required data-document-file data-file-input>
+                        <input type="file" class="form-control" accept=".pdf,.jpg,.jpeg,.png" required
+                            data-document-file data-file-input>
                     </div>
                 </div>
             </div>
@@ -491,7 +592,7 @@
 
     @push('scripts')
         <script>
-            (function () {
+            (function() {
                 const form = document.querySelector('[data-application-wizard]');
 
                 if (!form) {
@@ -648,7 +749,8 @@
 
                 function updateSummary() {
                     const fullName = [fieldValue('first_name'), fieldValue('last_name')].filter(Boolean).join(' ');
-                    const origin = [fieldValue('local_government_area'), fieldValue('state_of_origin')].filter(Boolean).join(', ');
+                    const origin = [fieldValue('local_government_area'), fieldValue('state_of_origin')].filter(Boolean)
+                        .join(', ');
                     const documentCount = documentsContainer?.querySelectorAll('[data-education-document]').length || 0;
 
                     const summary = {

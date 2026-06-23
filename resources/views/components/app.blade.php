@@ -1,9 +1,4 @@
 @props(['bodyClass' => 'home-page bg-one', 'title' => 'NextHire'])
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -71,6 +66,7 @@
 							<a href="/" class="navbar-brand logo">
 								<img src="{{ asset('assets/img/logo.png') }}" class="img-fluid" alt="Logo" height="40" width="60">
 							</a>
+							
 						</div>
 						<div class="main-menu-wrapper">
 							<div class="menu-header">
@@ -94,6 +90,7 @@
 								<li class="{{ request()->is('contact') ? 'active' : '' }}">
 									<a href="/contact">Contact</a>
 								</li>
+								
 							
 							</ul>
 						</div>		 

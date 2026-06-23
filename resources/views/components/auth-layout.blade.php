@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="{{ asset('assets/plugins/feather/feather.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 
-    <style>
+<style>
         :root {
             --auth-primary: #0073b1;
             --auth-ink: #07072f;

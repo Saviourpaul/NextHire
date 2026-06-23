@@ -1,45 +1,17 @@
 <x-auth-layout title="Login - NextHire" card-width="600px">
     <h1 class="auth-title">Welcome! Nice to see you again</h1>
-
-    <form
-        method="POST"
-        action="{{ route('login') }}"
-        data-confirm
-        data-confirm-title="Login now?"
-        data-confirm-text="We will sign you in with these details."
-        data-confirm-icon="question"
-        data-confirm-button="Login"
-    >
+    <form method="POST" action="{{ route('login') }}">
         @csrf
-
-        <x-auth-field
-            name="email"
-            label="Email Address"
-            type="email"
-            autocomplete="username"
-            required
-            autofocus
-        />
-
-        <x-auth-field
-            name="password"
-            label="Password"
-            type="password"
-            autocomplete="current-password"
-            required
-        />
+        <x-auth-field name="email" label="Email Address" type="email" autocomplete="username" required autofocus />
+        <x-auth-field name="password" label="Password" type="password" autocomplete="current-password" required />
 
         <label class="auth-remember">
             <input type="checkbox" name="remember" value="1" {{ old('remember') ? 'checked' : '' }}>
             Remember me
         </label>
-
         <button class="auth-primary-btn" type="submit">
             Login Now <i class="fas fa-arrow-right" aria-hidden="true"></i>
         </button>
-
-       
-
         <div class="auth-footer-row">
             <div>New to NextHire&nbsp; <a href="{{ route('register') }}">Signup?</a></div>
             @if (Route::has('password.request'))

@@ -19,7 +19,7 @@
                         $selectedStateModel = $states->firstWhere('name', $selectedState);
                         $selectedLgas = $selectedStateModel?->localGovernmentAreas ?? collect();
                         $locationOptions = $states->mapWithKeys(
-                            fn ($state) => [$state->name => $state->localGovernmentAreas->pluck('name')->values()]
+                            fn($state) => [$state->name => $state->localGovernmentAreas->pluck('name')->values()],
                         );
                         $originalProfile = [
                             'first_name' => $user->first_name,
@@ -38,30 +38,27 @@
                         ];
                     @endphp
 
-                    <form
-                        id="profile-form"
-                        action="{{ route('profile.update') }}"
-                        method="POST"
-                        enctype="multipart/form-data"
-                        data-confirm
-                        data-confirm-title="Save profile changes?"
+                    <form id="profile-form" action="{{ route('profile.update') }}" method="POST"
+                        enctype="multipart/form-data" data-confirm data-confirm-title="Save profile changes?"
                         data-confirm-text="Your profile information will be updated."
-                        data-confirm-button="Save Changes"
-                    >
+                        data-confirm-button="Save Changes">
                         @csrf
                         @method('PATCH')
 
                         <div class="col-md-12 col-lg-12">
                             <div class="pro-form-img">
                                 <div class="profile-pic">
-                                    
-                                    <img id="profile-image-preview" class="rounded-circle" src="{{ $user->profileImageUrl() }}" alt="Profile image" width="100" height="100" style="object-fit: cover;">
+
+                                    <img id="profile-image-preview" class="rounded-circle"
+                                        src="{{ $user->profileImageUrl() }}" alt="Profile image" width="100"
+                                        height="100" style="object-fit: cover;">
                                 </div>
 
                                 <div class="upload-files">
                                     <label class="file-upload image-upbtn">
                                         <i class="feather-upload me-2"></i>Upload Photo
-                                        <input id="profile-image-input" type="file" name="profile_image" class="form-control mt-2" accept="image/*" @required($requiresApplicantProfile && ! $user->profile_image_path) disabled>
+                                        <input id="profile-image-input" type="file" name="profile_image"
+                                            class="form-control mt-2" accept="image/*" @required($requiresApplicantProfile && !$user->profile_image_path) disabled>
                                     </label>
                                     <span>For better preview recommended size is 450px x 450px. Max size 5mb.</span>
                                 </div>
@@ -72,50 +69,62 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>First Name</label>
-                                    <input type="text" name="first_name" class="form-control" value="{{ old('first_name', $user->first_name) }}" required readonly>
+                                    <input type="text" name="first_name" class="form-control"
+                                        value="{{ old('first_name', $user->first_name) }}" required readonly>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Last Name</label>
-                                    <input type="text" name="last_name" class="form-control" value="{{ old('last_name', $user->last_name) }}" required readonly>
+                                    <input type="text" name="last_name" class="form-control"
+                                        value="{{ old('last_name', $user->last_name) }}" required readonly>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label>Username</label>
-                            <input type="text" name="username" class="form-control" value="{{ old('username', $user->username) }}" required readonly>
+                            <input type="text" name="username" class="form-control"
+                                value="{{ old('username', $user->username) }}" required readonly>
                         </div>
                         <div class="form-group">
                             <label>Email</label>
-                            <input type="email" name="email" class="form-control" value="{{ old('email', $user->email) }}" readonly>
+                            <input type="email" name="email" class="form-control"
+                                value="{{ old('email', $user->email) }}" readonly>
                         </div>
                         <div class="form-group">
                             <label>Phone Number{{ $requiredMark }}</label>
-                            <input type="text" name="phone" class="form-control" value="{{ old('phone', $user->phone) }}" @required($requiresApplicantProfile) readonly>
+                            <input type="text" name="phone" class="form-control"
+                                value="{{ old('phone', $user->phone) }}" @required($requiresApplicantProfile) readonly>
                         </div>
                         <div class="form-group">
                             <label>Date of Birth{{ $requiredMark }}</label>
-                            <input type="date" name="date_of_birth" class="form-control" value="{{ old('date_of_birth', $user->date_of_birth?->format('Y-m-d')) }}" @required($requiresApplicantProfile) readonly>
+                            <input type="date" name="date_of_birth" class="form-control"
+                                value="{{ old('date_of_birth', $user->date_of_birth?->format('Y-m-d')) }}"
+                                @required($requiresApplicantProfile) readonly>
                         </div>
                         <div class="form-group">
                             <label>Address{{ $requiredMark }}</label>
-                            <input type="text" name="address" class="form-control" value="{{ old('address', $user->address) }}" @required($requiresApplicantProfile) readonly>
+                            <input type="text" name="address" class="form-control"
+                                value="{{ old('address', $user->address) }}" @required($requiresApplicantProfile) readonly>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Nationality{{ $requiredMark }}</label>
-                                    <input type="text" name="nationality" class="form-control" value="{{ old('nationality', $user->nationality ?? 'Nigeria') }}" @required($requiresApplicantProfile) readonly>
+                                    <input type="text" name="nationality" class="form-control"
+                                        value="{{ old('nationality', $user->nationality ?? 'Nigeria') }}"
+                                        @required($requiresApplicantProfile) readonly>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>State of Origin{{ $requiredMark }}</label>
-                                    <select name="state_of_origin" class="form-control" @required($requiresApplicantProfile) data-profile-state disabled>
+                                    <select name="state_of_origin" class="form-control" @required($requiresApplicantProfile)
+                                        data-profile-state disabled>
                                         <option value="">Select state</option>
                                         @foreach ($states as $state)
-                                            <option value="{{ $state->name }}" @selected($selectedState === $state->name)>{{ $state->name }}</option>
+                                            <option value="{{ $state->name }}" @selected($selectedState === $state->name)>
+                                                {{ $state->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -125,10 +134,12 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Local Government Area{{ $requiredMark }}</label>
-                                    <select name="local_government_area" class="form-control" @required($requiresApplicantProfile) data-profile-lga data-selected-lga="{{ $selectedLga }}" disabled>
+                                    <select name="local_government_area" class="form-control" @required($requiresApplicantProfile)
+                                        data-profile-lga data-selected-lga="{{ $selectedLga }}" disabled>
                                         <option value="">Select LGA</option>
                                         @foreach ($selectedLgas as $lga)
-                                            <option value="{{ $lga->name }}" @selected($selectedLga === $lga->name)>{{ $lga->name }}</option>
+                                            <option value="{{ $lga->name }}" @selected($selectedLga === $lga->name)>
+                                                {{ $lga->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -136,15 +147,18 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Zipcode{{ $requiredMark }}</label>
-                                    <input type="text" name="zipcode" class="form-control" value="{{ old('zipcode', $user->zipcode) }}" @required($requiresApplicantProfile) readonly>
+                                    <input type="text" name="zipcode" class="form-control"
+                                        value="{{ old('zipcode', $user->zipcode) }}" @required($requiresApplicantProfile) readonly>
                                 </div>
                             </div>
                         </div>
 
-                        <button id="edit-profile-button" type="button" class="btn btn-primary">Update Profile</button>
+                        <button id="edit-profile-button" type="button" class="btn btn-primary">Update
+                            Profile</button>
                         <div id="profile-actions" class="d-none mt-3">
                             <button type="submit" class="btn btn-primary">Save Changes</button>
-                            <button id="cancel-profile-edit" type="button" class="btn btn-secondary ms-2">Cancel</button>
+                            <button id="cancel-profile-edit" type="button"
+                                class="btn btn-secondary ms-2">Cancel</button>
                         </div>
                     </form>
                 </div>
@@ -153,14 +167,10 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Delete Account</h5>
-                    <form
-                        action="{{ route('profile.destroy') }}"
-                        method="POST"
-                        data-confirm
+                    <form action="{{ route('profile.destroy') }}" method="POST" data-confirm
                         data-confirm-title="Delete account?"
                         data-confirm-text="This action is permanent and will remove your account."
-                        data-confirm-button="Delete Account"
-                    >
+                        data-confirm-button="Delete Account">
                         @csrf
                         @method('DELETE')
                         <div class="form-group">
@@ -179,7 +189,7 @@
 
     @push('scripts')
         <script>
-            (function () {
+            (function() {
                 const form = document.getElementById('profile-form');
                 const editButton = document.getElementById('edit-profile-button');
                 const cancelButton = document.getElementById('cancel-profile-edit');
@@ -282,6 +292,5 @@
                 });
             })();
         </script>
-        
     @endpush
 </x-admin-layout>

@@ -115,7 +115,7 @@
 							method="POST"
 							data-confirm
 							data-confirm-title="Sign out?"
-							data-confirm-text="You will need to sign in again to continue."
+							data-confirm-text="Are You Sure You want to Logout"
 							data-confirm-button="Logout"
 						>
 							@csrf
