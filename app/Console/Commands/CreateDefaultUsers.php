@@ -19,6 +19,7 @@ class CreateDefaultUsers extends Command
             [
                 'first_name' => 'System',
                 'last_name' =>'Administrator',
+                'username' =>'Admin',
                 'password' => Hash::make('123456789'),
                 'role' => 'admin',
             ]
