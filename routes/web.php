@@ -57,9 +57,7 @@ Route::middleware(['auth', 'active.account', 'role:applicant'])->group(function 
     Route::get('client/settings', fn () => view('client.settings'))->name('client.settings');
 });
 
-Route::get('account/pending-approval', [DashboardController::class, 'pending'])
-    ->middleware('auth')
-    ->name('account.pending');
+
 
 Route::middleware(['auth', 'active.account'])->group(function () {
     Route::get('application-documents/{applicationDocument}/preview', ApplicationDocumentPreviewController::class)
