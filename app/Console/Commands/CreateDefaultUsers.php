@@ -17,7 +17,8 @@ class CreateDefaultUsers extends Command
         User::updateOrCreate(
             ['email' => 'saviourpaul24@gmail.com'],
             [
-                'name' => 'System Administrator',
+                'first_name' => 'System',
+                'last_name' =>'Administrator',
                 'password' => Hash::make('123456789'),
                 'role' => 'admin',
             ]
