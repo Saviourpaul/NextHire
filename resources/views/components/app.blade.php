@@ -77,7 +77,7 @@
 									<i class="fas fa-times"></i>
 								</a>
 							</div>
-							<ul class="main-nav">
+<ul class="main-nav">
 								<li class="{{ request()->is('/') ? 'active' : '' }}">
 									<a href="/">Home</a>
 								</li>
@@ -90,40 +90,46 @@
 								<li class="{{ request()->is('contact') ? 'active' : '' }}">
 									<a href="/contact">Contact</a>
 								</li>
+								<li class="login-link d-lg-none">
+									@guest
+									<a href="/login"><img src="{{ asset('assets/img/icon/lock.svg') }}" class="me-1" alt="img"> Login</a>
+									@endguest
+								</li>
+								<li class="login-link d-lg-none">
+									<a href="/register"><img src="{{ asset('assets/img/icon/users.svg') }}" class="me-1" alt="img">Get Started</a>
+								</li>
 								
-							
 							</ul>
 						</div>		 
-						<ul class="nav header-navbar-rht reg-head">												
+<ul class="nav header-navbar-rht reg-head">												
 							@guest
-							<li><a href="/login" class="log-btn"><img src="{{ asset('assets/img/icon/lock.svg') }}" class="me-1" alt="img"> Login</a></li>
+							<li class="d-none d-lg-block"><a href="/login" class="log-btn"><img src="{{ asset('assets/img/icon/lock.svg') }}" class="me-1" alt="img"> Login</a></li>
+							<li class="d-none d-lg-block"><a href="/register" class="login-btn"><img src="{{ asset('assets/img/icon/users.svg') }}" class="me-1" alt="img">Get Started</a></li>
 							@endguest
 							@auth
 							<li class="nav-item dropdown ">
-							<a href="javascript:void(0);" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
-								<span class="user-img">
-									<img src="{{ auth()->user()->profileImageUrl() }}" alt="{{ auth()->user()->first_name }}">
-									<span class="status online"></span>
-								</span>
-							</a>
-							<div class="dropdown-menu">
-								<a class="dropdown-item" href="{{ route('profile.edit') }}"><i data-feather="user" class="me-1"></i> Profile</a>
-								<form
-									action="{{ route('logout') }}"
-									method="POST"
-									data-confirm
-									data-confirm-title="Sign out?"
-									data-confirm-text="Are you Sure You Want to Logout."
-									data-confirm-button="Logout"
-								>
-									@csrf
-									<button type="submit" class="dropdown-item"><i data-feather="log-out" class="me-1"></i> Logout</button>
-								</form>
-							</div>
+								<a href="javascript:void(0);" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+									<span class="user-img">
+										<img src="{{ auth()->user()->profileImageUrl() }}" alt="{{ auth()->user()->first_name }}">
+										<span class="status online"></span>
+									</span>
+								</a>
+								<div class="dropdown-menu">
+									<a class="dropdown-item" href="{{ route('profile.edit') }}"><i data-feather="user" class="me-1"></i> Profile</a>
+									<form
+										action="{{ route('logout') }}"
+										method="POST"
+										data-confirm
+										data-confirm-title="Sign out?"
+										data-confirm-text="Are you Sure You Want to Logout."
+										data-confirm-button="Logout"
+									>
+										@csrf
+										<button type="submit" class="dropdown-item"><i data-feather="log-out" class="me-1"></i> Logout</button>
+									</form>
+								</div>
 				            </li>
 							@endauth
-            	         <li><a href="/register" class="login-btn"><img src="{{ asset('assets/img/icon/users.svg') }}" class="me-1" alt="img">Get Started</a></li>
-
 						</ul>
 					</nav>
 				</div>
