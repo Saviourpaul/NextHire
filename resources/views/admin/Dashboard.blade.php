@@ -1,3 +1,4 @@
+
 <x-admin-layout title="Dashboard">
 	<div class="page-header">
 		<div class="row align-items-center">
@@ -8,22 +9,50 @@
 			</div>
 		</div>
 	</div>
+	<div class="col-md-4 d-flex">
+			<div class="card w-300">
+				<div class="card-body pt-0">
+					<div class="card-header">
+						<div class="row">
+							<div class="col-7">
+								<p>Welcome back,</p>
+								<h6 class="text-primary">Welcome super admin,<strong> {{ auth()->user()->first_name }}</strong></h6>
+							</div>
+							<div class="col-5 text-end">
+								<span class="welcome-dash-icon bg-1">
+									<i class="fas fa-user"></i>
+								</span>
+							</div>
+						</div>
+					</div>
+
+					
+
+					
+				</div>
+			</div>
+		</div>
 
 	<div class="row">
-		<div class="col-md-8">
+		<div class="col-md-14">
 			<div class="row">
 				<div class="col-md-4 d-flex">
 					<div class="card wizard-card flex-fill">
+						
 						<div class="card-body">
 							<p class="text-primary mt-0 mb-2">Applicants</p>
-							<h5>1682</h5>
+						
 							<p><a href="javascript:void(0);">view details</a></p>
 							<span class="dash-widget-icon bg-1">
 								<i class="fas fa-users"></i>
 							</span>
 						</div>
+						
+						
+						
 					</div>
 				</div>
+				
 				<div class="col-md-4 d-flex">
 					<div class="card wizard-card flex-fill">
 						<div class="card-body">
@@ -102,64 +131,7 @@
 			</div>
 		</div>
 
-		<div class="col-md-4 d-flex">
-			<div class="card w-100">
-				<div class="card-body pt-0">
-					<div class="card-header">
-						<div class="row">
-							<div class="col-7">
-								<p>Welcome back,</p>
-								<h6 class="text-primary">Welcome super admin,<strong> {{ auth()->user()->first_name }}</strong></h6>
-							</div>
-							<div class="col-5 text-end">
-								<span class="welcome-dash-icon bg-1">
-									<i class="fas fa-user"></i>
-								</span>
-							</div>
-						</div>
-					</div>
-
-					
-
-					<div class="mt-3">
-						<h6 class="text-primary">Payments</h6>
-						<div class="table-responsive">
-							<table class="table table-center table-hover mb-0">
-								<thead>
-									<tr>
-										<th class="text-nowrap">Client or Freelancer</th>
-										<th>Amount</th>
-										<th class="text-end">Status</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td class="text-nowrap">Sakib Khan</td>
-										<td>$2222</td>
-										<td class="text-end">Completed</td>
-									</tr>
-									<tr>
-										<td class="text-nowrap">Pixel Inc Ltd</td>
-										<td>$750</td>
-										<td class="text-end">Pending</td>
-									</tr>
-									<tr>
-										<td class="text-nowrap">Jon M Mullins</td>
-										<td>$3150</td>
-										<td class="text-end text-nowrap">Released</td>
-									</tr>
-									<tr>
-										<td class="text-nowrap">Rose M Milewski</td>
-										<td>$1455</td>
-										<td class="text-end text-nowrap">Returned</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+		
 	</div>
 
 	<div class="row">

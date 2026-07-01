@@ -96,7 +96,9 @@
 									@endguest
 								</li>
 								<li class="login-link d-lg-none">
+									@guest
 									<a href="/register"><img src="{{ asset('assets/img/icon/users.svg') }}" class="me-1" alt="img">Get Started</a>
+									@endguest
 								</li>
 								
 							</ul>

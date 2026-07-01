@@ -24,8 +24,8 @@
 											<span class="drop-detail">
 												<select class="form-control select" name="storeID">
 													<option value="project.html">Select</option>
-													<option value="developer.html">Project</option>
-													<option value="developer.html">Freelancers</option>
+													<option value="developer.html">Jobs</option>
+													<option value="developer.html"></option>
 												</select>
 											</span>
 											<input type="email" class="form-control" placeholder="Keywords">
@@ -232,7 +232,7 @@
 						<div class="col-md-12 col-sm-12 col-12 mx-auto text-center">
 							<div class="section-header aos" data-aos="fade-up">
 								<h2 class="header-title">Achievement We Have Earned</h2>
-								<p>At Freelancer, we believe that talent is borderless and opportunity should be too.</p>
+								<p>At NextHire, we believe that talent is borderless and opportunity should be too.</p>
 							</div>
 						</div>		
 						<!-- Feature Item -->
@@ -242,8 +242,8 @@
 									<img src="assets/img/icon/achievement-1.svg" class="img-fluid" alt="Img">
 								</div>
 								<div class="feature-content course-count">
-									<h3 class="counter-up">9,207</h3>
-									<p>Freelance developers</p>
+									<h3 class="counter-up">50,000</h3>
+									<p>Registered Applicants</p>
 								</div>
 							</div>
 						</div>
@@ -257,7 +257,7 @@
 								</div>
 								<div class="feature-content course-count">
 									<h3 ><span class="counter-up">8368 </span></h3>
-									<p>Projects Added</p>
+									<p>Shortlisted Candidate </p>
 								</div>
 							</div>
 						</div>
@@ -271,7 +271,7 @@
 								</div>
 								<div class="feature-content course-count">
 									<h3 class="counter-up">9198</h3>
-									<p>Completed projects</p>
+									<p>Approves Jobs </p>
 								</div>
 							</div>
 						</div>
