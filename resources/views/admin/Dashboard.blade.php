@@ -1,288 +1,408 @@
 
 <x-admin-layout title="Dashboard">
+	@php
+		$periodOptions = \App\Enums\DashboardPeriod::cases();
+	@endphp
+
 	<div class="page-header">
 		<div class="row align-items-center">
-			<div class="col">
+			<div class="col-md-7">
 				<h3 class="page-title">Dashboard</h3>
-				<ul class="breadcrumb">
-				</ul>
+				<p class="text-muted mb-0">
+					Recruitment insights for <strong>{{ $dateRange->label() }}</strong>
+				</p>
+			</div>
+			<div class="col-md-5">
+				<form method="GET" action="{{ route('dashboard') }}" id="dashboard-filter-form" class="dashboard-filter-form">
+					<div class="row g-2 align-items-end">
+						<div class="col-sm-6">
+							<label for="period" class="form-label mb-1">Period</label>
+							<select name="period" id="period" class="form-select">
+								@foreach ($periodOptions as $option)
+									<option value="{{ $option->value }}" @selected($filterValues['period'] === $option->value)>
+										{{ $option->label() }}
+									</option>
+								@endforeach
+							</select>
+						</div>
+						<div class="col-sm-3 custom-date-field {{ $filterValues['period'] === 'custom' ? '' : 'd-none' }}">
+							<label for="date_from" class="form-label mb-1">From</label>
+							<input type="date" name="date_from" id="date_from" class="form-control" value="{{ $filterValues['date_from'] }}">
+						</div>
+						<div class="col-sm-3 custom-date-field {{ $filterValues['period'] === 'custom' ? '' : 'd-none' }}">
+							<label for="date_to" class="form-label mb-1">To</label>
+							<input type="date" name="date_to" id="date_to" class="form-control" value="{{ $filterValues['date_to'] }}">
+						</div>
+						<div class="col-sm-12 col-md-auto">
+							<button type="submit" class="btn btn-primary w-100">
+								<i class="fas fa-filter me-1"></i> Apply
+							</button>
+						</div>
+					</div>
+				</form>
 			</div>
 		</div>
 	</div>
-	<div class="col-md-4 d-flex">
-			<div class="card w-300">
+
+	<div class="row mb-4">
+		<div class="col-md-4 d-flex">
+			<div class="card w-100">
 				<div class="card-body pt-0">
-					<div class="card-header">
-						<div class="row">
-							<div class="col-7">
-								<p>Welcome back,</p>
-								<h6 class="text-primary">Welcome super admin,<strong> {{ auth()->user()->first_name }}</strong></h6>
+					<div class="card-header border-0 pb-0">
+						<div class="row align-items-center">
+							<div class="col-8">
+								<p class="mb-1 text-muted">Welcome back,</p>
+								<h6 class="text-primary mb-0">
+									<strong>{{ auth()->user()->first_name }}</strong>
+								</h6>
 							</div>
-							<div class="col-5 text-end">
+							<div class="col-4 text-end">
 								<span class="welcome-dash-icon bg-1">
-									<i class="fas fa-user"></i>
+									<i class="fas fa-user-shield"></i>
 								</span>
 							</div>
 						</div>
 					</div>
-
-					
-
-					
 				</div>
 			</div>
 		</div>
-
-	<div class="row">
-		<div class="col-md-14">
-			<div class="row">
-				<div class="col-md-4 d-flex">
-					<div class="card wizard-card flex-fill">
-						
-						<div class="card-body">
-							<p class="text-primary mt-0 mb-2">Applicants</p>
-						
-							<p><a href="javascript:void(0);">view details</a></p>
-							<span class="dash-widget-icon bg-1">
-								<i class="fas fa-users"></i>
-							</span>
-						</div>
-						
-						
-						
-					</div>
-				</div>
-				
-				<div class="col-md-4 d-flex">
-					<div class="card wizard-card flex-fill">
-						<div class="card-body">
-							<p class="text-primary mt-0 mb-2">Employers</p>
-							<h5>1682</h5>
-							<p><a href="javascript:void(0);">view details</a></p>
-							<span class="dash-widget-icon bg-1">
-								<i class="fas fa-users"></i>
-							</span>
-						</div>
-					</div>
-				</div>
-
-				<div class="col-md-4 d-flex">
-					<div class="card wizard-card flex-fill">
-						<div class="card-body">
-							<p class="text-primary mt-0 mb-2">All Jobs</p>
-							<h5>15k</h5>
-							<p><a href="javascript:void(0);">view details</a></p>
-							<span class="dash-widget-icon bg-1">
-								<i class="fas fa-th-large"></i>
-							</span>
-						</div>
-					</div>
-				</div>
-
-				<div class="col-md-4 d-flex">
-					<div class="card wizard-card flex-fill">
-						<div class="card-body">
-							<p class="text-primary mt-0 mb-2">Active Jobs</p>
-							<h5>1568</h5>
-							<p><a href="javascript:void(0);">view details</a></p>
-							<span class="dash-widget-icon bg-1">
-								<i class="fas fa-bezier-curve"></i>
-							</span>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-4 d-flex">
-					<div class="card wizard-card flex-fill">
-						<div class="card-body">
-							<p class="text-primary mt-0 mb-2">Approved Applicant</p>
-							<h5>1568</h5>
-							<p><a href="javascript:void(0);">view details</a></p>
-							<span class="dash-widget-icon bg-1">
-								<i class="fas fa-bezier-curve"></i>
-							</span>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-4 d-flex">
-					<div class="card wizard-card flex-fill">
-						<div class="card-body">
-							<p class="text-primary mt-0 mb-2">Reject Applicant</p>
-							<h5>3367</h5>
-							<p><a href="javascript:void(0);">view details</a></p>
-							<span class="dash-widget-icon bg-1">
-								<i class="fas fa-bezier-curve"></i>
-							</span>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-lg-12 d-flex">
-					<div class="card w-100">
-						<div class="card-body pt-0 pb-2">
-							<div class="card-header">
-								<h5 class="card-title">Overview</h5>
-							</div>
-							<div id="chart" class="mt-4"></div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		
 	</div>
 
 	<div class="row">
-		<div class="col-lg-12">
-			<div class="card bg-white projects-card">
-				<div class="card-body pt-0">
-					<div class="card-header">
-						<h5 class="card-title">Reviews</h5>
+		<div class="col-xl-4 col-md-6 d-flex">
+			<div class="card wizard-card flex-fill">
+				<div class="card-body">
+					<p class="text-primary mt-0 mb-2">Total Applicants</p>
+					<h3>{{ number_format($metrics['total_applicants']) }}</h3>
+					<p><a href="{{ route('applicants') }}">View applicants</a></p>
+					<span class="dash-widget-icon bg-1"><i class="fas fa-user-graduate"></i></span>
+				</div>
+			</div>
+		</div>
+		<div class="col-xl-4 col-md-6 d-flex">
+			<div class="card wizard-card flex-fill">
+				<div class="card-body">
+					<p class="text-primary mt-0 mb-2">Total Employers</p>
+					<h3>{{ number_format($metrics['total_employers']) }}</h3>
+					<p><a href="{{ route('Employers') }}">View employers</a></p>
+					<span class="dash-widget-icon bg-1"><i class="fas fa-building"></i></span>
+				</div>
+			</div>
+		</div>
+		<div class="col-xl-4 col-md-6 d-flex">
+			<div class="card wizard-card flex-fill">
+				<div class="card-body">
+					<p class="text-primary mt-0 mb-2">Total Jobs Posted</p>
+					<h3>{{ number_format($metrics['total_jobs']) }}</h3>
+					<p class="text-muted mb-0">Within selected period</p>
+					<span class="dash-widget-icon bg-1"><i class="fas fa-briefcase"></i></span>
+				</div>
+			</div>
+		</div>
+		<div class="col-xl-4 col-md-6 d-flex">
+			<div class="card wizard-card flex-fill">
+				<div class="card-body">
+					<p class="text-primary mt-0 mb-2">Total Applications</p>
+					<h3>{{ number_format($metrics['total_applications']) }}</h3>
+					<p class="text-muted mb-0">{{ number_format($metrics['pending_candidates']) }} pending</p>
+					<span class="dash-widget-icon bg-1"><i class="fas fa-file-alt"></i></span>
+				</div>
+			</div>
+		</div>
+		<div class="col-xl-4 col-md-6 d-flex">
+			<div class="card wizard-card flex-fill">
+				<div class="card-body">
+					<p class="text-primary mt-0 mb-2">Approved Candidates</p>
+					<h3>{{ number_format($metrics['approved_candidates']) }}</h3>
+					<p class="text-muted mb-0">Applications approved</p>
+					<span class="dash-widget-icon bg-1"><i class="fas fa-user-check"></i></span>
+				</div>
+			</div>
+		</div>
+		<div class="col-xl-4 col-md-6 d-flex">
+			<div class="card wizard-card flex-fill">
+				<div class="card-body">
+					<p class="text-primary mt-0 mb-2">Rejected Candidates</p>
+					<h3>{{ number_format($metrics['rejected_candidates']) }}</h3>
+					<p class="text-muted mb-0">Applications rejected</p>
+					<span class="dash-widget-icon bg-1"><i class="fas fa-user-times"></i></span>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-lg-8 d-flex">
+			<div class="card w-100">
+				<div class="card-body">
+					<div class="card-header border-0 px-0 pt-0">
+						<h5 class="card-title mb-0">Jobs Posted Over Time</h5>
 					</div>
-
-					<div class="reviews-menu-links">
-						<ul role="tablist" class="nav nav-pills card-header-pills nav-justified">
-							<li class="nav-item">
-								<a href="#tab-all" data-bs-toggle="tab" class="nav-link active">All (272)</a>
-							</li>
-							<li class="nav-item">
-								<a href="#tab-active" data-bs-toggle="tab" class="nav-link">Active (218)</a>
-							</li>
-							<li class="nav-item">
-								<a href="#tab-pending" data-bs-toggle="tab" class="nav-link">Pending Approval (03)</a>
-							</li>
-							<li class="nav-item">
-								<a href="#tab-trash" data-bs-toggle="tab" class="nav-link">Trash (0)</a>
-							</li>
-						</ul>
+					<div id="jobs-over-time-chart" class="mt-3"></div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4 d-flex">
+			<div class="card w-100">
+				<div class="card-body">
+					<div class="card-header border-0 px-0 pt-0">
+						<h5 class="card-title mb-0">Application Status</h5>
 					</div>
+					<div id="application-status-chart" class="mt-3"></div>
+				</div>
+			</div>
+		</div>
+	</div>
 
-					<div class="tab-content pt-0">
-						<div role="tabpanel" id="tab-all" class="tab-pane fade active show">
-							<div class="table-responsive">
-								<table class="table table-hover table-center mb-0 datatable">
-									<thead>
-										<tr>
-											<th></th>
-											<th>Profile</th>
-											<th>Designation</th>
-											<th>Comments</th>
-											<th>Stars</th>
-											<th>Category</th>
-											<th class="text-end">Actions</th>
-										</tr>
-									</thead>
-									<tbody>
-										@foreach ([
-											['avatar' => 'avatar-14.jpg', 'name' => 'Janet Paden', 'role' => 'CEO', 'category' => 'Angular'],
-											['avatar' => 'avatar-01.jpg', 'name' => 'George Wells', 'role' => 'Tech Lead', 'category' => 'Node'],
-											['avatar' => 'avatar-15.jpg', 'name' => 'Timothy Smith', 'role' => 'Technical Manager', 'category' => 'React'],
-										] as $index => $review)
-											<tr>
-												<td>
-													<div class="form-check custom-checkbox">
-														<input type="checkbox" class="form-check-input" id="reviewCheck{{ $index }}">
-														<label class="form-check-label" for="reviewCheck{{ $index }}"></label>
-													</div>
-												</td>
-												<td>
-													<h2 class="table-avatar">
-														<a href="javascript:void(0);">
-															<img class="avatar-img rounded-circle me-2" src="{{ asset('admin/assets/img/profiles/'.$review['avatar']) }}" alt="User Image">
-															{{ $review['name'] }}
-														</a>
-													</h2>
-												</td>
-												<td>{{ $review['role'] }}</td>
-												<td>
-													<div class="desc-info">
-														Project delivery was reviewed and approved by the admin team.
-													</div>
-												</td>
-												<td class="text-nowrap">
-													<i class="fas fa-star text-primary"></i>
-													<i class="fas fa-star text-primary"></i>
-													<i class="fas fa-star text-primary"></i>
-													<i class="fas fa-star text-primary"></i>
-													<i class="fas fa-star text-muted"></i>
-												</td>
-												<td>{{ $review['category'] }}</td>
-												<td class="text-end text-nowrap">
-													<a href="javascript:void(0);" class="btn btn-approve text-white me-2">Approve</a>
-													<a href="javascript:void(0);" class="btn btn-disable">Enable</a>
-												</td>
-											</tr>
-										@endforeach
-									</tbody>
-								</table>
-							</div>
-						</div>
-
-						<div role="tabpanel" id="tab-active" class="tab-pane fade">
-							<div class="table-responsive">
-								<table class="table table-bordered table-hover datatable">
-									<thead>
-										<tr>
-											<th>Profile</th>
-											<th>Designation</th>
-											<th>Category</th>
-											<th class="text-end">Actions</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>Active review</td>
-											<td>Designer</td>
-											<td>UI</td>
-											<td class="text-end"><a href="javascript:void(0);" class="btn btn-disable">Enable</a></td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
-
-						<div role="tabpanel" id="tab-pending" class="tab-pane fade">
-							<div class="table-responsive">
-								<table class="table table-bordered table-hover datatable">
-									<thead>
-										<tr>
-											<th>Profile</th>
-											<th>Designation</th>
-											<th>Category</th>
-											<th class="text-end">Actions</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>Pending review</td>
-											<td>Developer</td>
-											<td>Laravel</td>
-											<td class="text-end"><a href="javascript:void(0);" class="btn btn-approve text-white">Approve</a></td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
-
-						<div role="tabpanel" id="tab-trash" class="tab-pane fade">
-							<div class="table-responsive">
-								<table class="table table-bordered table-hover datatable">
-									<thead>
-										<tr>
-											<th>Profile</th>
-											<th>Designation</th>
-											<th>Category</th>
-											<th class="text-end">Actions</th>
-										</tr>
-									</thead>
-								</table>
-							</div>
-						</div>
+	<div class="row">
+		<div class="col-lg-7 d-flex">
+			<div class="card w-100">
+				<div class="card-body">
+					<div class="card-header border-0 px-0 pt-0">
+						<h5 class="card-title mb-0">New User Registrations</h5>
+					</div>
+					<div id="user-registrations-chart" class="mt-3"></div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-5 d-flex">
+			<div class="card w-100">
+				<div class="card-body">
+					<div class="card-header border-0 px-0 pt-0 d-flex justify-content-between align-items-center">
+						<h5 class="card-title mb-0">Most Applied-To Jobs</h5>
+					</div>
+					<div class="table-responsive mt-3">
+						<table class="table table-hover table-center mb-0">
+							<thead>
+								<tr>
+									<th>Job</th>
+									<th>Company</th>
+									<th class="text-end">Applications</th>
+								</tr>
+							</thead>
+							<tbody>
+								@forelse ($charts['mostAppliedJobs'] as $job)
+									<tr>
+										<td>{{ $job['title'] }}</td>
+										<td>{{ $job['company'] }}</td>
+										<td class="text-end">
+											<span class="badge bg-primary-light">{{ number_format($job['applications_count']) }}</span>
+										</td>
+									</tr>
+								@empty
+									<tr>
+										<td colspan="3" class="text-center text-muted py-4">No applications in this period.</td>
+									</tr>
+								@endforelse
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+
+	<div class="row">
+		<div class="col-lg-4 d-flex">
+			<div class="card w-100">
+				<div class="card-body">
+					<div class="card-header border-0 px-0 pt-0">
+						<h5 class="card-title mb-0">Recent Registrations</h5>
+					</div>
+					<div class="table-responsive mt-3">
+						<table class="table table-hover mb-0">
+							<thead>
+								<tr>
+									<th>User</th>
+									<th>Role</th>
+									<th>Registered</th>
+								</tr>
+							</thead>
+							<tbody>
+								@forelse ($recentActivities['users'] as $user)
+									<tr>
+										<td>
+											<div class="fw-medium">{{ $user->first_name }} {{ $user->last_name }}</div>
+											<small class="text-muted">{{ $user->email }}</small>
+										</td>
+										<td><span class="badge bg-info-light">{{ $user->role->label() }}</span></td>
+										<td class="text-nowrap">{{ $user->created_at->diffForHumans() }}</td>
+									</tr>
+								@empty
+									<tr>
+										<td colspan="3" class="text-center text-muted py-4">No recent registrations.</td>
+									</tr>
+								@endforelse
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4 d-flex">
+			<div class="card w-100">
+				<div class="card-body">
+					<div class="card-header border-0 px-0 pt-0">
+						<h5 class="card-title mb-0">Recently Posted Jobs</h5>
+					</div>
+					<div class="table-responsive mt-3">
+						<table class="table table-hover mb-0">
+							<thead>
+								<tr>
+									<th>Job</th>
+									<th>Status</th>
+									<th>Posted</th>
+								</tr>
+							</thead>
+							<tbody>
+								@forelse ($recentActivities['jobs'] as $job)
+									<tr>
+										<td>
+											<div class="fw-medium">{{ $job->title }}</div>
+											<small class="text-muted">{{ $job->company }}</small>
+										</td>
+										<td>
+											<span class="badge {{ $job->status === 'active' ? 'bg-success-light' : 'bg-secondary-light' }}">
+												{{ ucfirst($job->status) }}
+											</span>
+										</td>
+										<td class="text-nowrap">{{ $job->created_at->diffForHumans() }}</td>
+									</tr>
+								@empty
+									<tr>
+										<td colspan="3" class="text-center text-muted py-4">No jobs posted yet.</td>
+									</tr>
+								@endforelse
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4 d-flex">
+			<div class="card w-100">
+				<div class="card-body">
+					<div class="card-header border-0 px-0 pt-0">
+						<h5 class="card-title mb-0">Latest Applications</h5>
+					</div>
+					<div class="table-responsive mt-3">
+						<table class="table table-hover mb-0">
+							<thead>
+								<tr>
+									<th>Applicant</th>
+									<th>Job</th>
+									<th>Status</th>
+								</tr>
+							</thead>
+							<tbody>
+								@forelse ($recentActivities['applications'] as $application)
+									<tr>
+										<td>
+											<div class="fw-medium">
+												{{ $application->applicant?->first_name }} {{ $application->applicant?->last_name }}
+											</div>
+											<small class="text-muted">{{ $application->reference }}</small>
+										</td>
+										<td>{{ $application->job?->title ?? '—' }}</td>
+										<td>
+											<span class="badge {{ $application->status->badgeClass() }}">
+												{{ $application->status->label() }}
+											</span>
+										</td>
+									</tr>
+								@empty
+									<tr>
+										<td colspan="3" class="text-center text-muted py-4">No applications yet.</td>
+									</tr>
+								@endforelse
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	@push('scripts')
+		<script>
+			document.addEventListener('DOMContentLoaded', function () {
+				const periodSelect = document.getElementById('period');
+				const customDateFields = document.querySelectorAll('.custom-date-field');
+
+				if (periodSelect) {
+					periodSelect.addEventListener('change', function () {
+						const showCustom = this.value === 'custom';
+						customDateFields.forEach(function (field) {
+							field.classList.toggle('d-none', !showCustom);
+						});
+
+						if (this.value !== 'custom') {
+							document.getElementById('dashboard-filter-form').submit();
+						}
+					});
+				}
+
+				const jobsOverTime = @json($charts['jobsOverTime']);
+				const applicationStatus = @json($charts['applicationStatus']);
+				const userRegistrations = @json($charts['userRegistrations']);
+
+				if (document.querySelector('#jobs-over-time-chart')) {
+					new ApexCharts(document.querySelector('#jobs-over-time-chart'), {
+						chart: { type: 'area', height: 320, toolbar: { show: false } },
+						series: [{ name: jobsOverTime.label, data: jobsOverTime.series }],
+						colors: ['#0073b1'],
+						dataLabels: { enabled: false },
+						stroke: { curve: 'smooth', width: 2 },
+						fill: {
+							type: 'gradient',
+							gradient: { shadeIntensity: 1, opacityFrom: 0.35, opacityTo: 0.05 },
+						},
+						xaxis: { categories: jobsOverTime.categories },
+						yaxis: { labels: { formatter: (value) => Math.round(value) } },
+						tooltip: { y: { formatter: (value) => value + ' jobs' } },
+					}).render();
+				}
+
+				if (document.querySelector('#application-status-chart')) {
+					new ApexCharts(document.querySelector('#application-status-chart'), {
+						chart: { type: 'donut', height: 320 },
+						series: applicationStatus.series,
+						labels: applicationStatus.labels,
+						colors: applicationStatus.colors,
+						legend: { position: 'bottom' },
+						plotOptions: {
+							pie: {
+								donut: {
+									size: '68%',
+									labels: {
+										show: true,
+										total: {
+											show: true,
+											label: 'Applications',
+											formatter: (w) => w.globals.seriesTotals.reduce((a, b) => a + b, 0),
+										},
+									},
+								},
+							},
+						},
+					}).render();
+				}
+
+				if (document.querySelector('#user-registrations-chart')) {
+					new ApexCharts(document.querySelector('#user-registrations-chart'), {
+						chart: { type: 'bar', height: 320, stacked: false, toolbar: { show: false } },
+						series: userRegistrations.series,
+						colors: ['#0073b1', '#feb019'],
+						plotOptions: {
+							bar: { horizontal: false, columnWidth: '55%', borderRadius: 4 },
+						},
+						dataLabels: { enabled: false },
+						xaxis: { categories: userRegistrations.categories },
+						yaxis: { labels: { formatter: (value) => Math.round(value) } },
+						legend: { position: 'top' },
+					}).render();
+				}
+			});
+		</script>
+	@endpush
 </x-admin-layout>
