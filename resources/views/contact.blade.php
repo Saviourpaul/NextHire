@@ -22,31 +22,13 @@
 								</li>
 								<li>
 									<h6><i class="fas fa-map-marker-alt me-2 text-primary"></i> Office Address</h6>
-									<p>12 Recruitment Avenue, Central Business District, Abuja, Nigeria</p>
+									<p>12 Recruitment Avenue, Central Business District, Portharcourt, Nigeria</p>
 								</li>
 							</ul>
 						</div>
 					</div>
 
-					<div class="widget-box working-days mb-4 aos" data-aos="fade-up" data-aos-delay="100">
-						<div class="profile-head">
-							<h4 class="pro-title">Business Hours</h4>
-						</div>
-						<ul class="latest-posts">
-							<li class="justify-content-between">
-								<h6>Monday – Friday</h6>
-								<p>8:00 AM – 6:00 PM</p>
-							</li>
-							<li class="justify-content-between">
-								<h6>Saturday</h6>
-								<p>9:00 AM – 2:00 PM</p>
-							</li>
-							<li class="justify-content-between">
-								<h6>Sunday & Public Holidays</h6>
-								<p>Closed</p>
-							</li>
-						</ul>
-					</div>
+					
 				</div>
 
 				<div class="col-lg-7">
