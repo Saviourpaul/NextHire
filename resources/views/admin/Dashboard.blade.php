@@ -154,53 +154,7 @@
 		</div>
 	</div>
 
-	<div class="row">
-		<div class="col-lg-7 d-flex">
-			<div class="card w-100">
-				<div class="card-body">
-					<div class="card-header border-0 px-0 pt-0">
-						<h5 class="card-title mb-0">New User Registrations</h5>
-					</div>
-					<div id="user-registrations-chart" class="mt-3"></div>
-				</div>
-			</div>
-		</div>
-		<div class="col-lg-5 d-flex">
-			<div class="card w-100">
-				<div class="card-body">
-					<div class="card-header border-0 px-0 pt-0 d-flex justify-content-between align-items-center">
-						<h5 class="card-title mb-0">Most Applied-To Jobs</h5>
-					</div>
-					<div class="table-responsive mt-3">
-						<table class="table table-hover table-center mb-0">
-							<thead>
-								<tr>
-									<th>Job</th>
-									<th>Company</th>
-									<th class="text-end">Applications</th>
-								</tr>
-							</thead>
-							<tbody>
-								@forelse ($charts['mostAppliedJobs'] as $job)
-									<tr>
-										<td>{{ $job['title'] }}</td>
-										<td>{{ $job['company'] }}</td>
-										<td class="text-end">
-											<span class="badge bg-primary-light">{{ number_format($job['applications_count']) }}</span>
-										</td>
-									</tr>
-								@empty
-									<tr>
-										<td colspan="3" class="text-center text-muted py-4">No applications in this period.</td>
-									</tr>
-								@endforelse
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+	
 
 	<div class="row">
 		<div class="col-lg-4 d-flex">
