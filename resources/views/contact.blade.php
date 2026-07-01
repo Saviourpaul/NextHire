@@ -128,16 +128,7 @@
 						<div class="profile-head">
 							<h4 class="pro-title">Our Office Location</h4>
 						</div>
-						<iframe
-							title="NextHire office location map"
-							src="https://maps.google.com/maps?q=Abuja%20Nigeria&t=&z=13&ie=UTF8&iwloc=&output=embed"
-							width="100%"
-							height="400"
-							style="border:0;"
-							allowfullscreen=""
-							loading="lazy"
-							referrerpolicy="no-referrer-when-downgrade"
-						></iframe>
+						<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3975.6159073417384!2d7.011289974739778!3d4.835830295139733!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1069cde6cbf3e971%3A0x97322eb45a4c74bb!2sRIVERS%20STATE%20ICT%20DEPARTMENT!5e0!3m2!1sen!2sus!4v1782916362639!5m2!1sen!2sus" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
 					</div>
 				</div>
 			</div>
