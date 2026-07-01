@@ -1,249 +1,96 @@
-<x-app>
-    <div class="bread-crumb-bar">
-				<div class="container">
-					<div class="row align-items-center inner-banner">
-						<div class="col-md-12 col-12 text-center">
-							<div class="breadcrumb-list">
-								<h3>About Us</h3>
-								<nav aria-label="breadcrumb" class="page-breadcrumb">
-									<ol class="breadcrumb">
-										<li class="breadcrumb-item"><a href="index-2.html"> Home</a></li>
-										<li class="breadcrumb-item" aria-current="page">About Us</li>
-									</ol>
-								</nav>
+<x-app title="About Us - NextHire">
+	@include('partials.public-breadcrumb', ['title' => 'About Us'])
+
+	<section class="section about">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-lg-12 d-flex align-items-center aos" data-aos="fade-up">
+					<div class="about-content">
+						<h2>Empowering Recruitment for a Modern Workforce</h2>
+						<p>NextHire is a professional job recruitment platform designed to connect government agencies, private organizations, employers, and job seekers through a secure, transparent, and efficient hiring system.</p>
+						<p>We understand that effective recruitment requires more than a job board. That is why NextHire provides structured application workflows, document verification, role-based access controls, and real-time status tracking — giving every stakeholder the tools they need to hire and apply with confidence.</p>
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<div class="about-content-img aos" data-aos="zoom-in">
+						<img src="{{ asset('assets/img/blog/aboutus.jpg') }}" class="img-fluid" alt="NextHire recruitment team">
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<div class="about-content-img aos" data-aos="zoom-in">
+						<img src="{{ asset('assets/img/blog/aboutus1.jpg') }}" class="img-fluid" alt="Professional job seekers using NextHire">
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="section projects">
+		<div class="container">
+			<div class="row row-gap">
+				<div class="col-md-12 col-sm-12 col-12 mx-auto text-center">
+					<div class="section-header aos" data-aos="fade-up">
+						<h2 class="header-title">Why Choose NextHire?</h2>
+						<p>A recruitment platform built for accountability, efficiency, and results</p>
+					</div>
+				</div>
+				@foreach([
+					['icon' => 'great1.svg', 'title' => 'Verified Opportunities', 'text' => 'Every job listing goes through an approval process to ensure legitimacy and compliance with organizational standards.'],
+					['icon' => 'great2.svg', 'title' => 'Streamlined Applications', 'text' => 'Applicants submit structured profiles and documents through a guided workflow, reducing incomplete submissions and review delays.'],
+					['icon' => 'great3.svg', 'title' => 'Secure & Compliant', 'text' => 'Role-based access, account verification, and document management protect sensitive applicant and organizational data.'],
+					['icon' => 'great4.svg', 'title' => 'End-to-End Tracking', 'text' => 'From application submission to shortlisting, approval, and rejection — every stage is tracked and communicated transparently.'],
+				] as $index => $feature)
+				<div class="col-xl-3 col-md-6 aos d-flex" data-aos="zoom-in" data-aos-duration="{{ 1000 + ($index * 500) }}">
+					<div class="feature-items d-flex align-items-center justify-content-center flex-column">
+						<div class="feature-icon">
+							<img src="{{ asset('assets/img/icon/'.$feature['icon']) }}" class="img-fluid" alt="{{ $feature['title'] }}">
+						</div>
+						<div class="feature-content course-count text-center">
+							<h3>{{ $feature['title'] }}</h3>
+							<p>{{ $feature['text'] }}</p>
+						</div>
+					</div>
+				</div>
+				@endforeach
+			</div>
+		</div>
+	</section>
+
+	<section class="section review">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-6">
+					<div class="aos" data-aos="fade-up">
+						<div class="demand-professional">
+							<h2>Built for Every Stakeholder in the Hiring Process</h2>
+							<p>Whether you are a government agency managing public sector vacancies, a private company scaling your workforce, or a professional seeking your next opportunity, NextHire adapts to your recruitment needs.</p>
+						</div>
+						@foreach([
+							'Government agencies can publish approved vacancies with structured compliance workflows.',
+							'Private organizations gain access to a qualified talent pool with efficient shortlisting tools.',
+							'Job seekers benefit from a single portal to discover, apply, and track opportunities across sectors.',
+						] as $point)
+						<div class="demand-post-job align-items-start">
+							<div class="demand-post-img">
+								<img src="{{ asset('assets/img/icon/checks.svg') }}" alt="Check" class="img-fluid">
 							</div>
+							<div class="demand-content">
+								<p>{{ $point }}</p>
+							</div>
+						</div>
+						@endforeach
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<div class="work-set-image">
+						<div class="recent-pro-img aos" data-aos="zoom-in" data-aos-duration="1000">
+							<img src="{{ asset('assets/img/blog/abt3.png') }}" alt="NextHire platform overview" class="img-fluid">
 						</div>
 					</div>
 				</div>
 			</div>
-			<!-- /Breadcrumb -->
-			
-			<!-- About -->
-			<section class="section about">
-				<div class="container">
-					<div class="row justify-content-center">
-						<div class="col-lg-12 d-flex align-items-center aos" data-aos="fade-up">
-							<div class="about-content">
-								<h2>About We’re on a mission to empowering Jobs worldwide.</h2>
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est modi, saepe hic esse maxime quasi, sapiente ex debitis quis dolorum unde, neque quibusdam eveniet nobis enim porro repudiandae nesciunt quidem.</p>
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magni delectus soluta adipisci beatae ullam quisquam, quia recusandae rem assumenda, praesentium porro sequi eaque doloremque tenetur incidunt officiis explicabo optio perferendis.</p>
-							</div>
-						</div>
-						<div class="col-lg-6 ">
-							<div class="about-content-img aos" data-aos="zoom-in">
-								<img src="assets/img/blog/aboutus.jpg" class="img-fluid" alt="img">
-							</div>
-						</div>
-						<div class="col-lg-6">
-							<div class="about-content-img aos" data-aos="zoom-in">
-								<img src="assets/img/blog/aboutus1.jpg" class="img-fluid" alt="img">
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-			<!-- /About -->
+		</div>
+	</section>
 
-			<section class="section projects">
-				<div class="container">
-					<div class="row row-gap">					
-						<div class="col-md-12 col-sm-12 col-12 mx-auto text-center">
-							<div class="section-header aos  " data-aos="fade-up">
-								<h2 class="header-title">What’s great about it?</h2>
-								<p>All the features of NextHire below</p>
-							</div>
-						</div>		
-						<!-- Feature Item --> 
-						<div class="col-xl-3 col-md-6 aos d-flex  " data-aos="zoom-in" data-aos-duration="1000">
-							<div class="feature-items d-flex align-items-center justify-content-center flex-column">
-								<div class="feature-icon">
-									<img src="assets/img/icon/great1.svg" class="img-fluid" alt="Img">
-								</div>
-								<div class="feature-content course-count text-center">
-									<h3>Browse Portfolios</h3>
-									<p>Find professionals you can trust by browsing their samples of previous work .</p>
-								</div>
-							</div>
-						</div>
-						<!-- /Feature Item -->
-						
-						<!-- Feature Item -->
-						<div class="col-xl-3 col-md-6 aos d-flex  " data-aos="zoom-in" data-aos-duration="1500">
-							<div class="feature-items d-flex align-items-center justify-content-center flex-column">
-								<div class="feature-icon">
-									<img src="assets/img/icon/great2.svg" class="img-fluid" alt="Img">
-								</div>
-								<div class="feature-content course-count text-center">
-									<h3>Fast Bids</h3>
-									<p>Receive obligation free quotes from our talented freelancers fast. 80% of projects get bid</p>
-								</div>
-							</div>
-						</div>
-						<!-- /Feature Item -->
-						
-						<!-- Feature Item -->
-						<div class="col-xl-3 col-md-6 aos d-flex  " data-aos="zoom-in" data-aos-duration="2000">
-							<div class="feature-items d-flex align-items-center justify-content-center flex-column">
-								<div class="feature-icon">
-									<img src="assets/img/icon/great3.svg" class="img-fluid" alt="Img">
-								</div>
-								<div class="feature-content course-count text-center">
-									<h3>Quality Work</h3>
-									<p>NextHire.com has by far the largest pool of quality freelancers globally- over 50 million to choose from.</p>
-								</div>
-							</div>
-						</div>
-						<!-- /Feature Item -->	
-
-						<!-- Feature Item -->
-						<div class="col-xl-3 col-md-6 aos d-flex  " data-aos="zoom-in" data-aos-duration="2500">
-							<div class="feature-items d-flex align-items-center justify-content-center flex-column">
-								<div class="feature-icon">
-									<img src="assets/img/icon/great4.svg" class="img-fluid" alt="Img">
-								</div>
-								<div class="feature-content course-count text-center">
-									<h3>Track Progress</h3>
-									<p>Keep up-to-date and on-the-go with our time tracker Always know what freelancers are up to.</p>
-								</div>
-							</div>
-						</div>
-						<!-- /Feature Item -->
-												
-					</div>
-				</div>
-			</section>
-
-			<section class="section review">
-				<div class="container">
-					<div class="row">
-						
-						<div class="col-lg-6">
-							<div class="aos aos-init " data-aos="fade-up">
-								<div class="demand-professional">
-									<h2>We unleash your business potential.</h2>
-									<p>Through strategy, design, and planning we build brand identities that connect with your template. We then fine-tune a marketing plan that allows us to laser focus.</p>
-								</div>
-								<div class="demand-post-job align-items-start">
-									<div class="demand-post-img">
-										<img src="assets/img/icon/checks.svg" alt="Img" class="img-fluid">
-									</div>
-									<div class="demand-content">
-										<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est modi, saepe hic esse maxime quasi, sapiente ex debitis quis dolorum unde, quibusdam eveniet nobis enim porro repudiandae nesciunt quidem.</p>
-									</div>
-								</div>
-								<div class="demand-post-job align-items-start">
-									<div class="demand-post-img">
-										<img src="assets/img/icon/checks.svg" alt="Img" class="img-fluid">
-									</div>
-									<div class="demand-content">
-										<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est modi, saepe hic esse maxime quasi, sapiente ex debitis quis dolorum unde, quibusdam eveniet nobis enim porro repudiandae nesciunt quidem.</p>
-									</div>
-								</div>
-								<div class="demand-post-job align-items-start">
-									<div class="demand-post-img">
-										<img src="assets/img/icon/checks.svg" alt="Img" class="img-fluid">
-									</div>
-									<div class="demand-content">
-										<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est modi, saepe hic esse maxime quasi, sapiente ex debitis quis dolorum unde, quibusdam eveniet nobis enim porro repudiandae nesciunt quidem.</p>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-6">
-							<div class="work-set-image">
-								<div class="recent-pro-img aos" data-aos="zoom-in" data-aos-duration="1000">
-									<img src="assets/img/blog/abt3.png" alt="Img" class="img-fluid ">
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-			
-			<!--section class="section feature-count feature-count-three">
-				<div class="container">
-					<div class="row">
-						<div class="col-12 col-md-12 mx-auto">
-							<div class="section-header section-header-three feature-count-head aos  " data-aos="fade-up">	
-								<h2 class="header-title">Achievement We Have Earned</h2>
-								<p>At Freelancer, we believe that talent is borderless and opportunity should be too.</p>
-							</div>
-						</div>
-					</div>
-					<div class="row section-bottom-cards">					
-								
-						< Feature Item>
-						<div class="col-xl-3 col-md-6">
-							<div class="feature-item freelance-count aos  " data-aos="fade-up">
-								<div class="feature-icon ">
-									<img src="assets/img/icon/count-icon-01.svg" class="img-fluid" alt="Img">
-								</div>
-								<div class="feature-content course-count">
-									<h3 class="counter-up">9,207</h3>
-									<p>Freelance developers</p>
-								</div>
-							</div>
-						</div>
-						
-						<div class="col-xl-3 col-md-6">
-							<div class="feature-item aos  " data-aos="fade-up">
-								<div class="feature-icon">
-									<img src="assets/img/icon/count-icon-02.svg" class="img-fluid" alt="Img">
-								</div>
-								<div class="feature-content course-count">
-									<h3><span class="counter-up">6000</span></h3>
-									<p>Projects Added</p>
-								</div>
-							</div>
-						</div>
-						
-						<div class="col-xl-3 col-md-6">
-							<div class="feature-item comp-project aos  " data-aos="fade-up">
-								<div class="feature-icon">
-									<img src="assets/img/icon/count-icon-03.svg" class="img-fluid" alt="Img">
-								</div>
-								<div class="feature-content course-count">
-									<h3 class="counter-up">919,207</h3>
-									<p>Completed projects</p>
-								</div>
-							</div>
-						</div>
-
-						<div class="col-xl-3 col-md-6">
-							<div class="feature-item comp-project aos  " data-aos="fade-up">
-								<div class="feature-icon">
-									<img src="assets/img/icon/count-icon-04.svg" class="img-fluid" alt="Img">
-								</div>
-								<div class="feature-content course-count">
-									<h3 class="counter-up">998</h3>
-									<p>Companies Registered</p>
-								</div>
-							</div>
-						</div>
-						<Feature Item>
-												
-					</div>
-				</div>
-			</section-->
-			
-			
-
-			<section class="section job-register">
-				<div class="container">				
-					<div class="row">
-						<div class="col-12">
-							<div class="register-job-blk">
-								<div class="job-content-blk aos" data-aos="fade-up">
-									<h2>Find Your Next Great Job Opportunity!</h2>
-									<p>Quisque pretium dolor turpis, quis blandit turpis semper ut. Nam malesuada eros nec luctus laoreet.</p>
-									<a href="register.html" class="btn all-btn">Join Now</a>
-								</div>
-								<div class="see-all mt-0 aos opportunity   " data-aos="zoom-in"> 
-									<img src="assets/img/job1.png" alt="img">
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
+	@include('partials.public-cta')
 </x-app>

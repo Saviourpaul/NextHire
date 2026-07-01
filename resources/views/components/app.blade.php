@@ -77,18 +77,27 @@
 									<i class="fas fa-times"></i>
 								</a>
 							</div>
-<ul class="main-nav">
-								<li class="{{ request()->is('/') ? 'active' : '' }}">
-									<a href="/">Home</a>
+							<ul class="main-nav">
+								<li class="{{ request()->routeIs('home') ? 'active' : '' }}">
+									<a href="{{ route('home') }}">Home</a>
 								</li>
-								<li class="{{ request()->is('find-jobs') ? 'active' : '' }}">
+								<li class="{{ request()->routeIs('jobs.public') ? 'active' : '' }}">
 									<a href="{{ route('jobs.public') }}">Jobs</a>
 								</li>
-								<li class="{{ request()->is('about') ? 'active' : '' }}">
-									<a href="/about">About</a>
+								<li class="{{ request()->routeIs('services') ? 'active' : '' }}">
+									<a href="{{ route('services') }}">Services</a>
 								</li>
-								<li class="{{ request()->is('contact') ? 'active' : '' }}">
-									<a href="/contact">Contact</a>
+								<li class="{{ request()->routeIs('features') ? 'active' : '' }}">
+									<a href="{{ route('features') }}">Features</a>
+								</li>
+								<li class="{{ request()->routeIs('about') ? 'active' : '' }}">
+									<a href="{{ route('about') }}">About</a>
+								</li>
+								<li class="{{ request()->routeIs('faq') ? 'active' : '' }}">
+									<a href="{{ route('faq') }}">FAQ</a>
+								</li>
+								<li class="{{ request()->routeIs('contact') ? 'active' : '' }}">
+									<a href="{{ route('contact') }}">Contact</a>
 								</li>
 								<li class="login-link d-lg-none">
 									@guest
@@ -155,71 +164,71 @@
 									<a href="/" class="menu-logo">
 										<img src="{{ asset('assets/img/logo.png') }}" class="img-fluid" alt="Logo" height="50" width="90">
 									</a>
-									<p>We’re always in search for talented and motivated people. Don’t be shy introduce yourself!</p>
+									<p>NextHire connects government agencies, private organizations, and employers with qualified job seekers through a secure, modern recruitment platform.</p>
 									<ul>
 										<li>
-											<a href="javascript:void(0);"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+											<a href="javascript:void(0);" aria-label="NextHire on Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
 										</li>
 										<li>
-											<a href="javascript:void(0);"><i class="fa-brands fa-twitter" aria-hidden="true"></i></a>
+											<a href="javascript:void(0);" aria-label="NextHire on Twitter"><i class="fa-brands fa-twitter" aria-hidden="true"></i></a>
 										</li>
 										<li>
-											<a href="javascript:void(0);"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+											<a href="javascript:void(0);" aria-label="NextHire on Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
 										</li>
 										<li>
-											<a href="javascript:void(0);"><i class="fa-brands fa-linkedin" aria-hidden="true"></i></a>
+											<a href="javascript:void(0);" aria-label="NextHire on LinkedIn"><i class="fa-brands fa-linkedin" aria-hidden="true"></i></a>
 										</li>
 									</ul>
-									<a href="javascript:void(0);" class="btn btn-connectus">Contact with us</a>
+									<a href="{{ route('contact') }}" class="btn btn-connectus">Contact Us</a>
 								</div>
 							</div>
 							<div class=" col-lg-8 col-md-12">
 								<div class="row">
 									<div class="col-xl-3 col-md-6">
 										<div class="footer-widget footer-menu">
-											<h2 class="footer-title">Useful Links</h2>
+											<h2 class="footer-title">Platform</h2>
 											<ul>
-												<li><a href="about.html"><i class="fas fa-angle-right me-1"></i>About Us</a></li>
-												<li><a href="blog-list.html"><i class="fas fa-angle-right me-1"></i>Blog</a></li>
-												<li><a href="login.html"><i class="fas fa-angle-right me-1"></i>Login</a></li>
-												<li><a href="register.html"><i class="fas fa-angle-right me-1"></i>Register</a></li>
-												<li><a href="forgot-password.html"><i class="fas fa-angle-right me-1"></i>Forgot Password</a></li>
+												<li><a href="{{ route('about') }}"><i class="fas fa-angle-right me-1"></i>About Us</a></li>
+												<li><a href="{{ route('services') }}"><i class="fas fa-angle-right me-1"></i>Services</a></li>
+												<li><a href="{{ route('features') }}"><i class="fas fa-angle-right me-1"></i>Features</a></li>
+												<li><a href="{{ route('jobs.public') }}"><i class="fas fa-angle-right me-1"></i>Browse Jobs</a></li>
+												<li><a href="{{ route('faq') }}"><i class="fas fa-angle-right me-1"></i>FAQ</a></li>
 											</ul>
 										</div>
 									</div>
 									<div class="col-xl-3 col-md-6">
 										<div class="footer-widget footer-menu">
-											<h2 class="footer-title">Help & Support</h2>
+											<h2 class="footer-title">For Users</h2>
 											<ul>
-												<li><a href="javascript:void(0);"><i class="fas fa-angle-right me-1"></i>Browse Candidates</a></li>
-												<li><a href="javascript:void(0);"><i class="fas fa-angle-right me-1"></i>Employers Dashboard</a></li>
-												<li><a href="javascript:void(0);"><i class="fas fa-angle-right me-1"></i>Job Packages</a></li>
-												<li><a href="javascript:void(0);"><i class="fas fa-angle-right me-1"></i>Jobs Featured</a></li>
-												<li><a href="javascript:void(0);"><i class="fas fa-angle-right me-1"></i>Post A Job</a></li>
+												<li><a href="{{ route('register') }}"><i class="fas fa-angle-right me-1"></i>Register</a></li>
+												<li><a href="{{ route('login') }}"><i class="fas fa-angle-right me-1"></i>Login</a></li>
+												<li><a href="{{ route('register') }}"><i class="fas fa-angle-right me-1"></i>Job Seekers</a></li>
+												<li><a href="{{ route('register') }}"><i class="fas fa-angle-right me-1"></i>Employers</a></li>
+												<li><a href="{{ route('contact') }}"><i class="fas fa-angle-right me-1"></i>Contact Support</a></li>
 											</ul>
 										</div>
 									</div>
 									<div class="col-xl-3 col-md-6">
 										<div class="footer-widget footer-menu">
-											<h2 class="footer-title">Other Links</h2>
+											<h2 class="footer-title">Recruitment Solutions</h2>
 											<ul>
-												<li><a href="freelancer-dashboard.html"><i class="fas fa-angle-right me-1"></i>Freelancers</a></li>
-												<li><a href="freelancer-portfolio.html"><i class="fas fa-angle-right me-1"></i>Freelancer Details</a></li>
-												<li><a href="project.html"><i class="fas fa-angle-right me-1"></i>Project</a></li>
-												<li><a href="project-details.html"><i class="fas fa-angle-right me-1"></i>Project Details</a></li>
-												<li><a href="post-project.html"><i class="fas fa-angle-right me-1"></i>Post Project</a></li>
+												<li><a href="{{ route('services') }}#government"><i class="fas fa-angle-right me-1"></i>Government Hiring</a></li>
+												<li><a href="{{ route('services') }}#private"><i class="fas fa-angle-right me-1"></i>Private Sector</a></li>
+												<li><a href="{{ route('services') }}#employers"><i class="fas fa-angle-right me-1"></i>Employer Services</a></li>
+												<li><a href="{{ route('services') }}#job-seekers"><i class="fas fa-angle-right me-1"></i>Job Seeker Services</a></li>
+												<li><a href="{{ route('services') }}#contract"><i class="fas fa-angle-right me-1"></i>Contract Recruitment</a></li>
 											</ul>
 										</div>
 									</div>
 									<div class="col-xl-3 col-md-6">
 										<div class="footer-widget footer-menu">
-											<h2 class="footer-title">Connect With Us</h2>
+											<h2 class="footer-title">Contact</h2>
 											<ul>
-												<li><a href="freelancer-chats.html"><i class="fas fa-angle-right me-1"></i>Chat</a></li>
-												<li><a href="faq.html"><i class="fas fa-angle-right me-1"></i>Faq</a></li>
-												<li><a href="freelancer-review.html"><i class="fas fa-angle-right me-1"></i>Reviews</a></li>
-												<li><a href="privacy-policy.html"><i class="fas fa-angle-right me-1"></i>Privacy Policy</a></li>
-												<li><a href="term-condition.html"><i class="fas fa-angle-right me-1"></i>Terms of use</a></li>
+												<li><a href="mailto:support@nexhire.com"><i class="fas fa-angle-right me-1"></i>support@nexhire.com</a></li>
+												<li><a href="tel:+2348000000000"><i class="fas fa-angle-right me-1"></i>+234 800 000 0000</a></li>
+												<li><a href="{{ route('contact') }}"><i class="fas fa-angle-right me-1"></i>Send a Message</a></li>
+												<li><a href="{{ route('contact') }}#office-location"><i class="fas fa-angle-right me-1"></i>Office Location</a></li>
+												<li><a href="{{ route('faq') }}"><i class="fas fa-angle-right me-1"></i>Help Center</a></li>
 											</ul>
 										</div>
 									</div>

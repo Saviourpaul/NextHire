@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\ApplicationDocumentDownloadController;
 use App\Http\Controllers\ApplicationDocumentPreviewController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployerApplicationController;
 use App\Http\Controllers\EmployerApplicationDocumentController;
@@ -32,9 +33,12 @@ Route::get('job-details/{job}', [JobController::class, 'show'])->name('job-detai
 Route::get('jobs/{job}/apply', [JobApplicationController::class, 'create'])
     ->middleware('active.account')
     ->name('applications.create');
-Route::get('about', function () {
-    return view('about');
-});
+Route::get('about', fn () => view('about'))->name('about');
+Route::view('services', 'services')->name('services');
+Route::view('features', 'features')->name('features');
+Route::view('faq', 'faq')->name('faq');
+Route::get('contact', [ContactController::class, 'create'])->name('contact');
+Route::post('contact', [ContactController::class, 'store'])->name('contact.store');
 
 Route::get('Dashboard', DashboardController::class)
     ->middleware('auth')
