@@ -1,6 +1,5 @@
 
 @use('App\Enums\DashboardPeriod')
-
 <x-admin-layout title="Dashboard">
 	<div class="page-header">
 		<div class="row align-items-center">
@@ -41,7 +40,6 @@
 			</div>
 		</div>
 	</div>
-
 	<div class="row mb-4">
 		<div class="col-md-4 d-flex">
 			<div class="card w-100">
@@ -134,7 +132,7 @@
 			<div class="card w-100">
 				<div class="card-body">
 					<div class="card-header border-0 px-0 pt-0">
-						<h5 class="card-title mb-0">Jobs Posted Over Time</h5>
+						<h5 class="card-title mb-0">Jobs and Applicants Over Time</h5>
 					</div>
 					<div id="jobs-over-time-chart" class="mt-3"></div>
 				</div>
@@ -151,9 +149,6 @@
 			</div>
 		</div>
 	</div>
-
-	
-
 	<div class="row">
 		<div class="col-lg-4 d-flex">
 			<div class="card w-100">
@@ -295,14 +290,18 @@
 				}
 
 				const jobsOverTime = @json($charts['jobsOverTime']);
+				const applicantsOverTime = @json($charts['applicantsOverTime']);
 				const applicationStatus = @json($charts['applicationStatus']);
 				const userRegistrations = @json($charts['userRegistrations']);
 
 				if (document.querySelector('#jobs-over-time-chart')) {
 					new ApexCharts(document.querySelector('#jobs-over-time-chart'), {
 						chart: { type: 'area', height: 320, toolbar: { show: false } },
-						series: [{ name: jobsOverTime.label, data: jobsOverTime.series }],
-						colors: ['#0073b1'],
+						series: [
+							{ name: jobsOverTime.label, data: jobsOverTime.series },
+							{ name: applicantsOverTime.label, data: applicantsOverTime.series },
+						],
+						colors: ['#0073b1', '#28a745'],
 						dataLabels: { enabled: false },
 						stroke: { curve: 'smooth', width: 2 },
 						fill: {
@@ -311,7 +310,11 @@
 						},
 						xaxis: { categories: jobsOverTime.categories },
 						yaxis: { labels: { formatter: (value) => Math.round(value) } },
-						tooltip: { y: { formatter: (value) => value + ' jobs' } },
+						tooltip: {
+							y: {
+								formatter: (value, { seriesIndex }) => `${value} ${seriesIndex === 0 ? 'jobs' : 'applicants'}`,
+							},
+						},
 					}).render();
 				}
 

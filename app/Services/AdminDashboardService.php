@@ -31,6 +31,7 @@ class AdminDashboardService
             'metrics' => $this->metrics($dateRange),
             'charts' => [
                 'jobsOverTime' => $this->jobsOverTime($dateRange),
+                'applicantsOverTime' => $this->applicantsOverTime($dateRange),
                 'applicationStatus' => $this->applicationStatusDistribution($dateRange),
                 'userRegistrations' => $this->userRegistrations($dateRange),
                 'mostAppliedJobs' => $this->mostAppliedJobs($dateRange),
@@ -84,6 +85,23 @@ class AdminDashboardService
         );
 
         return $this->buildTimeSeries($dateRange, $interval, $counts, 'Jobs Posted');
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function applicantsOverTime(AdminDashboardDateRange $dateRange): array
+    {
+        $interval = $this->chartInterval($dateRange);
+        $counts = $this->groupedCounts(
+            User::query()
+                ->role(UserRole::Applicant)
+                ->whereBetween('created_at', [$dateRange->start, $dateRange->end]),
+            'created_at',
+            $interval,
+        );
+
+        return $this->buildTimeSeries($dateRange, $interval, $counts, 'All Applicants');
     }
 
     /**
