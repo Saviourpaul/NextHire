@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\UserRole;
 use App\Services\AdminDashboardService;
+use App\Services\EmployerDashboardService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +14,7 @@ class DashboardController extends Controller
 {
     public function __construct(
         private readonly AdminDashboardService $adminDashboardService,
+        private readonly EmployerDashboardService $employerDashboardService,
     ) {}
 
     public function __invoke(Request $request): View|RedirectResponse
@@ -25,7 +27,7 @@ class DashboardController extends Controller
 
         return match ($user->role) {
             UserRole::Admin => view('admin.Dashboard', $this->adminDashboardService->getOverview($request)),
-            UserRole::Employer => view('employer.Dashboard'),
+            UserRole::Employer => view('employer.Dashboard', $this->employerDashboardService->getOverview($request, $user)),
             UserRole::Applicant => view('client.Dashboard'),
         };
     }
