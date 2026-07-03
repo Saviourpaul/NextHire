@@ -182,7 +182,7 @@ class AdminDashboardService
             })
             ->groupBy('job_posts.id', 'job_posts.title', 'job_posts.company')
             ->selectRaw('COUNT(application_forms.id) as applications_count')
-            ->having('applications_count', '>', 0)
+            ->havingRaw('COUNT(application_forms.id) > 0')
             ->orderByDesc('applications_count')
             ->limit(8)
             ->get()
