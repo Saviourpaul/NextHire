@@ -23,32 +23,11 @@ class DashboardController extends Controller
             return $this->logoutSuspendedUser($request);
         }
 
-        if ($user->isPending()) {
-            return view('account.pending-approval', [
-                'user' => $user,
-            ]);
-        }
-
         return match ($user->role) {
             UserRole::Admin => view('admin.Dashboard', $this->adminDashboardService->getOverview($request)),
             UserRole::Employer => view('employer.Dashboard'),
             UserRole::Applicant => view('client.Dashboard'),
         };
-    }
-
-    public function pending(Request $request): View|RedirectResponse
-    {
-        if ($request->user()->isSuspended()) {
-            return $this->logoutSuspendedUser($request);
-        }
-
-        if ($request->user()->isActive()) {
-            return redirect()->route('dashboard');
-        }
-
-        return view('account.pending-approval', [
-            'user' => $request->user(),
-        ]);
     }
 
     private function logoutSuspendedUser(Request $request): RedirectResponse

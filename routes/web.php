@@ -101,7 +101,6 @@ Route::middleware(['auth', 'active.account'])->group(function () {
         Route::get('Employers', [UserManagementController::class, 'employers'])->name('Employers');
         Route::get('administrators', [UserManagementController::class, 'administrators'])->name('administrators');
         Route::get('applicants', [UserManagementController::class, 'applicants'])->name('applicants');
-        Route::get('user-verification', [UserManagementController::class, 'approved'])->name('user-verification');
         Route::get('suspended-accounts', [UserManagementController::class, 'suspended'])->name('suspended-accounts');
 
         Route::post('admin/users', [UserManagementController::class, 'store'])->name('admin.users.store');

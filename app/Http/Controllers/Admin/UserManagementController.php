@@ -30,17 +30,6 @@ class UserManagementController extends Controller
         return $this->index($request, 'admin.applicants', 'Applicants', UserRole::Applicant);
     }
 
-    public function approved(Request $request): View
-    {
-        return $this->index(
-            request: $request,
-            view: 'admin.user-verification',
-            title: 'Approved Users',
-            status: UserStatus::Active,
-            showCreate: false,
-        );
-    }
-
     public function suspended(Request $request): View
     {
         return $this->index(
@@ -274,12 +263,7 @@ class UserManagementController extends Controller
 
         if ($status === UserStatus::Suspended) {
             $user->suspended_at ??= now();
-
-            return;
         }
-
-        $user->approved_at = null;
-        $user->suspended_at = null;
     }
 
     private function protectedAdminError(User $actingUser, User $targetUser, UserRole $targetRole, UserStatus $targetStatus): ?string

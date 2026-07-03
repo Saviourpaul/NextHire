@@ -2,7 +2,6 @@
     $pageTitle = 'All ' . $title;
     $statusClasses = [
         'active' => 'bg-success-light',
-        'pending' => 'bg-warning-light',
         'suspended' => 'bg-danger-light',
     ];
     $filterValues = $filterValues ?? [
@@ -266,7 +265,7 @@ $sortUrl = fn ($column) => request()->fullUrlWithQuery([
                                                         </form>
                                                     </li>
                                                 @endif
-                                                @if ($user->isSuspended() || $user->isPending())
+                                                @if ($user->isSuspended())
                                                     <li>
                                                         <form action="{{ route('admin.users.activate', $user) }}"
                                                             method="POST" class="d-grid"

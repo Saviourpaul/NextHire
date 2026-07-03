@@ -171,12 +171,17 @@ class AdminDashboardService
      */
     private function mostAppliedJobs(AdminDashboardDateRange $dateRange): array
     {
+        $start = $dateRange->start;
+        $end = $dateRange->end;
+
         return Job::query()
-            ->select(['id', 'title', 'company'])
-            ->withCount([
-                'applications as applications_count' => fn (Builder $query) => $query
-                    ->whereBetween('submitted_at', [$dateRange->start, $dateRange->end]),
-            ])
+            ->select(['job_posts.id', 'job_posts.title', 'job_posts.company'])
+            ->leftJoin('application_forms', function ($join) use ($start, $end): void {
+                $join->on('job_posts.id', '=', 'application_forms.job_id')
+                    ->whereBetween('application_forms.submitted_at', [$start, $end]);
+            })
+            ->groupBy('job_posts.id', 'job_posts.title', 'job_posts.company')
+            ->selectRaw('COUNT(application_forms.id) as applications_count')
             ->having('applications_count', '>', 0)
             ->orderByDesc('applications_count')
             ->limit(8)

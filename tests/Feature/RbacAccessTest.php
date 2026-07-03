@@ -5,12 +5,18 @@ use App\Enums\UserStatus;
 use App\Models\User;
 
 it('casts roles and statuses and exposes transition helpers', function () {
-    $user = User::factory()->pending()->create();
+    $user = User::factory()->create();
 
     expect($user->role)->toBe(UserRole::Applicant)
-        ->and($user->status)->toBe(UserStatus::Pending)
+        ->and($user->status)->toBe(UserStatus::Active)
         ->and($user->isApplicant())->toBeTrue()
-        ->and($user->isPending())->toBeTrue();
+        ->and($user->isActive())->toBeTrue();
+
+    $user->suspend();
+
+    expect($user->fresh())
+        ->status->toBe(UserStatus::Suspended)
+        ->suspended_at->not->toBeNull();
 
     $user->activate();
 
@@ -18,12 +24,6 @@ it('casts roles and statuses and exposes transition helpers', function () {
         ->status->toBe(UserStatus::Active)
         ->approved_at->not->toBeNull()
         ->suspended_at->toBeNull();
-
-    $user->suspend();
-
-    expect($user->fresh())
-        ->status->toBe(UserStatus::Suspended)
-        ->suspended_at->not->toBeNull();
 });
 
 it('allows only admins to access admin user management', function () {
@@ -42,14 +42,6 @@ it('allows only admins to access admin user management', function () {
     $this->actingAs($applicant)
         ->get(route('applicants'))
         ->assertForbidden();
-});
-
-it('redirects pending users away from active-only routes', function () {
-    $pendingEmployer = User::factory()->employer()->pending()->create();
-
-    $this->actingAs($pendingEmployer)
-        ->get(route('jobs'))
-        ->assertRedirect(route('account.pending'));
 });
 
 it('logs suspended sessions out of protected routes', function () {

@@ -24,10 +24,6 @@ class EnsureAccountIsActive
             return $next($request);
         }
 
-        if ($user->isPending()) {
-            return redirect()->route('account.pending');
-        }
-
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

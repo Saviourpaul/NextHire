@@ -77,15 +77,6 @@ class UserFactory extends Factory
         ]);
     }
 
-    public function pending(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'status' => UserStatus::Pending,
-            'approved_at' => null,
-            'suspended_at' => null,
-        ]);
-    }
-
     public function suspended(): static
     {
         return $this->state(fn (array $attributes) => [

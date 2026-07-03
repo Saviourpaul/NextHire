@@ -170,7 +170,6 @@
 										<li><a href="{{ route('applicants') }}">Applicants</a></li>
 										<li><a href="{{ route('Employers') }}">Employers</a></li>
 										<li><a href="{{ route('administrators') }}">Administrators</a></li>
-										<li><a href="{{ route('user-verification') }}">Approved Users</a></li>
 										<li><a href="{{ route('suspended-accounts') }}">Suspended Accounts</a></li>
 									</ul>
 							</li>

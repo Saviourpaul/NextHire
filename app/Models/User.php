@@ -51,7 +51,7 @@ class User extends Authenticatable
      */
     protected $attributes = [
         'role' => 'applicant',
-        'status' => 'pending',
+        'status' => 'active',
     ];
 
     /**
@@ -193,11 +193,6 @@ class User extends Authenticatable
         return in_array($this->role->value, $values, true);
     }
 
-    public function isPending(): bool
-    {
-        return $this->status === UserStatus::Pending;
-    }
-
     public function isActive(): bool
     {
         return $this->status === UserStatus::Active;
@@ -221,11 +216,6 @@ class User extends Authenticatable
     public function scopeActive(Builder $query): Builder
     {
         return $query->status(UserStatus::Active);
-    }
-
-    public function scopePending(Builder $query): Builder
-    {
-        return $query->status(UserStatus::Pending);
     }
 
     public function scopeSuspended(Builder $query): Builder

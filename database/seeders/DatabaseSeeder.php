@@ -34,14 +34,12 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
+        // Create test applicant
         User::factory()->create([
-            'first_name' => 'Pending',
+            'first_name' => 'Test',
             'last_name' => 'Applicant',
-            'username' => 'pending-applicant',
-            'email' => 'pending@example.com',
-            'role' => UserRole::Applicant,
-            'status' => UserStatus::Pending,
-            'approved_at' => null,
+            'username' => 'test-applicant',
+            'email' => 'applicant@example.com',
         ]);
 
         // Run the job seeder
