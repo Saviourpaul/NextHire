@@ -1,9 +1,7 @@
 
-<x-admin-layout title="Dashboard">
-	@php
-		$periodOptions = \App\Enums\DashboardPeriod::cases();
-	@endphp
+@use('App\Enums\DashboardPeriod')
 
+<x-admin-layout title="Dashboard">
 	<div class="page-header">
 		<div class="row align-items-center">
 			<div class="col-md-7">
@@ -18,7 +16,7 @@
 						<div class="col-sm-6">
 							<label for="period" class="form-label mb-1">Period</label>
 							<select name="period" id="period" class="form-select">
-								@foreach ($periodOptions as $option)
+								@foreach (DashboardPeriod::cases() as $option)
 									<option value="{{ $option->value }}" @selected($filterValues['period'] === $option->value)>
 										{{ $option->label() }}
 									</option>
