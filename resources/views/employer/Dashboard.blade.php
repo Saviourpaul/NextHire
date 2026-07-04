@@ -5,9 +5,7 @@
         <div class="row align-items-center">
             <div class="col-md-7">
                 <h3 class="page-title">Employer Dashboard</h3>
-                <p class="text-muted mb-0">
-                    Recruitment insights for <strong>{{ $dateRange->label() }}</strong>
-                </p>
+               
             </div>
             <div class="col-md-5">
                 <form method="GET" action="{{ route('dashboard') }}" id="dashboard-filter-form" class="dashboard-filter-form">
@@ -57,7 +55,7 @@
                 <div class="card-body">
                     <p class="text-primary mt-0 mb-2">Total Applicants</p>
                     <h3>{{ number_format($metrics['total_applicants']) }}</h3>
-                    <p class="text-muted mb-0">Unique applicants across your jobs</p>
+                    <p class="text-muted mb-0">applicants across your jobs</p>
                     <span class="dash-widget-icon bg-1"><i class="fas fa-user-graduate"></i></span>
                 </div>
             </div>
