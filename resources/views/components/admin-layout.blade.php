@@ -17,6 +17,8 @@
 	<link rel="stylesheet" href="{{ asset('admin/assets/plugins/datatables/datatables.min.css') }}">
 	<link rel="stylesheet" href="{{ asset('assets/plugins/summernote/dist/summernote-lite.css') }}">
 	<link rel="stylesheet" href="{{ asset('admin/assets/css/style.css') }}">
+	    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
 	@stack('styles')
 </head>
 <body>

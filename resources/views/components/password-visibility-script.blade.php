@@ -21,10 +21,9 @@
         box-shadow: none;
     }
 </style>
-
 <script>
-    (function () {
-        const attachPasswordToggle = function (input) {
+    (function() {
+        const attachPasswordToggle = function(input) {
             if (!input || input.type !== 'password' || input.dataset.passwordToggleBound === '1') {
                 return;
             }
@@ -47,17 +46,18 @@
             button.setAttribute('aria-label', 'Show password');
             button.innerHTML = '<i class="fas fa-eye"></i>';
 
-            button.addEventListener('click', function () {
+            button.addEventListener('click', function() {
                 const isHidden = input.type === 'password';
                 input.type = isHidden ? 'text' : 'password';
                 button.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
-                button.innerHTML = isHidden ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+                button.innerHTML = isHidden ? '<i class="fas fa-eye-slash"></i>' :
+                    '<i class="fas fa-eye"></i>';
             });
 
             wrapper.appendChild(button);
         };
 
-        const initialize = function () {
+        const initialize = function() {
             document.querySelectorAll('input[type="password"]').forEach(attachPasswordToggle);
         };
 

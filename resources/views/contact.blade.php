@@ -1,6 +1,5 @@
 <x-app title="Contact Us - NextHire" bodyClass="bg-one">
 	@include('partials.public-breadcrumb', ['title' => 'Contact Us'])
-
 	<section class="section">
 		<div class="container">
 			<div class="row">
@@ -26,11 +25,8 @@
 								</li>
 							</ul>
 						</div>
-					</div>
-
-					
+					</div>	
 				</div>
-
 				<div class="col-lg-7">
 					<div class="widget-box aos" data-aos="fade-up">
 						<div class="profile-head">
@@ -42,7 +38,6 @@
 									{{ session('success') }}
 								</div>
 							@endif
-
 							<form method="POST" action="{{ route('contact.store') }}">
 								@csrf
 								<div class="row">
@@ -119,7 +114,6 @@
 			</div>
 		</div>
 	</section>
-
 	<section class="section pt-0" id="office-location">
 		<div class="container">
 			<div class="row">
@@ -134,6 +128,5 @@
 			</div>
 		</div>
 	</section>
-
 	@include('partials.public-cta')
 </x-app>
