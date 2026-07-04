@@ -3,7 +3,7 @@
     <form method="POST" action="{{ route('login') }}">
         @csrf
         <x-auth-field name="email" label="Email Address" type="email" autocomplete="username" required autofocus />
-        <x-auth-field name="password" label="Password" type="password" autocomplete="current-password" required />
+        <x-auth-field name="password" label="Password" type="password" autocomplete="current-password" required help-text="Show password" minlength="8" />
 
         <label class="auth-remember">
             <input type="checkbox" name="remember" value="1" {{ old('remember') ? 'checked' : '' }}>

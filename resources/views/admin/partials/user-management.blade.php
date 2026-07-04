@@ -356,11 +356,21 @@ $sortUrl = fn ($column) => request()->fullUrlWithQuery([
                         </div>
                         <div class="form-group">
                             <label>Password</label>
-                            <input type="password" name="password" class="form-control" required>
+                            <div class="position-relative">
+                                <input type="password" name="password" class="form-control" required minlength="8" placeholder="Use at least 8 characters">
+                                <button type="button" class="btn btn-link p-0 position-absolute top-50 end-0 translate-middle-y me-2" data-password-toggle="password" aria-label="Show password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>Confirm Password</label>
-                            <input type="password" name="password_confirmation" class="form-control" required>
+                            <div class="position-relative">
+                                <input type="password" name="password_confirmation" class="form-control" required minlength="8" placeholder="Re-enter password">
+                                <button type="button" class="btn btn-link p-0 position-absolute top-50 end-0 translate-middle-y me-2" data-password-toggle="password_confirmation" aria-label="Show password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>Role</label>

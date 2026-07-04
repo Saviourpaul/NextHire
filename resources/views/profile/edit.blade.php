@@ -175,7 +175,12 @@
                         @method('DELETE')
                         <div class="form-group">
                             <label>Password</label>
-                            <input type="password" name="password" class="form-control" required>
+                            <div class="position-relative">
+                                <input type="password" name="password" class="form-control" required minlength="8" placeholder="Enter your password">
+                                <button type="button" class="btn btn-link p-0 position-absolute top-50 end-0 translate-middle-y me-2" data-password-toggle="password" aria-label="Show password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
                             @error('password', 'userDeletion')
                                 <div class="text-danger mt-1">{{ $message }}</div>
                             @enderror

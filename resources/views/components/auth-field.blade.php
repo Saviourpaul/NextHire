@@ -6,6 +6,8 @@
     'autocomplete' => null,
     'autofocus' => false,
     'required' => false,
+    'helpText' => null,
+    'minlength' => null,
 ])
 
 <div class="auth-field">
@@ -22,8 +24,14 @@
         @if ($required) required @endif
         @if ($autofocus) autofocus @endif
         @if ($autocomplete) autocomplete="{{ $autocomplete }}" @endif
+        @if ($type === 'password' && $minlength) minlength="{{ $minlength }}" @endif
+        @if ($type === 'password' && ! $minlength) minlength="8" @endif
         {{ $attributes }}
     >
+
+    @if ($helpText)
+        <div class="form-text mt-2">{{ $helpText }}</div>
+    @endif
 
     @error($name)
         <div class="invalid-feedback d-block">{{ $message }}</div>

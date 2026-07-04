@@ -16,10 +16,10 @@
 
         <x-auth-field name="email" label="Email Address" type="email" autocomplete="email" required />
 
-        <x-auth-field name="password" label="Password" type="password" autocomplete="new-password" required />
+        <x-auth-field name="password" label="Password" type="password" autocomplete="new-password" required help-text="Use at least 8 characters with a mix of letters, numbers, and symbols." minlength="8" />
 
         <x-auth-field name="password_confirmation" label="Confirm Password" type="password" autocomplete="new-password"
-            required />
+            required help-text="Re-enter your password to confirm it." minlength="8" />
 
         <p class="auth-terms">
             You agree to the NextHire

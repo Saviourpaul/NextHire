@@ -290,6 +290,7 @@
 		@include('components.sweet-alerts')
 		<script src="{{ asset('assets/js/sweetalert.js') }}"></script>
 		<script src="{{ asset('assets/js/app-alerts.js') }}"></script>
+		@include('components.password-visibility-script')
 	</body>
 
 </html>

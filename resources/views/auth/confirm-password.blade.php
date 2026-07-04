@@ -1,24 +1,15 @@
-<x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __(' Please confirm your password before continuing.') }}
-    </div>
-
+<x-auth-layout title="Confirm Password - NextHire" card-width="600px">
+    <h1 class="auth-title">Confirm Password</h1>
+    <p class="auth-description">
+        This is a secure area of the application. Please confirm your password before proceeding.
+    </p>
     <form method="POST" action="{{ route('password.confirm') }}">
         @csrf
-        <!-- Password -->
-        <div>
-            <x-input-label for="password" :value="__('Password')" />
+        <x-auth-field name="password" label="Password" type="password" autocomplete="current-password" required help-text="Show password" minlength="8" />
 
-            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required
-                autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <div class="flex justify-end mt-4">
-            <x-primary-button>
-                {{ __('Confirm') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+        <button class="auth-primary-btn" type="submit">
+            Confirm Password <i class="fas fa-arrow-right" aria-hidden="true"></i>
+        </button>
+        
+       </form>
+</x-auth-layout>

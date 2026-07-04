@@ -11,6 +11,14 @@ test('registration screen can be rendered', function () {
     $response->assertStatus(200);
 });
 
+test('registration form exposes strong password guidance and visibility toggles', function () {
+    $response = $this->get('/register');
+
+    $response->assertStatus(200)
+        ->assertSee('Use at least 8 characters')
+        ->assertSee('Show password');
+});
+
 test('new users can register as active applicants', function () {
     $response = $this->post('/register', [
         'first_name' => 'Test',
