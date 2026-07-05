@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Illuminate\Validation\Rules\Password;
+use App\Mail\WelcomeEmail;
+use Illuminate\Support\Facades\Mail;
 
 class RegisteredUserController extends Controller
 {
@@ -35,8 +37,8 @@ class RegisteredUserController extends Controller
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => [ 'required','confirmed', Password::min(8)->mixedCase()->letters() ->numbers()->symbols()->uncompromised(),],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'password' => ['required', 'confirmed', Password::min(8)->mixedCase()->letters()->numbers()->symbols()->uncompromised()],
         ]);
 
         $user = User::create([
@@ -50,6 +52,9 @@ class RegisteredUserController extends Controller
             'approved_at' => now(),
         ]);
 
+        Mail::to($user->email)
+            ->later(now()->addSeconds(10), new WelcomeEmail($user));
+
         Auth::login($user);
 
         return redirect()
@@ -57,3 +62,5 @@ class RegisteredUserController extends Controller
             ->with('success', 'Registration completed successfully.');
     }
 }
+
+
