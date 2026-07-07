@@ -39,7 +39,7 @@
                                 <tr>
                                     <th>Document</th>
                                     <th>Status</th>
-                                    <th>Remarks</th>
+                                    
                                     <th>Updated</th>
                                 </tr>
                             </thead>
@@ -48,7 +48,6 @@
                                     <tr>
                                         <td>{{ $document->document_name }}</td>
                                         <td><span class="badge {{ $document->status->badgeClass() }}">{{ $document->status->label() }}</span></td>
-                                        <td>{{ $document->employer_remarks ?: 'No remarks yet' }}</td>
                                         <td>{{ $document->reviewed_at?->format('M d, Y') ?: 'Pending review' }}</td>
                                     </tr>
                                 @endforeach
@@ -62,7 +61,7 @@
         <div class="col-lg-4">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Profile Snapshot</h5>
+                    <h5 class="card-title">Profile Information </h5>
                     <p><strong>Name:</strong> {{ $application->first_name }} {{ $application->last_name }}</p>
                     <p><strong>Email:</strong> {{ $application->email }}</p>
                     <p><strong>Phone:</strong> {{ $application->phone }}</p>

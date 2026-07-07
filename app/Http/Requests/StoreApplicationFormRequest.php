@@ -31,7 +31,7 @@ class StoreApplicationFormRequest extends FormRequest
 
         return [
             'profile_image' => [
-                Rule::requiredIf(fn (): bool => blank($user?->profile_image_path)),
+                Rule::requiredIf(fn(): bool => blank($user?->profile_image_path)),
                 File::image()
                     ->types(['jpg', 'jpeg', 'png', 'webp'])
                     ->max(5 * 1024),
@@ -44,7 +44,7 @@ class StoreApplicationFormRequest extends FormRequest
             'nationality' => ['required', 'string', 'max:255'],
             'date_of_birth' => ['required', 'date', 'before:today'],
             'gender' => ['nullable', Rule::in(['male', 'female', 'other'])],
-            'marital_status' => ['nullable', Rule::in(['single', 'married', 'divorced', 'widowed'])],
+            'marital_status' => ['nullable', Rule::in(['single', 'married', 'Other'])],
             'state_of_origin' => ['required', 'string', 'max:255', Rule::exists('nigeria_states', 'name')],
             'local_government_area' => ['required', 'string', 'max:255'],
             'address' => ['required', 'string', 'max:255'],
@@ -88,7 +88,7 @@ class StoreApplicationFormRequest extends FormRequest
             $job = $this->route('job');
             $user = $this->user();
 
-            if (! $job instanceof Job || ! $user) {
+            if (!$job instanceof Job || !$user) {
                 return;
             }
 
@@ -105,7 +105,7 @@ class StoreApplicationFormRequest extends FormRequest
                 ->where('name', (string) $this->input('state_of_origin'))
                 ->first();
 
-            if (! $state) {
+            if (!$state) {
                 return;
             }
 
@@ -113,7 +113,7 @@ class StoreApplicationFormRequest extends FormRequest
                 ->where('name', (string) $this->input('local_government_area'))
                 ->exists();
 
-            if (! $hasLga) {
+            if (!$hasLga) {
                 $validator->errors()->add('local_government_area', 'Select a local government area in the selected state.');
             }
         });

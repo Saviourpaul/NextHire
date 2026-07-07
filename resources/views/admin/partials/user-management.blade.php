@@ -35,11 +35,11 @@ $sortUrl = fn ($column) => request()->fullUrlWithQuery([
             </p>
         </div>
         @if ($showCreate)
-            <div class="col-auto">
+            <!-- class="col-auto">
                 <button class="btn add-user" type="button" data-bs-toggle="modal" data-bs-target="#create-user">
                     <i class="fas fa-plus"></i> Add User
                 </button>
-            </div>
+            </div-->
         @endif
     </div>
 </div>

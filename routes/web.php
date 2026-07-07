@@ -110,6 +110,7 @@ Route::middleware(['auth', 'active.account'])->group(function () {
         Route::get('approved-jobs', fn() => view('admin/approved-jobs'))->name('approved-jobs');
         Route::get('rejected-jobs', fn() => view('admin/rejected-jobs'))->name('rejected-jobs');
         Route::get('pending-jobs', fn() => view('admin/pending-jobs'))->name('pending-jobs');
+        Route::get('Reports', fn() => view('admin/Reports'))->name('Reports');
         Route::get('assessment-templates', fn() => view('admin/assessment-templates'))->name('assessment-templates');
         Route::get('interview-templates', fn() => view('admin/interview-templates'))->name('interview-templates');
         Route::get('email-templates', fn() => view('admin/email-templates'))->name('email-templates');

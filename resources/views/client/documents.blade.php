@@ -8,7 +8,7 @@
     </div>
 
     <div class="row">
-        <div class="col-lg-8">
+        <div class="col-lg-16">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Uploaded Documents</h5>
@@ -21,7 +21,6 @@
                                     <th>Document</th>
                                     <th>Application</th>
                                     <th>Status</th>
-                                    <th>Remarks</th>
                                     <th>Uploaded</th>
                                 </tr>
                             </thead>
@@ -37,7 +36,6 @@
                                             <div class="text-muted small">{{ $document->applicationForm->job->title }}</div>
                                         </td>
                                         <td><span class="badge {{ $document->status->badgeClass() }}">{{ $document->status->label() }}</span></td>
-                                        <td>{{ $document->employer_remarks ?: 'No remarks yet' }}</td>
                                         <td>{{ $document->created_at->format('M d, Y') }}</td>
                                     </tr>
                                 @empty
@@ -56,17 +54,6 @@
             </div>
         </div>
 
-        <div class="col-lg-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Accepted Documents</h5>
-                    <ul class="mb-0">
-                        <li>CV or Resume</li>
-                        <li>Certificates</li>
-                        <li>Government-issued ID</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+        
     </div>
 </x-admin-layout>

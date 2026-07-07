@@ -19,7 +19,6 @@ return new class extends Migration
                 $table->string('reference')->unique();
                 $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
                 $table->timestamp('submitted_at')->useCurrent();
-
                 $table->string('first_name');
                 $table->string('middle_name')->nullable();
                 $table->string('last_name');
@@ -40,7 +39,6 @@ return new class extends Migration
 
                 $table->foreignId('reviewed_by')->nullable()->constrained('users')->nullOnDelete();
                 $table->timestamp('reviewed_at')->nullable();
-                $table->text('employer_remarks')->nullable();
                 $table->timestamps();
 
                 $table->unique(['job_id', 'user_id']);
@@ -64,7 +62,6 @@ return new class extends Migration
                 $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
                 $table->foreignId('reviewed_by')->nullable()->constrained('users')->nullOnDelete();
                 $table->timestamp('reviewed_at')->nullable();
-                $table->text('employer_remarks')->nullable();
                 $table->timestamps();
 
                 $table->unique(['application_form_id', 'document_type']);
@@ -79,7 +76,6 @@ return new class extends Migration
                 $table->enum('from_status', ['pending', 'approved', 'rejected'])->nullable();
                 $table->enum('to_status', ['pending', 'approved', 'rejected']);
                 $table->foreignId('changed_by')->nullable()->constrained('users')->nullOnDelete();
-                $table->text('remarks')->nullable();
                 $table->timestamp('created_at')->useCurrent();
 
                 $table->index(['application_form_id', 'created_at'], 'app_status_hist_app_created_idx');
@@ -102,9 +98,7 @@ return new class extends Migration
                 $table->enum('from_status', ['pending', 'approved', 'rejected'])->nullable();
                 $table->enum('to_status', ['pending', 'approved', 'rejected']);
                 $table->foreignId('changed_by')->nullable();
-                $table->text('remarks')->nullable();
                 $table->timestamp('created_at')->useCurrent();
-
                 $table->foreign('application_document_id', 'app_doc_status_hist_doc_fk')
                     ->references('id')
                     ->on('application_documents')
@@ -116,7 +110,6 @@ return new class extends Migration
                 $table->index(['application_document_id', 'created_at'], 'app_doc_status_hist_doc_created_idx');
             });
         }
-
         if (
             Schema::hasTable('application_document_status_histories')
             && ! $this->hasForeignKey('application_document_status_histories', 'app_doc_status_hist_doc_fk')
@@ -140,7 +133,6 @@ return new class extends Migration
                     ->nullOnDelete();
             });
         }
-
         if (
             Schema::hasTable('application_document_status_histories')
             && ! Schema::hasIndex('application_document_status_histories', 'app_doc_status_hist_doc_created_idx')

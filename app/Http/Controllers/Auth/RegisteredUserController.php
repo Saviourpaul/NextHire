@@ -53,7 +53,7 @@ class RegisteredUserController extends Controller
         ]);
 
         Mail::to($user->email)
-            ->later(now()->addSeconds(10), new WelcomeEmail($user));
+            ->queue(new WelcomeEmail($user));
 
         Auth::login($user);
 

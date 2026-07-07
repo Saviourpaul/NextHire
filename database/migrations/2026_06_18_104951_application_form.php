@@ -39,7 +39,6 @@ return new class extends Migration
 
             $table->foreignId('reviewed_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamp('reviewed_at')->nullable();
-            $table->text('employer_remarks')->nullable();
             $table->timestamps();
 
             $table->unique(['job_id', 'user_id']);
@@ -61,7 +60,6 @@ return new class extends Migration
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->foreignId('reviewed_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamp('reviewed_at')->nullable();
-            $table->text('employer_remarks')->nullable();
             $table->timestamps();
 
             $table->unique(['application_form_id', 'document_type']);
@@ -74,7 +72,6 @@ return new class extends Migration
             $table->enum('from_status', ['pending', 'approved', 'rejected'])->nullable();
             $table->enum('to_status', ['pending', 'approved', 'rejected']);
             $table->foreignId('changed_by')->nullable()->constrained('users')->nullOnDelete();
-            $table->text('remarks')->nullable();
             $table->timestamp('created_at')->useCurrent();
 
             $table->index(['application_form_id', 'created_at'], 'app_status_hist_app_created_idx');
@@ -86,7 +83,6 @@ return new class extends Migration
             $table->enum('from_status', ['pending', 'approved', 'rejected'])->nullable();
             $table->enum('to_status', ['pending', 'approved', 'rejected']);
             $table->foreignId('changed_by')->nullable();
-            $table->text('remarks')->nullable();
             $table->timestamp('created_at')->useCurrent();
 
             $table->foreign('application_document_id', 'app_doc_status_hist_doc_fk')

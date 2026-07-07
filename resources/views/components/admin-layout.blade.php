@@ -218,14 +218,14 @@
 						
 						@if ($currentUser?->isAdmin())
 							<li class="submenu">
-								<a href="javascript:void(0);"><i data-feather="user-check"></i> <span>Recruitment Tools</span><span class="Tmenu-arrow"></span></a>
+								<a href="javascript:void(0);"><i class="feather feather-database"></i> <span>Recruitment Tools</span><span class="Tmenu-arrow"></span></a>
 								<ul>
 									<li><a href="{{ route('assessment-templates') }}">Assessment Templates</a></li>
 										<li><a href="{{ route('interview-templates') }}">Interview Templates</a></li>
 										<li><a href="{{ route('email-templates') }}">Email Templates</a></li>
 								</ul>
 							</li>
-							<li><a href="javascript:void(0);"><i data-feather="pie-chart"></i> <span>Reports</span></a></li>
+							<li><a href="{{ route('Reports') }}"><i data-feather="pie-chart"></i> <span>Reports</span></a></li>
 
 							<li class="submenu">
 								<a href="javascript:void(0);"><i data-feather="settings"></i> <span>Settings</span><span class="menu-arrow"></span></a>

@@ -301,7 +301,7 @@
                             <select name="marital_status"
                                 class="form-control @error('marital_status') is-invalid @enderror">
                                 <option value="">Select status</option>
-                                @foreach (['single' => 'Single', 'married' => 'Married', 'divorced' => 'Divorced', 'widowed' => 'Widowed'] as $value => $label)
+                                @foreach (['single' => 'Single', 'married' => 'Married', 'Other' => 'Other'] as $value => $label)
                                     <option value="{{ $value }}" @selected(old('marital_status') === $value)>
                                         {{ $label }}</option>
                                 @endforeach
