@@ -36,6 +36,7 @@
 		<!-- Main CSS -->
 		<link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+	
 		
 	</head>	
   <body class="{{ $bodyClass }}">
@@ -66,14 +67,14 @@
 								</span>
 							</a>
 							<a href="/" class="navbar-brand logo">
-								<img src="{{ asset('assets/img/logo.png') }}" class="img-fluid" alt="Logo" height="40" width="60">
+								<img src="{{ asset('assets/img/logo.png') }}" class="img-fluid" alt="Logo" height="120" width="120">
 							</a>
 							
 						</div>
 						<div class="main-menu-wrapper">
 							<div class="menu-header">
 								<a href="/" class="menu-logo">
-									<img src="{{ asset('assets/img/logo.png') }}" class="img-fluid" alt="Logo" height="30" width="60">
+									<img src="{{ asset('assets/img/logo.png') }}" class="img-fluid" alt="Logo" height="120" width="120">
 								</a>
 								<a id="menu_close" class="menu-close" href="javascript:void(0);">
 									<i class="fas fa-times"></i>
