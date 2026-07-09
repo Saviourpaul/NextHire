@@ -50,7 +50,6 @@
 				<div class="col-12">
 					<div class="section-header text-center aos" data-aos="fade-up">
 						<h2 class="header-title">Latest Job Openings</h2>
-						<p>Explore verified opportunities from trusted employers and public sector organizations</p>
 					</div>
 				</div>
 			</div>
