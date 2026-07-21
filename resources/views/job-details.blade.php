@@ -44,7 +44,7 @@
 											<i class="feather-calendar"></i>Due: {{ $job->due_date->format('d F Y') }}
 										</li>
 										<li>
-											<i class="feather-edit-2"></i>Status: {{ ucfirst($job->status) }}
+											<i class="feather-edit-2"></i>Status: {{ $job->status->label() }}
 										</li>
 									</ul>
 								</div>
@@ -120,10 +120,10 @@
 						<div class="col-lg-4 col-md-12 sidebar-right theiaStickySidebar project-client-view">	
 							<div class="job-apply-det">
 								<div class="job-apply-det-inner">
-							@if($job->status === 'inactive')
-								<p class="text-danger">This job is closed and no longer accepting applications.</p>
+							@if(! $job->isApproved())
+								<p class="text-danger">This job is not currently accepting applications.</p>
 								
-							@elseif($job->status === 'active')
+							@elseif($job->isApproved())
 								<h3 class="mb-0">Apply for this job</h3>
 								<p>Click the button below to submit your application.</p>
 								

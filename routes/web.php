@@ -1,4 +1,6 @@
 <?php
+
+use App\Http\Controllers\Admin\JobManagementController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\ApplicationDocumentDownloadController;
 use App\Http\Controllers\ApplicationDocumentPreviewController;
@@ -21,7 +23,23 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('find-jobs', function () {
-    $jobs = Job::active()->latest()->paginate(12);
+    $jobs = Job::active()
+        ->when(request()->filled('search'), function ($query) {
+            $search = '%'.request()->string('search')->trim().'%';
+
+            $query->where(function ($query) use ($search) {
+                $query->where('title', 'like', $search)
+                    ->orWhere('company', 'like', $search)
+                    ->orWhere('category', 'like', $search)
+                    ->orWhere('description', 'like', $search);
+            });
+        })
+        ->when(request()->filled('category'), function ($query) {
+            $query->where('category', request('category'));
+        })
+        ->latest()
+        ->paginate(12)
+        ->withQueryString();
 
     return view('Jobs', [
         'jobs' => $jobs,
@@ -32,7 +50,7 @@ Route::get('job-details/{job}', [JobController::class, 'show'])->name('job-detai
 Route::get('jobs/{job}/apply', [JobApplicationController::class, 'create'])
     ->middleware('active.account')
     ->name('applications.create');
-Route::get('about', fn() => view('about'))->name('about');
+Route::get('about', fn () => view('about'))->name('about');
 Route::view('services', 'services')->name('services');
 Route::view('features', 'features')->name('features');
 Route::view('faq', 'faq')->name('faq');
@@ -48,7 +66,7 @@ Route::get('client/Job-Application.', DashboardController::class)
     ->name('client.Job-Application.');
 
 Route::middleware(['auth', 'active.account', 'role:applicant'])->group(function () {
-    Route::get('client/profile', fn() => view('client.profile'))->name('client.profile');
+    Route::get('client/profile', fn () => view('client.profile'))->name('client.profile');
     Route::get('Client/Application', [JobApplicationController::class, 'index'])->name('Client.Application');
     Route::post('jobs/{job}/apply', [JobApplicationController::class, 'store'])
         ->middleware('throttle:application-submit')
@@ -57,7 +75,7 @@ Route::middleware(['auth', 'active.account', 'role:applicant'])->group(function 
     Route::get('client/documents', [JobApplicationController::class, 'documents'])->name('client.documents');
     Route::get('client/jobs', [JobApplicationController::class, 'index'])->name('client.jobs');
     Route::get('client/notifications', [JobApplicationController::class, 'notifications'])->name('client.notifications');
-    Route::get('client/settings', fn() => view('client.settings'))->name('client.settings');
+    Route::get('client/settings', fn () => view('client.settings'))->name('client.settings');
 });
 
 Route::middleware(['auth', 'active.account'])->group(function () {
@@ -82,15 +100,15 @@ Route::middleware(['auth', 'active.account'])->group(function () {
             ->middleware('throttle:uploads')
             ->name('jobs.update');
         Route::delete('jobs/{job}', [JobController::class, 'destroy'])->name('jobs.destroy');
-        Route::get('employer/profile', fn() => view('employer.profile'))->name('employer.profile');
+        Route::get('employer/profile', fn () => view('employer.profile'))->name('employer.profile');
         Route::get('employer/Applied-Candidates', [EmployerApplicationController::class, 'applied'])->name('employer.Applied-Candidates');
         Route::get('employer/Approved-Candidates', [EmployerApplicationController::class, 'approved'])->name('employer.Approved-Candidates');
         Route::get('employer/Rejected-Candidate', [EmployerApplicationController::class, 'rejected'])->name('employer.Rejected-Candidate');
         Route::get('employer/applications/{applicationForm}', [EmployerApplicationController::class, 'show'])->name('employer.applications.show');
         Route::patch('employer/applications/{applicationForm}/status', [EmployerApplicationController::class, 'review'])->name('employer.applications.review');
         Route::patch('employer/application-documents/{applicationDocument}/status', [EmployerApplicationDocumentController::class, 'update'])->name('employer.application-documents.review');
-        Route::get('employer/notifications', fn() => view('employer.notifications'))->name('employer.notifications');
-        Route::get('employer/settings', fn() => view('employer.settings'))->name('employer.settings');
+        Route::get('employer/notifications', fn () => view('employer.notifications'))->name('employer.notifications');
+        Route::get('employer/settings', fn () => view('employer.settings'))->name('employer.settings');
 
     });
 
@@ -107,17 +125,20 @@ Route::middleware(['auth', 'active.account'])->group(function () {
         Route::delete('admin/users/{user}', [UserManagementController::class, 'destroy'])->name('admin.users.destroy');
         Route::post('admin/users/{user}/password-reset', [UserManagementController::class, 'sendPasswordReset'])->name('admin.users.password-reset');
 
-        Route::get('approved-jobs', fn() => view('admin/approved-jobs'))->name('approved-jobs');
-        Route::get('rejected-jobs', fn() => view('admin/rejected-jobs'))->name('rejected-jobs');
-        Route::get('pending-jobs', fn() => view('admin/pending-jobs'))->name('pending-jobs');
-        Route::get('Reports', fn() => view('admin/Reports'))->name('Reports');
-        Route::get('assessment-templates', fn() => view('admin/assessment-templates'))->name('assessment-templates');
-        Route::get('interview-templates', fn() => view('admin/interview-templates'))->name('interview-templates');
-        Route::get('email-templates', fn() => view('admin/email-templates'))->name('email-templates');
-        Route::get('general-settings', fn() => view('admin/general-settings'))->name('general-settings');
-        Route::get('email-configuration', fn() => view('admin/email-configuration'))->name('email-configuration');
-        Route::get('notifications', fn() => view('admin/notifications'))->name('notifications');
-        Route::get('permission-management', fn() => view('admin/permission-management'))->name('permission-management');
+        Route::get('admin/jobs', [JobManagementController::class, 'index'])->name('admin.jobs.index');
+        Route::get('admin/jobs/{job}', [JobManagementController::class, 'show'])->name('admin.jobs.show');
+        Route::patch('admin/jobs/{job}/status', [JobManagementController::class, 'review'])->name('admin.jobs.review');
+        Route::get('approved-jobs', [JobManagementController::class, 'approved'])->name('approved-jobs');
+        Route::get('rejected-jobs', [JobManagementController::class, 'rejected'])->name('rejected-jobs');
+        Route::get('pending-jobs', [JobManagementController::class, 'pending'])->name('pending-jobs');
+        Route::get('Reports', fn () => view('admin/Reports'))->name('Reports');
+        Route::get('assessment-templates', fn () => view('admin/assessment-templates'))->name('assessment-templates');
+        Route::get('interview-templates', fn () => view('admin/interview-templates'))->name('interview-templates');
+        Route::get('email-templates', fn () => view('admin/email-templates'))->name('email-templates');
+        Route::get('general-settings', fn () => view('admin/general-settings'))->name('general-settings');
+        Route::get('email-configuration', fn () => view('admin/email-configuration'))->name('email-configuration');
+        Route::get('notifications', fn () => view('admin/notifications'))->name('notifications');
+        Route::get('permission-management', fn () => view('admin/permission-management'))->name('permission-management');
     });
 });
 
@@ -129,4 +150,4 @@ Route::middleware(['auth', 'active.account'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\JobStatus;
 use App\Http\Requests\StoreApplicationFormRequest;
 use App\Models\ApplicationDocument;
 use App\Models\ApplicationForm;
@@ -31,7 +32,7 @@ class JobApplicationController extends Controller
 
     public function create(Request $request, Job $job): View|RedirectResponse
     {
-        abort_unless($job->status === 'active', 404);
+        abort_unless($job->status === JobStatus::Approved, 404);
 
         $user = $request->user();
 

@@ -30,6 +30,10 @@
 			request()->routeIs('employer.Applied-Candidates') => route('employer.Applied-Candidates'),
 			request()->routeIs('employer.Approved-Candidates') => route('employer.Approved-Candidates'),
 			request()->routeIs('employer.Rejected-Candidate') => route('employer.Rejected-Candidate'),
+			request()->routeIs('admin.jobs.*') => route('admin.jobs.index'),
+			request()->routeIs('approved-jobs') => route('approved-jobs'),
+			request()->routeIs('pending-jobs') => route('pending-jobs'),
+			request()->routeIs('rejected-jobs') => route('rejected-jobs'),
 			request()->routeIs('applicants') => route('applicants'),
 			request()->routeIs('Employers') => route('Employers'),
 			request()->routeIs('administrators') => route('administrators'),
@@ -40,6 +44,10 @@
 			request()->routeIs('employer.Applied-Candidates') => 'Search applied candidates...',
 			request()->routeIs('employer.Approved-Candidates') => 'Search approved candidates...',
 			request()->routeIs('employer.Rejected-Candidate') => 'Search rejected candidates...',
+			request()->routeIs('admin.jobs.*') => 'Search jobs, employers, categories...',
+			request()->routeIs('approved-jobs') => 'Search approved jobs...',
+			request()->routeIs('pending-jobs') => 'Search pending jobs...',
+			request()->routeIs('rejected-jobs') => 'Search rejected jobs...',
 			request()->routeIs('applicants') => 'Search applicants...',
 			request()->routeIs('Employers') => 'Search employers...',
 			request()->routeIs('administrators') => 'Search administrators...',
@@ -177,11 +185,12 @@
 							</li>
 						@endif
 						@if ($currentUser?->isAdmin() )
-							<li class="submenu">
+							<li class="submenu {{ request()->routeIs('admin.jobs.*') || request()->routeIs('approved-jobs', 'pending-jobs', 'rejected-jobs') ? 'active' : '' }}">
 									<a href="javascript:void(0);"><i data-feather="align-justify"></i> <span>Job Management</span> <span class="menu-arrow"></span></a>
 									<ul>
 										
 										@if ($currentUser?->isAdmin())
+											<li><a href="{{ route('admin.jobs.index') }}">All Jobs</a></li>
 											<li><a href="{{ route('approved-jobs') }}">Approved Jobs</a></li>
 											<li><a href="{{ route('rejected-jobs') }}">Rejected Jobs</a></li>
 											<li><a href="{{ route('pending-jobs') }}">Pending Jobs</a></li>

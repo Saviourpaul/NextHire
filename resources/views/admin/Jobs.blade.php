@@ -23,7 +23,7 @@
                         <form action="{{ url()->current() }}" method="GET" class="d-flex gap-2 align-items-end">
                             <div class="flex-grow-1">
                                 <label class="form-label small text-muted">Search Jobs</label>
-                                <input type="text" name="search" class="form-control form-control-sm" placeholder="Title, company, or description..." value="{{ request('search') }}">
+                                <input type="text" name="search" class="form-control form-control-sm" placeholder="Title, company, category, or description..." value="{{ request('search') }}">
                             </div>
                             <button class="btn btn-sm btn-primary" type="submit">Search</button>
                             <a href="{{ url()->current() }}" class="btn btn-sm btn-outline-secondary">Clear</a>
@@ -44,6 +44,11 @@
                                     <th class="align-middle d-none d-md-table-cell">
                                         <a href="{{ $sortUrl('company') }}" class="text-decoration-none">
                                             Company<span class="ms-1">{{ $sortIcon('company') }}</span>
+                                        </a>
+                                    </th>
+                                    <th class="align-middle d-none d-lg-table-cell">
+                                        <a href="{{ $sortUrl('category') }}" class="text-decoration-none">
+                                            Category<span class="ms-1">{{ $sortIcon('category') }}</span>
                                         </a>
                                     </th>
                                     <th class="align-middle d-none d-lg-table-cell">
@@ -71,15 +76,17 @@
                                             <div>
                                                 <h6 class="mb-0">{{ $job->title }}</h6>
                                                 <small class="text-muted d-md-none">{{ $job->company }}</small>
+                                                <small class="text-muted d-lg-none d-block">{{ $job->category ?: 'Uncategorized' }}</small>
                                                 <small class="text-muted d-lg-none">{{ $job->start_date->format('d-m-Y') }} - {{ $job->due_date->format('d-m-Y') }}</small>
                                             </div>
                                         </td>
                                         <td class="align-middle d-none d-md-table-cell">{{ $job->company }}</td>
+                                        <td class="align-middle d-none d-lg-table-cell">{{ $job->category ?: 'Uncategorized' }}</td>
                                         <td class="align-middle d-none d-lg-table-cell">{{ $job->start_date->format('d-m-Y') }}</td>
                                         <td class="align-middle d-none d-lg-table-cell">{{ $job->due_date->format('d-m-Y') }}</td>
                                         <td class="align-middle">
-                                            <span class="badge {{ $job->status === 'active' ? 'bg-success-light' : 'bg-danger-light' }}">
-                                                {{ ucfirst($job->status) }}
+                                            <span class="badge {{ $job->status->badgeClass() }}">
+                                                {{ $job->status->label() }}
                                             </span>
                                         </td>
                                         <td class="align-middle text-end">
@@ -104,7 +111,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="text-center py-4">No jobs found.</td>
+                                        <td colspan="9" class="text-center py-4">No jobs found.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -136,7 +143,7 @@
                         enctype="multipart/form-data"
                         data-confirm
                         data-confirm-title="Create job?"
-                        data-confirm-text="This job will be available based on the status you selected."
+                        data-confirm-text="This job will be submitted for admin review."
                         data-confirm-button="Create Job"
                     >
                         @csrf
@@ -166,7 +173,7 @@
                             enctype="multipart/form-data"
                             data-confirm
                             data-confirm-title="Update job?"
-                            data-confirm-text="Your changes will be saved for this job."
+                            data-confirm-text="Your changes will be submitted for admin review."
                             data-confirm-button="Save Changes"
                         >
                             @csrf

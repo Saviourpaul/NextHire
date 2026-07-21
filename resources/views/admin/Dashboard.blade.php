@@ -209,8 +209,8 @@
 											<small class="text-muted">{{ $job->company }}</small>
 										</td>
 										<td>
-											<span class="badge {{ $job->status === 'active' ? 'bg-success-light' : 'bg-secondary-light' }}">
-												{{ ucfirst($job->status) }}
+											<span class="badge {{ $job->status->badgeClass() }}">
+												{{ $job->status->label() }}
 											</span>
 										</td>
 										<td class="text-nowrap">{{ $job->created_at->diffForHumans() }}</td>

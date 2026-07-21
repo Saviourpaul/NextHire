@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\JobStatus;
 use App\Models\ApplicationForm;
 use App\Models\Job;
 use App\Models\NigeriaState;
@@ -19,7 +20,7 @@ class StoreApplicationFormRequest extends FormRequest
 
         return $job instanceof Job
             && $user?->isApplicant()
-            && $job->status === 'active';
+            && $job->status === JobStatus::Approved;
     }
 
     /**
@@ -31,7 +32,7 @@ class StoreApplicationFormRequest extends FormRequest
 
         return [
             'profile_image' => [
-                Rule::requiredIf(fn(): bool => blank($user?->profile_image_path)),
+                Rule::requiredIf(fn (): bool => blank($user?->profile_image_path)),
                 File::image()
                     ->types(['jpg', 'jpeg', 'png', 'webp'])
                     ->max(5 * 1024),
@@ -88,7 +89,7 @@ class StoreApplicationFormRequest extends FormRequest
             $job = $this->route('job');
             $user = $this->user();
 
-            if (!$job instanceof Job || !$user) {
+            if (! $job instanceof Job || ! $user) {
                 return;
             }
 
@@ -105,7 +106,7 @@ class StoreApplicationFormRequest extends FormRequest
                 ->where('name', (string) $this->input('state_of_origin'))
                 ->first();
 
-            if (!$state) {
+            if (! $state) {
                 return;
             }
 
@@ -113,7 +114,7 @@ class StoreApplicationFormRequest extends FormRequest
                 ->where('name', (string) $this->input('local_government_area'))
                 ->exists();
 
-            if (!$hasLga) {
+            if (! $hasLga) {
                 $validator->errors()->add('local_government_area', 'Select a local government area in the selected state.');
             }
         });

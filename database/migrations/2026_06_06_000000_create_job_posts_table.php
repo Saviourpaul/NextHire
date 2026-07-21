@@ -17,10 +17,11 @@ return new class extends Migration
             $table->string('title');
             $table->longText('description');
             $table->string('company');
+            $table->string('category')->nullable();
             $table->string('logo')->nullable();
             $table->date('start_date');
             $table->date('due_date');
-            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->string('status', 20)->default('pending');
             $table->timestamps();
 
             $table->index(['employer_id', 'status']);

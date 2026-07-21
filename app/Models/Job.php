@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\JobStatus;
 use Database\Factories\JobFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,10 +23,18 @@ class Job extends Model
         'title',
         'description',
         'company',
+        'category',
         'logo',
         'start_date',
         'due_date',
         'status',
+    ];
+
+    /**
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'status' => 'pending',
     ];
 
     protected function casts(): array
@@ -32,6 +42,7 @@ class Job extends Model
         return [
             'start_date' => 'date',
             'due_date' => 'date',
+            'status' => JobStatus::class,
         ];
     }
 
@@ -45,9 +56,34 @@ class Job extends Model
         return $this->hasMany(ApplicationForm::class);
     }
 
-    public function scopeActive($query)
+    public function scopeStatus(Builder $query, JobStatus|string $status): Builder
     {
-        return $query->where('status', 'active');
+        return $query->where('status', $status instanceof JobStatus ? $status->value : $status);
+    }
+
+    public function scopeApproved(Builder $query): Builder
+    {
+        return $query->status(JobStatus::Approved);
+    }
+
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->approved();
+    }
+
+    public function isApproved(): bool
+    {
+        return $this->status === JobStatus::Approved;
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status === JobStatus::Pending;
+    }
+
+    public function isRejected(): bool
+    {
+        return $this->status === JobStatus::Rejected;
     }
 
     public function logoUrl(): string

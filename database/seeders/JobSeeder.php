@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\JobStatus;
 use App\Models\Job;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -20,16 +21,22 @@ class JobSeeder extends Seeder
         $testUser = User::where('email', 'test@example.com')->first();
 
         if ($testUser) {
-            // Create 8 active jobs for the test user
+            // Create 8 approved jobs for the test user
             Job::factory(8)
                 ->for($testUser, 'employer')
+                ->approved()
                 ->create();
 
-            // Create 2 inactive jobs
+            // Create 2 jobs awaiting or denied admin review
             Job::factory(2)
                 ->for($testUser, 'employer')
-                ->inactive()
-                ->create();
+                ->sequence(
+                    ['status' => JobStatus::Pending],
+                    ['status' => JobStatus::Rejected],
+                )
+                ->create([
+                    'category' => 'General Recruitment',
+                ]);
         }
     }
 }

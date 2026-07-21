@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\JobStatus;
 use App\Models\Job;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class JobController extends Controller
 {
     public function index(Request $request): View
     {
-        $sortableColumns = ['title', 'company', 'start_date', 'due_date', 'created_at'];
+        $sortableColumns = ['title', 'company', 'category', 'start_date', 'due_date', 'created_at'];
         $sortColumn = $request->input('sort') && in_array($request->input('sort'), $sortableColumns, true)
             ? $request->input('sort')
             : 'created_at';
@@ -27,6 +27,7 @@ class JobController extends Controller
                 $query->where(function ($query) use ($search) {
                     $query->where('title', 'like', $search)
                         ->orWhere('company', 'like', $search)
+                        ->orWhere('category', 'like', $search)
                         ->orWhere('description', 'like', $search);
                 });
             })
@@ -49,11 +50,13 @@ class JobController extends Controller
             $data['logo'] = $request->file('logo')->store('job-logos', 'public');
         }
 
+        $data['status'] = JobStatus::Pending;
+
         $request->user()->jobs()->create($data);
 
         return redirect()
             ->route('jobs')
-            ->with('success', 'Job created successfully.');
+            ->with('success', 'Job submitted for admin review.');
     }
 
     public function update(Request $request, Job $job): RedirectResponse
@@ -69,11 +72,13 @@ class JobController extends Controller
             $this->deleteStoredLogo($job);
         }
 
+        $data['status'] = JobStatus::Pending;
+
         $job->update($data);
 
         return redirect()
             ->route('jobs')
-            ->with('success', 'Job updated successfully.');
+            ->with('success', 'Job updated and submitted for admin review.');
     }
 
     public function destroy(Request $request, Job $job): RedirectResponse
@@ -90,6 +95,15 @@ class JobController extends Controller
 
     public function show(Request $request, Job $job): View
     {
+        if (! $job->isApproved()) {
+            $user = $request->user();
+
+            abort_unless(
+                $user?->isAdmin() || ($user?->isEmployer() && $job->employer_id === $user->id),
+                404
+            );
+        }
+
         $existingApplication = null;
 
         if ($request->user()?->isApplicant()) {
@@ -113,12 +127,12 @@ class JobController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'company' => ['required', 'string', 'max:255'],
+            'category' => ['nullable', 'string', 'max:255'],
             'logo' => $request->hasFile('logo')
                 ? ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048']
                 : ['nullable', 'string', 'max:2048'],
             'start_date' => ['required', 'date'],
             'due_date' => ['required', 'date', 'after_or_equal:start_date'],
-            'status' => ['required', Rule::in(['active', 'inactive'])],
         ];
     }
 
