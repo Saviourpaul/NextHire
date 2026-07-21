@@ -10,6 +10,8 @@
 
 NextHire is a comprehensive job recruitment portal designed to streamline the hiring process for employers and provide an excellent job search experience for job seekers. Built with Laravel and modern web technologies, NextHire offers a seamless platform where employers can post job listings and candidates can discover, apply, and manage their career opportunities.
 
+For setup, architecture, database, endpoint, deployment, security, scaling, testing, and troubleshooting details, see [Technical Documentation](docs/TECHNICAL_DOCUMENTATION.md).
+
 ### Key Features
 
 - **For Job Seekers**
@@ -44,4 +46,3 @@ NextHire is built on modern technologies:
 
 
  
-
