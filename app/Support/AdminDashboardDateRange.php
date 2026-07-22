@@ -53,7 +53,7 @@ class AdminDashboardDateRange
     {
         if ($this->period === DashboardPeriod::Custom) {
             return sprintf(
-                '%s – %s',
+                '%s - %s',
                 $this->start->format('M j, Y'),
                 $this->end->format('M j, Y'),
             );

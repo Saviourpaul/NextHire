@@ -21,6 +21,7 @@
                                     <th>Document</th>
                                     <th>Application</th>
                                     <th>Status</th>
+                                    <th>Remarks</th>
                                     <th>Uploaded</th>
                                 </tr>
                             </thead>
@@ -36,6 +37,7 @@
                                             <div class="text-muted small">{{ $document->applicationForm->job->title }}</div>
                                         </td>
                                         <td><span class="badge {{ $document->status->badgeClass() }}">{{ $document->status->label() }}</span></td>
+                                        <td>{{ $document->employer_remarks ?: 'No remarks' }}</td>
                                         <td>{{ $document->created_at->format('M d, Y') }}</td>
                                     </tr>
                                 @empty

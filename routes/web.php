@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\JobManagementController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\ApplicationDocumentDownloadController;
 use App\Http\Controllers\ApplicationDocumentPreviewController;
@@ -131,7 +132,8 @@ Route::middleware(['auth', 'active.account'])->group(function () {
         Route::get('approved-jobs', [JobManagementController::class, 'approved'])->name('approved-jobs');
         Route::get('rejected-jobs', [JobManagementController::class, 'rejected'])->name('rejected-jobs');
         Route::get('pending-jobs', [JobManagementController::class, 'pending'])->name('pending-jobs');
-        Route::get('Reports', fn () => view('admin/Reports'))->name('Reports');
+        Route::get('Reports', [ReportController::class, 'index'])->name('Reports');
+        Route::get('Reports/export', [ReportController::class, 'export'])->name('Reports.export');
         Route::get('assessment-templates', fn () => view('admin/assessment-templates'))->name('assessment-templates');
         Route::get('interview-templates', fn () => view('admin/interview-templates'))->name('interview-templates');
         Route::get('email-templates', fn () => view('admin/email-templates'))->name('email-templates');

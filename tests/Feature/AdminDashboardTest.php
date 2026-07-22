@@ -89,7 +89,8 @@ it('does not expose admin dashboard metrics to non-admin users', function () {
     $this->actingAs($employer)
         ->get(route('dashboard'))
         ->assertOk()
-        ->assertDontSee('Jobs Posted Over Time');
+        ->assertDontSee('Recent Registrations')
+        ->assertDontSee('Latest Applications');
 });
 
 it('auto-submits dashboard filter when a preset period is selected', function () {

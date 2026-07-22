@@ -153,8 +153,7 @@
                             </div>
                         </div>
 
-                        <button id="edit-profile-button" type="button" class="btn btn-primary">Update
-                            Profile</button>
+                        <button id="edit-profile-button" type="button" class="btn btn-primary">Update Profile</button>
                         <div id="profile-actions" class="d-none mt-3">
                             <button type="submit" class="btn btn-primary">Save Changes</button>
                             <button id="cancel-profile-edit" type="button"

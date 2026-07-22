@@ -25,8 +25,8 @@ test('new users can register as active applicants', function () {
         'last_name' => 'User',
         'username' => 'test-user',
         'email' => 'test@example.com',
-        'password' => 'password',
-        'password_confirmation' => 'password',
+        'password' => 'Password1!',
+        'password_confirmation' => 'Password1!',
     ]);
 
     $this->assertAuthenticated();
@@ -40,7 +40,7 @@ test('new users can register as active applicants', function () {
 });
 
 test('registration redirects applicants back to an intended job application', function () {
-    $job = Job::factory()->create();
+    $job = Job::factory()->approved()->create();
 
     $response = $this
         ->withSession(['url.intended' => route('applications.create', $job)])
@@ -49,8 +49,8 @@ test('registration redirects applicants back to an intended job application', fu
             'last_name' => 'User',
             'username' => 'test-user',
             'email' => 'test@example.com',
-            'password' => 'password',
-            'password_confirmation' => 'password',
+            'password' => 'Password1!',
+            'password_confirmation' => 'Password1!',
         ]);
 
     $this->assertAuthenticated();

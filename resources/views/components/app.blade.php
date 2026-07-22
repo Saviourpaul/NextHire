@@ -90,6 +90,9 @@
 								<li class="{{ request()->routeIs('services') ? 'active' : '' }}">
 									<a href="{{ route('services') }}">Services</a>
 								</li>
+								<li class="{{ request()->routeIs('features') ? 'active' : '' }}">
+									<a href="{{ route('features') }}">Features</a>
+								</li>
 								
 								<li class="{{ request()->routeIs('about') ? 'active' : '' }}">
 									<a href="{{ route('about') }}">About</a>
@@ -191,6 +194,7 @@
 											<ul>
 												<li><a href="{{ route('about') }}"><i class="fas fa-angle-right me-1"></i>About Us</a></li>
 												<li><a href="{{ route('services') }}"><i class="fas fa-angle-right me-1"></i>Services</a></li>
+												<li><a href="{{ route('features') }}"><i class="fas fa-angle-right me-1"></i>Features</a></li>
 												<li><a href="{{ route('jobs.public') }}"><i class="fas fa-angle-right me-1"></i>Browse Jobs</a></li>
 												<li><a href="{{ route('faq') }}"><i class="fas fa-angle-right me-1"></i>FAQ</a></li>
 											</ul>

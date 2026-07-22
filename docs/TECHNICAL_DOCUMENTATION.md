@@ -367,7 +367,7 @@ Index:
 
 - `application_document_id`, `created_at`
 
-### `nigeria_states`
+### `states`
 
 Purpose: normalized Nigerian states and the FCT for applicant profile/application forms.
 
@@ -380,7 +380,7 @@ Key columns:
 - `sort_order`
 - `created_at`, `updated_at`
 
-### `nigeria_local_government_areas`
+### `local_government_areas`
 
 Purpose: local government areas and FCT area councils.
 

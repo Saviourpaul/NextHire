@@ -50,7 +50,7 @@ function validApplicationPayload(array $overrides = []): array
 
 it('renders the application wizard with dependent location and document controls', function () {
     $employer = User::factory()->employer()->create();
-    $job = Job::factory()->for($employer, 'employer')->create();
+    $job = Job::factory()->approved()->for($employer, 'employer')->create();
     $applicant = User::factory()->applicant()->create();
 
     $this->actingAs($applicant)
@@ -67,7 +67,7 @@ it('renders the application wizard with dependent location and document controls
 
 it('redirects guest applicants to registration and resumes the intended application after registration', function () {
     $employer = User::factory()->employer()->create();
-    $job = Job::factory()->for($employer, 'employer')->create();
+    $job = Job::factory()->approved()->for($employer, 'employer')->create();
 
     $this->get(route('job-details', $job))
         ->assertOk()
@@ -82,8 +82,8 @@ it('redirects guest applicants to registration and resumes the intended applicat
         'last_name' => 'Hopper',
         'username' => 'grace-hopper',
         'email' => 'grace@example.com',
-        'password' => 'password',
-        'password_confirmation' => 'password',
+        'password' => 'Password1!',
+        'password_confirmation' => 'Password1!',
     ])->assertRedirect(route('applications.create', $job));
 
     $this->assertAuthenticated();
@@ -98,7 +98,7 @@ it('stores applications, synchronizes applicant profile, and prevents duplicate 
     Storage::fake('local');
 
     $employer = User::factory()->employer()->create();
-    $job = Job::factory()->for($employer, 'employer')->create();
+    $job = Job::factory()->approved()->for($employer, 'employer')->create();
     $applicant = User::factory()->applicant()->create([
         'first_name' => 'Old',
         'last_name' => 'Name',
@@ -163,7 +163,7 @@ it('stores applications, synchronizes applicant profile, and prevents duplicate 
 
 it('requires nin and bvn numbers to be exactly eleven numeric digits', function () {
     $employer = User::factory()->employer()->create();
-    $job = Job::factory()->for($employer, 'employer')->create();
+    $job = Job::factory()->approved()->for($employer, 'employer')->create();
     $applicant = User::factory()->applicant()->create();
 
     $this->actingAs($applicant)

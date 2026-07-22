@@ -1,417 +1,535 @@
-<x-admin-layout title="All Report">
-    <div class="content report-box container-fluid">
+@use('App\Enums\DashboardPeriod')
 
-        <!-- Page Header -->
-        <div class="page-header page-border">
-            <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <h3 class="page-title">Reports</h3>
+@php
+    $metrics = $report['metrics'];
+    $charts = $report['charts'];
+    $number = fn (int|float $value): string => is_float($value) ? number_format($value, 1) : number_format($value);
+    $percent = fn (int|float $value): string => number_format((float) $value, 1).'%';
+@endphp
 
-                </div>
-
+<x-admin-layout title="Administrative Reports">
+    <div class="page-header">
+        <div class="row align-items-center g-3">
+            <div class="col-xl-5 col-lg-12">
+                <h3 class="page-title">Administrative Reports</h3>
+                <p class="text-muted mb-0">
+                    Platform performance, recruitment activity, moderation, security, and configuration status for
+                    <strong>{{ $report['dateRange']->label() }}</strong>.
+                </p>
+            </div>
+            <div class="col-xl-7 col-lg-12">
+                <form method="GET" action="{{ route('Reports') }}" id="report-filter-form" class="row g-2 align-items-end justify-content-xl-end">
+                    <div class="col-sm-6 col-md-3">
+                        <label for="period" class="form-label mb-1">Period</label>
+                        <select name="period" id="period" class="form-select">
+                            @foreach (DashboardPeriod::cases() as $option)
+                                <option value="{{ $option->value }}" @selected($report['filterValues']['period'] === $option->value)>
+                                    {{ $option->label() }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-sm-6 col-md-3 report-custom-date {{ $report['filterValues']['period'] === 'custom' ? '' : 'd-none' }}">
+                        <label for="date_from" class="form-label mb-1">From</label>
+                        <input type="date" name="date_from" id="date_from" class="form-control" value="{{ $report['filterValues']['date_from'] }}">
+                    </div>
+                    <div class="col-sm-6 col-md-3 report-custom-date {{ $report['filterValues']['period'] === 'custom' ? '' : 'd-none' }}">
+                        <label for="date_to" class="form-label mb-1">To</label>
+                        <input type="date" name="date_to" id="date_to" class="form-control" value="{{ $report['filterValues']['date_to'] }}">
+                    </div>
+                    <div class="col-sm-6 col-md-auto">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-filter me-1"></i> Apply
+                        </button>
+                    </div>
+                    <div class="col-sm-6 col-md-auto">
+                        <a class="btn btn-outline-primary w-100" href="{{ route('Reports.export', $report['filterValues']) }}">
+                            <i class="fas fa-file-csv me-1"></i> Export CSV
+                        </a>
+                    </div>
+                </form>
             </div>
         </div>
-        <!-- /Page Header -->
+    </div>
 
-        <!-- Project Chart -->
-        <div class="project-chart">
-            <div class="row">
-                <div class="subscribe-employe">
-                    <ul>
-                        <li><a href="">Approved Applicants </a></li>
-                        <li><a href="">Rejected Applicants </a></li>
-                        <li class="active"><a href="">Applied Applicants</a></li>
-                    </ul>
+    <div class="row">
+        <div class="col-xl-3 col-md-6 d-flex">
+            <div class="card wizard-card flex-fill">
+                <div class="card-body">
+                    <p class="text-primary mt-0 mb-2">Registered Users</p>
+                    <h3>{{ $number($metrics['total_registered_users']) }}</h3>
+                    <p class="text-muted mb-0">{{ $number($metrics['new_users_in_period']) }} new in period</p>
+                    <span class="dash-widget-icon bg-1"><i class="fas fa-users"></i></span>
                 </div>
-
-                <div class="card flex-fill">
-                    <div class="card-header">
-
-
-                        <div class="d-flex justify-content-between align-items-center">
-
-
-                            <div class="dropdown">
-                                <button class="btn btn-white btn-sm dropdown-toggle" type="button"
-                                    id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                    2022
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <li>
-                                        <a href="javascript:void(0);" class="dropdown-item">2021</a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0);" class="dropdown-item">2022</a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0);" class="dropdown-item">2020</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                       
-                        <div id="chart-freelance" class="c3" style="max-height: 320px; position: relative;"><svg
-                                width="320.3999938964844" height="320" style="overflow: hidden;">
-                                <defs>
-                                    <clipPath id="c3-1783327692685-clip">
-                                        <rect width="278.3999938964844" height="286"></rect>
-                                    </clipPath>
-                                    <clipPath id="c3-1783327692685-clip-xaxis">
-                                        <rect x="-41" y="-20" width="350.3999938964844" height="50"></rect>
-                                    </clipPath>
-                                    <clipPath id="c3-1783327692685-clip-yaxis">
-                                        <rect x="-39" y="-4" width="60" height="310"></rect>
-                                    </clipPath>
-                                    <clipPath id="c3-1783327692685-clip-grid">
-                                        <rect width="278.3999938964844" height="286"></rect>
-                                    </clipPath>
-                                    <clipPath id="c3-1783327692685-clip-subchart">
-                                        <rect width="278.3999938964844" height="0"></rect>
-                                    </clipPath>
-                                </defs>
-                                <g transform="translate(40.5,4.5)"><text class="c3-text c3-empty" text-anchor="middle"
-                                        dominant-baseline="middle" x="139.1999969482422" y="143"
-                                        style="opacity: 0;"></text>
-                                    <g clip-path=""
-                                        class="c3-regions" style="visibility: visible;"></g>
-                                    <g clip-path=""
-                                        class="c3-grid" style="visibility: visible;">
-                                        <g class="c3-xgrid-focus">
-                                            <line class="c3-xgrid-focus" x1="-10" x2="-10" y1="0"
-                                                y2="286" style="visibility: hidden;"></line>
-                                        </g>
-                                    </g>
-                                    <g clip-path=""
-                                        class="c3-chart">
-                                        <g class="c3-stanford-elements">
-                                            <g class="c3-stanford-lines" style="shape-rendering: geometricprecision;">
-                                            </g>
-                                            <g class="c3-stanford-texts"></g>
-                                            <g class="c3-stanford-regions"></g>
-                                        </g>
-                                        <g class="c3-event-rects" style="fill-opacity: 0;">
-                                            <rect class="c3-event-rect" x="0" y="0" width="278.3999938964844"
-                                                height="286" style=""></rect>
-                                        </g>
-                                        <g class="c3-chart-bars">
-                                            <g class="c3-chart-bar c3-target c3-target-data1"
-                                                style="pointer-events: none;">
-                                                <g class=" c3-shapes c3-shapes-data1 c3-bars c3-bars-data1"
-                                                    style="cursor: pointer;"></g>
-                                            </g>
-                                        </g>
-                                        <g class="c3-chart-lines">
-                                            <g class="c3-chart-line c3-target c3-target-data1"
-                                                style="opacity: 1; pointer-events: none;">
-                                                <g class=" c3-shapes c3-shapes-data1 c3-lines c3-lines-data1">
-                                                    <path class=" c3-shape c3-shape c3-line c3-line-data1"
-                                                        d="M13,188.03125C13,188.03125,30.5,267.1979166666667,39,262.25C47.5,257.3020833333333,55.66666666666667,163.29166666666669,64,158.34375000000003C72.33333333333333,153.39583333333337,80.5,252.35416666666666,89,232.5625C97.5,212.77083333333334,106.5,54.43750000000002,115,39.59375000000003C123.5,24.750000000000036,131.66666666666666,136.07812500000003,140,143.50000000000003C148.33333333333334,150.92187500000003,156.5,103.9166666666667,165,84.12500000000003C173.5,64.33333333333336,182.5,7.432291666666671,191,24.75C199.5,42.06770833333333,207.66666666666666,153.39583333333334,216,188.03125C224.33333333333334,222.66666666666666,232.5,232.5625,241,232.5625C249.5,232.5625,267,188.03125,267,188.03125"
-                                                        style="stroke: rgb(255, 91, 55); opacity: 1;"></path>
-                                                </g>
-                                                <g class=" c3-shapes c3-shapes-data1 c3-areas c3-areas-data1">
-                                                    <path class=" c3-shape c3-shape c3-area c3-area-data1"
-                                                        d="M 13 188.03125"
-                                                        style="fill: rgb(255, 91, 55); opacity: 0.2;"></path>
-                                                </g>
-                                                <g class=" c3-selected-circles c3-selected-circles-data1"></g>
-                                                <g class=" c3-shapes c3-shapes-data1 c3-circles c3-circles-data1"
-                                                    style="cursor: pointer;">
-                                                    <circle shape-rendering=""
-                                                        class=" c3-shape c3-shape-0 c3-circle c3-circle-0"
-                                                        cx="13" cy="188.03125" r="2.5"
-                                                        style="color: rgb(255, 91, 55); opacity: 1;"></circle>
-                                                    <circle shape-rendering=""
-                                                        class=" c3-shape c3-shape-1 c3-circle c3-circle-1"
-                                                        cx="39" cy="262.25" r="2.5"
-                                                        style="color: rgb(255, 91, 55); opacity: 1;"></circle>
-                                                    <circle shape-rendering=""
-                                                        class=" c3-shape c3-shape-2 c3-circle c3-circle-2"
-                                                        cx="64" cy="158.34375000000003" r="2.5"
-                                                        style="color: rgb(255, 91, 55); opacity: 1;"></circle>
-                                                    <circle shape-rendering=""
-                                                        class="c3-shape c3-shape-3 c3-circle c3-circle-3"
-                                                        cx="89" cy="232.5625" r="2.5"
-                                                        style="color: rgb(255, 91, 55); opacity: 1;"></circle>
-                                                    <circle shape-rendering=""
-                                                        class=" c3-shape c3-shape-4 c3-circle c3-circle-4"
-                                                        cx="115" cy="39.59375000000003" r="2.5"
-                                                        style="color: rgb(255, 91, 55); opacity: 1;"></circle>
-                                                    <circle shape-rendering=""
-                                                        class="c3-shape c3-shape-5 c3-circle c3-circle-5"
-                                                        cx="140" cy="143.50000000000003" r="2.5"
-                                                        style="color: rgb(255, 91, 55); opacity: 1;"></circle>
-                                                    <circle shape-rendering=""
-                                                        class="c3-shape c3-shape-6 c3-circle c3-circle-6"
-                                                        cx="165" cy="84.12500000000003" r="2.5"
-                                                        style="color: rgb(255, 91, 55); opacity: 1;"></circle>
-                                                    <circle shape-rendering=""
-                                                        class=" c3-shape c3-shape-7 c3-circle c3-circle-7"
-                                                        cx="191" cy="24.75" r="2.5"
-                                                        style="color: rgb(255, 91, 55); opacity: 1;"></circle>
-                                                    <circle shape-rendering=""
-                                                        class=" c3-shape c3-shape-8 c3-circle c3-circle-8"
-                                                        cx="216" cy="188.03125" r="2.5"
-                                                        style="color: rgb(255, 91, 55); opacity: 1;"></circle>
-                                                    <circle shape-rendering=""
-                                                        class=" c3-shape c3-shape-9 c3-circle c3-circle-9"
-                                                        cx="241" cy="232.5625" r="2.5"
-                                                        style="color: rgb(255, 91, 55); opacity: 1;"></circle>
-                                                    <circle shape-rendering=""
-                                                        class=" c3-shape c3-shape-10 c3-circle c3-circle-10"
-                                                        cx="267" cy="188.03125" r="2.5"
-                                                        style="color: rgb(255, 91, 55); opacity: 1;"></circle>
-                                                </g>
-                                            </g>
-                                        </g>
-                                        <g class="c3-chart-arcs" transform="translate(139.1999969482422,138)"><text
-                                                class="c3-chart-arcs-title"
-                                                style="text-anchor: middle; opacity: 0;"></text></g>
-                                        <g class="c3-chart-texts">
-                                            <g class="c3-chart-text c3-target c3-target-data1  "
-                                                style="opacity: 1; pointer-events: none;">
-                                                <g class=" c3-texts c3-texts-data1"></g>
-                                            </g>
-                                        </g>
-                                    </g>
-                                    <g clip-path=""
-                                        class="c3-grid c3-grid-lines">
-                                        <g class="c3-xgrid-lines"></g>
-                                        <g class="c3-ygrid-lines"></g>
-                                    </g>
-                                    <g class="c3-axis c3-axis-x"
-                                        clip-path=""
-                                        transform="translate(0,286)" style="visibility: visible; opacity: 1;"><text
-                                            class="c3-axis-x-label" transform="" style="text-anchor: end;"
-                                            x="278.3999938964844" dx="-0.5em" dy="-0.5em"></text>
-                                        <g class="tick" transform="translate(13, 0)" style="opacity: 1;">
-                                            <line x1="13" x2="13" y2="6"></line><text x="0"
-                                                y="9" transform="" style="text-anchor: middle; display: block;">
-                                                <tspan x="0" dy=".71em" dx="0">Ja</tspan>
-                                                <tspan x="0" dy="11.199999809265137" dx="0">n</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(39, 0)" style="opacity: 1;">
-                                            <line x1="13" x2="13" y2="6"></line><text x="0"
-                                                y="9" transform="" style="text-anchor: middle; display: block;">
-                                                <tspan x="0" dy=".71em" dx="0">Fe</tspan>
-                                                <tspan x="0" dy="11.199999809265137" dx="0">b</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(64, 0)" style="opacity: 1;">
-                                            <line x1="13" x2="13" y2="6"></line><text x="0"
-                                                y="9" transform="" style="text-anchor: middle; display: block;">
-                                                <tspan x="0" dy=".71em" dx="0">Ma</tspan>
-                                                <tspan x="0" dy="11.199999809265137" dx="0">r</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(89, 0)" style="opacity: 1;">
-                                            <line x1="13" x2="13" y2="6"></line><text x="0"
-                                                y="9" transform="" style="text-anchor: middle; display: block;">
-                                                <tspan x="0" dy=".71em" dx="0">Ap</tspan>
-                                                <tspan x="0" dy="11.199999809265137" dx="0">r</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(115, 0)" style="opacity: 1;">
-                                            <line x1="13" x2="13" y2="6"></line><text x="0"
-                                                y="9" transform="" style="text-anchor: middle; display: block;">
-                                                <tspan x="0" dy=".71em" dx="0">Ma</tspan>
-                                                <tspan x="0" dy="11.199999809265137" dx="0">y</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(140, 0)" style="opacity: 1;">
-                                            <line x1="13" x2="13" y2="6"></line><text x="0"
-                                                y="9" transform="" style="text-anchor: middle; display: block;">
-                                                <tspan x="0" dy=".71em" dx="0">Ju</tspan>
-                                                <tspan x="0" dy="11.199999809265137" dx="0">n</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(165, 0)" style="opacity: 1;">
-                                            <line x1="13" x2="13" y2="6"></line><text x="0"
-                                                y="9" transform="" style="text-anchor: middle; display: block;">
-                                                <tspan x="0" dy=".71em" dx="0">Ju</tspan>
-                                                <tspan x="0" dy="11.199999809265137" dx="0">l</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(191, 0)" style="opacity: 1;">
-                                            <line x1="13" x2="13" y2="6"></line><text x="0"
-                                                y="9" transform="" style="text-anchor: middle; display: block;">
-                                                <tspan x="0" dy=".71em" dx="0">Au</tspan>
-                                                <tspan x="0" dy="11.199999809265137" dx="0">g</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(216, 0)" style="opacity: 1;">
-                                            <line x1="13" x2="13" y2="6"></line><text x="0"
-                                                y="9" transform="" style="text-anchor: middle; display: block;">
-                                                <tspan x="0" dy=".71em" dx="0">Se</tspan>
-                                                <tspan x="0" dy="11.199999809265137" dx="0">p</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(241, 0)" style="opacity: 1;">
-                                            <line x1="13" x2="13" y2="6"></line><text x="0"
-                                                y="9" transform="" style="text-anchor: middle; display: block;">
-                                                <tspan x="0" dy=".71em" dx="0">9</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(267, 0)" style="opacity: 1;">
-                                            <line x1="13" x2="13" y2="0"></line><text x="0"
-                                                y="9" transform="" style="text-anchor: middle; display: block;">
-                                                <tspan x="0" dy=".71em" dx="0">10</tspan>
-                                            </text>
-                                        </g>
-                                        <path class="domain" d="M0,6V0H278.3999938964844V6"></path>
-                                    </g>
-                                    <g class="c3-axis c3-axis-y"
-                                        clip-path=""
-                                        transform="translate(0,0)" style="visibility: visible; opacity: 1;"><text
-                                            class="c3-axis-y-label" transform="rotate(-90)" style="text-anchor: end;"
-                                            x="0" dx="-0.5em" dy="1.2em"></text>
-                                        <g class="tick" transform="translate(0,278)" style="opacity: 1;">
-                                            <line x2="-6"></line><text x="-9" y="0" style="text-anchor: end;">
-                                                <tspan x="-9" dy="3">4</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(0,248)" style="opacity: 1;">
-                                            <line x2="-6"></line><text x="-9" y="0" style="text-anchor: end;">
-                                                <tspan x="-9" dy="3">6</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(0,218)" style="opacity: 1;">
-                                            <line x2="-6"></line><text x="-9" y="0" style="text-anchor: end;">
-                                                <tspan x="-9" dy="3">8</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(0,189)" style="opacity: 1;">
-                                            <line x2="-6"></line><text x="-9" y="0" style="text-anchor: end;">
-                                                <tspan x="-9" dy="3">10</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(0,159)" style="opacity: 1;">
-                                            <line x2="-6"></line><text x="-9" y="0" style="text-anchor: end;">
-                                                <tspan x="-9" dy="3">12</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(0,129)" style="opacity: 1;">
-                                            <line x2="-6"></line><text x="-9" y="0" style="text-anchor: end;">
-                                                <tspan x="-9" dy="3">14</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(0,99)" style="opacity: 1;">
-                                            <line x2="-6"></line><text x="-9" y="0" style="text-anchor: end;">
-                                                <tspan x="-9" dy="3">16</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(0,70)" style="opacity: 1;">
-                                            <line x2="-6"></line><text x="-9" y="0" style="text-anchor: end;">
-                                                <tspan x="-9" dy="3">18</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(0,40)" style="opacity: 1;">
-                                            <line x2="-6"></line><text x="-9" y="0" style="text-anchor: end;">
-                                                <tspan x="-9" dy="3">20</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(0,10)" style="opacity: 1;">
-                                            <line x2="-6"></line><text x="-9" y="0" style="text-anchor: end;">
-                                                <tspan x="-9" dy="3">22</tspan>
-                                            </text>
-                                        </g>
-                                        <path class="domain" d="M-6,1H0V286H-6"></path>
-                                    </g>
-                                    <g class="c3-axis c3-axis-y2" transform="translate(278.3999938964844,0)"
-                                        style="visibility: hidden; opacity: 1;"><text class="c3-axis-y2-label"
-                                            transform="rotate(-90)" style="text-anchor: end;" x="0" dx="-0.5em"
-                                            dy="-0.5em"></text>
-                                        <g class="tick" transform="translate(0,286)" style="opacity: 1;">
-                                            <line x2="6"></line><text x="9" y="0" style="text-anchor: start;">
-                                                <tspan x="9" dy="3">0</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(0,258)" style="opacity: 1;">
-                                            <line x2="6"></line><text x="9" y="0" style="text-anchor: start;">
-                                                <tspan x="9" dy="3">0.1</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(0,229)" style="opacity: 1;">
-                                            <line x2="6"></line><text x="9" y="0" style="text-anchor: start;">
-                                                <tspan x="9" dy="3">0.2</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(0,201)" style="opacity: 1;">
-                                            <line x2="6"></line><text x="9" y="0" style="text-anchor: start;">
-                                                <tspan x="9" dy="3">0.3</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(0,172)" style="opacity: 1;">
-                                            <line x2="6"></line><text x="9" y="0" style="text-anchor: start;">
-                                                <tspan x="9" dy="3">0.4</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(0,144)" style="opacity: 1;">
-                                            <line x2="6"></line><text x="9" y="0" style="text-anchor: start;">
-                                                <tspan x="9" dy="3">0.5</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(0,115)" style="opacity: 1;">
-                                            <line x2="6"></line><text x="9" y="0" style="text-anchor: start;">
-                                                <tspan x="9" dy="3">0.6</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(0,87)" style="opacity: 1;">
-                                            <line x2="6"></line><text x="9" y="0" style="text-anchor: start;">
-                                                <tspan x="9" dy="3">0.7</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(0,58)" style="opacity: 1;">
-                                            <line x2="6"></line><text x="9" y="0" style="text-anchor: start;">
-                                                <tspan x="9" dy="3">0.8</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(0,30)" style="opacity: 1;">
-                                            <line x2="6"></line><text x="9" y="0" style="text-anchor: start;">
-                                                <tspan x="9" dy="3">0.9</tspan>
-                                            </text>
-                                        </g>
-                                        <g class="tick" transform="translate(0,1)" style="opacity: 1;">
-                                            <line x2="6"></line><text x="9" y="0" style="text-anchor: start;">
-                                                <tspan x="9" dy="3">1</tspan>
-                                            </text>
-                                        </g>
-                                        <path class="domain" d="M6,1H0V286H6"></path>
-                                    </g>
-                                </g>
-                                <g transform="translate(0,320)" style="visibility: hidden;"></g><text
-                                    class="c3-title" x="160.1999969482422" y="0"></text>
-                            </svg>
-                            <div class="c3-tooltip-container"
-                                style="position: absolute; pointer-events: none; display: none; top: 210.7px; left: 421.5px;">
-                                <table class="c3-tooltip">
-                                    <tbody>
-                                        <tr>
-                                            <th colspan="2">Apr</th>
-                                        </tr>
-                                        <tr class="c3-tooltip-name--data1">
-                                            <td class="name"><span style="background-color:#FF5B37"></span>Maximum
-                                            </td>
-                                            <td class="value">7</td>
-                                        </tr>
-                                    </tbody>
-                                    
-                                </table>
-                                
-                            </div>
-                        </div>
-                        
-                    </div>
-                     <div class="down-load">
-								<a href="javascript:void(0);" class="btn-primary"><i class="fas fa-cloud-download-alt"></i>Download</a>
-							</div>
-
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 d-flex">
+            <div class="card wizard-card flex-fill">
+                <div class="card-body">
+                    <p class="text-primary mt-0 mb-2">Active Job Posts</p>
+                    <h3>{{ $number($metrics['active_job_postings']) }}</h3>
+                    <p class="text-muted mb-0">{{ $number($metrics['pending_job_reviews']) }} awaiting review</p>
+                    <span class="dash-widget-icon bg-1"><i class="fas fa-briefcase"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 d-flex">
+            <div class="card wizard-card flex-fill">
+                <div class="card-body">
+                    <p class="text-primary mt-0 mb-2">Applications</p>
+                    <h3>{{ $number($metrics['new_applications_in_period']) }}</h3>
+                    <p class="text-muted mb-0">{{ $number($metrics['total_applications']) }} all time</p>
+                    <span class="dash-widget-icon bg-1"><i class="fas fa-file-alt"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 d-flex">
+            <div class="card wizard-card flex-fill">
+                <div class="card-body">
+                    <p class="text-primary mt-0 mb-2">Conversion Rate</p>
+                    <h3>{{ $percent($metrics['application_conversion_rate']) }}</h3>
+                    <p class="text-muted mb-0">{{ $percent($metrics['hiring_success_rate']) }} hiring success</p>
+                    <span class="dash-widget-icon bg-1"><i class="fas fa-chart-line"></i></span>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-lg-8 d-flex">
+            <div class="card w-100">
+                <div class="card-body">
+                    <div class="card-header border-0 px-0 pt-0">
+                        <h5 class="card-title mb-0">User Growth And Applications</h5>
+                    </div>
+                    <div id="report-growth-chart" class="mt-3"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 d-flex">
+            <div class="card w-100">
+                <div class="card-body">
+                    <div class="card-header border-0 px-0 pt-0">
+                        <h5 class="card-title mb-0">Candidate Pipeline</h5>
+                    </div>
+                    <div id="report-pipeline-chart" class="mt-3"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <div class="row">
+        <div class="col-lg-4 d-flex">
+            <div class="card w-100">
+                <div class="card-body">
+                    <div class="card-header border-0 px-0 pt-0">
+                        <h5 class="card-title mb-0">Platform Statistics</h5>
+                    </div>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-hover mb-0">
+                            <tbody>
+                                <tr><th>Total applicants</th><td class="text-end">{{ $number($metrics['total_applicants']) }}</td></tr>
+                                <tr><th>Total employers</th><td class="text-end">{{ $number($metrics['total_employers']) }}</td></tr>
+                                <tr><th>Active users in period</th><td class="text-end">{{ $number($metrics['active_users_in_period']) }}</td></tr>
+                                <tr><th>Submitted jobs in period</th><td class="text-end">{{ $number($metrics['submitted_jobs_in_period']) }}</td></tr>
+                                <tr><th>Pending applications</th><td class="text-end">{{ $number($metrics['pending_applications']) }}</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 d-flex">
+            <div class="card w-100">
+                <div class="card-body">
+                    <div class="card-header border-0 px-0 pt-0">
+                        <h5 class="card-title mb-0">Recruitment Analytics</h5>
+                    </div>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-hover mb-0">
+                            <tbody>
+                                <tr><th>Total applications</th><td class="text-end">{{ $number($metrics['total_applications']) }}</td></tr>
+                                <tr><th>New applications</th><td class="text-end">{{ $number($metrics['new_applications_in_period']) }}</td></tr>
+                                <tr><th>Application conversion</th><td class="text-end">{{ $percent($metrics['application_conversion_rate']) }}</td></tr>
+                                <tr><th>Hiring success</th><td class="text-end">{{ $percent($metrics['hiring_success_rate']) }}</td></tr>
+                                <tr><th>Avg time to hire</th><td class="text-end">{{ $number($metrics['average_time_to_hire_days']) }} days</td></tr>
+                                <tr><th>Avg time to decision</th><td class="text-end">{{ $number($metrics['average_time_to_decision_days']) }} days</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 d-flex">
+            <div class="card w-100">
+                <div class="card-body">
+                    <div class="card-header border-0 px-0 pt-0">
+                        <h5 class="card-title mb-0">Job Moderation</h5>
+                    </div>
+                    <div id="report-job-moderation-chart" class="mt-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 d-flex">
+            <div class="card w-100">
+                <div class="card-body">
+                    <div class="card-header border-0 px-0 pt-0">
+                        <h5 class="card-title mb-0">Most Applied Jobs</h5>
+                    </div>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Job</th>
+                                    <th>Company</th>
+                                    <th class="text-end">Applications</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($report['mostAppliedJobs'] as $job)
+                                    <tr>
+                                        <td>{{ $job['title'] }}</td>
+                                        <td>{{ $job['company'] }}</td>
+                                        <td class="text-end">{{ $number($job['applications_count']) }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="3" class="text-center text-muted py-4">No applications in this period.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 d-flex">
+            <div class="card w-100">
+                <div class="card-body">
+                    <div class="card-header border-0 px-0 pt-0">
+                        <h5 class="card-title mb-0">Applications Per Job</h5>
+                    </div>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Job</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Applications</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($report['applicationsPerJob'] as $job)
+                                    <tr>
+                                        <td>
+                                            <div class="fw-medium">{{ $job['title'] }}</div>
+                                            <small class="text-muted">{{ $job['company'] }}</small>
+                                        </td>
+                                        <td>{{ $job['status'] }}</td>
+                                        <td class="text-end">{{ $number($job['applications_count']) }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="3" class="text-center text-muted py-4">No jobs available.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 d-flex">
+            <div class="card w-100">
+                <div class="card-body">
+                    <div class="card-header border-0 px-0 pt-0">
+                        <h5 class="card-title mb-0">Jobs By Category</h5>
+                    </div>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-hover mb-0">
+                            <tbody>
+                                @forelse ($report['jobsByCategory'] as $category)
+                                    <tr>
+                                        <th>{{ $category['category'] }}</th>
+                                        <td class="text-end">{{ $number($category['total_jobs']) }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td class="text-center text-muted py-4">No job categories available.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 d-flex">
+            <div class="card w-100">
+                <div class="card-body">
+                    <div class="card-header border-0 px-0 pt-0">
+                        <h5 class="card-title mb-0">Top Employers</h5>
+                    </div>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Employer</th>
+                                    <th class="text-end">Jobs</th>
+                                    <th class="text-end">Applications</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($report['topEmployers'] as $employer)
+                                    <tr>
+                                        <td>{{ $employer['name'] }}</td>
+                                        <td class="text-end">{{ $number($employer['jobs_count']) }}</td>
+                                        <td class="text-end">{{ $number($employer['applications_count']) }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="3" class="text-center text-muted py-4">No employers available.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 d-flex">
+            <div class="card w-100">
+                <div class="card-body">
+                    <div class="card-header border-0 px-0 pt-0">
+                        <h5 class="card-title mb-0">Operational Metrics</h5>
+                    </div>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-hover mb-0">
+                            <tbody>
+                                @foreach ($report['operationalMetrics'] as $metric)
+                                    <tr>
+                                        <th>{{ $metric['label'] }}</th>
+                                        <td class="text-end">{{ is_numeric($metric['value']) ? $number((int) $metric['value']) : $metric['value'] }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 d-flex">
+            <div class="card w-100">
+                <div class="card-body">
+                    <div class="card-header border-0 px-0 pt-0">
+                        <h5 class="card-title mb-0">Security And Rate Limits</h5>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-sm-4">
+                            <div class="border rounded p-3 h-100">
+                                <p class="text-muted mb-1">Active accounts</p>
+                                <h4 class="mb-0">{{ $number($report['securityMetrics']['activeAccounts']) }}</h4>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="border rounded p-3 h-100">
+                                <p class="text-muted mb-1">Suspended accounts</p>
+                                <h4 class="mb-0">{{ $number($report['securityMetrics']['suspendedAccounts']) }}</h4>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="border rounded p-3 h-100">
+                                <p class="text-muted mb-1">Logins in period</p>
+                                <h4 class="mb-0">{{ $number($report['securityMetrics']['newLoginsInPeriod']) }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Limiter</th>
+                                    <th>Threshold</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($report['securityMetrics']['rateLimiters'] as $limiter)
+                                    <tr>
+                                        <td>{{ $limiter['name'] }}</td>
+                                        <td>{{ $limiter['threshold'] }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 d-flex">
+            <div class="card w-100">
+                <div class="card-body">
+                    <div class="card-header border-0 px-0 pt-0">
+                        <h5 class="card-title mb-0">Platform Configuration</h5>
+                    </div>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-hover mb-0">
+                            <tbody>
+                                @foreach ($report['configuration'] as $setting)
+                                    <tr>
+                                        <th>{{ $setting['label'] }}</th>
+                                        <td class="text-end">{{ $setting['value'] }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 d-flex">
+            <div class="card w-100">
+                <div class="card-body">
+                    <div class="card-header border-0 px-0 pt-0">
+                        <h5 class="card-title mb-0">Applicant Geography</h5>
+                    </div>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-hover mb-0">
+                            <tbody>
+                                @forelse ($report['geography']['applicantsByState'] as $state)
+                                    <tr>
+                                        <th>{{ $state['state'] }}</th>
+                                        <td class="text-end">{{ $number($state['total']) }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td class="text-center text-muted py-4">No applicant location data available.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 d-flex">
+            <div class="card w-100">
+                <div class="card-body">
+                    <div class="card-header border-0 px-0 pt-0">
+                        <h5 class="card-title mb-0">Report Coverage</h5>
+                    </div>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Area</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($report['dataAvailability'] as $item)
+                                    <tr>
+                                        <td>{{ $item['label'] }}</td>
+                                        <td><span class="badge bg-warning-light">{{ $item['status'] }}</span></td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const periodSelect = document.getElementById('period');
+                const customDateFields = document.querySelectorAll('.report-custom-date');
+
+                periodSelect?.addEventListener('change', function () {
+                    const showCustom = this.value === 'custom';
+                    customDateFields.forEach((field) => field.classList.toggle('d-none', !showCustom));
+
+                    if (!showCustom) {
+                        document.getElementById('report-filter-form')?.submit();
+                    }
+                });
+
+                const userGrowth = @json($charts['userGrowth']);
+                const applicationTrend = @json($charts['applicationTrend']);
+                const pipeline = @json($charts['pipeline']);
+                const jobModeration = @json($charts['jobModeration']);
+
+                if (document.querySelector('#report-growth-chart')) {
+                    new ApexCharts(document.querySelector('#report-growth-chart'), {
+                        chart: { type: 'area', height: 320, toolbar: { show: false } },
+                        series: [
+                            ...userGrowth.series,
+                            applicationTrend.series[0],
+                        ],
+                        colors: ['#0073b1', '#feb019', '#28a745'],
+                        dataLabels: { enabled: false },
+                        stroke: { curve: 'smooth', width: 2 },
+                        fill: {
+                            type: 'gradient',
+                            gradient: { shadeIntensity: 1, opacityFrom: 0.35, opacityTo: 0.05 },
+                        },
+                        xaxis: { categories: userGrowth.categories },
+                        yaxis: { labels: { formatter: (value) => Math.round(value) } },
+                    }).render();
+                }
+
+                if (document.querySelector('#report-pipeline-chart')) {
+                    new ApexCharts(document.querySelector('#report-pipeline-chart'), {
+                        chart: { type: 'donut', height: 320 },
+                        labels: pipeline.labels,
+                        series: pipeline.series,
+                        colors: pipeline.colors,
+                        legend: { position: 'bottom' },
+                        plotOptions: {
+                            pie: {
+                                donut: {
+                                    size: '68%',
+                                    labels: {
+                                        show: true,
+                                        total: {
+                                            show: true,
+                                            label: 'Applications',
+                                            formatter: (w) => w.globals.seriesTotals.reduce((a, b) => a + b, 0),
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    }).render();
+                }
+
+                if (document.querySelector('#report-job-moderation-chart')) {
+                    new ApexCharts(document.querySelector('#report-job-moderation-chart'), {
+                        chart: { type: 'bar', height: 260, toolbar: { show: false } },
+                        labels: jobModeration.labels,
+                        series: [{ name: 'Jobs', data: jobModeration.series }],
+                        colors: ['#0073b1'],
+                        plotOptions: {
+                            bar: { horizontal: true, borderRadius: 4 },
+                        },
+                        dataLabels: { enabled: false },
+                        xaxis: { categories: jobModeration.labels, labels: { formatter: (value) => Math.round(value) } },
+                    }).render();
+                }
+            });
+        </script>
+    @endpush
 </x-admin-layout>

@@ -10,8 +10,12 @@ it('renders sweetalert assets, flash payloads, and auth confirmations', function
         ->assertSee('window.NexHireAlerts', false)
         ->assertSee('Welcome back.', false)
         ->assertSee('assets/js/sweetalert.js', false)
-        ->assertSee('assets/js/app-alerts.js', false)
-        ->assertSee('data-confirm-title="Login now?"', false);
+        ->assertSee('assets/js/app-alerts.js', false);
+
+    $this->actingAs(User::factory()->applicant()->create())
+        ->get(route('dashboard'))
+        ->assertOk()
+        ->assertSee('data-confirm-title="Sign out?"', false);
 });
 
 it('marks job and user management mutations for sweetalert confirmation', function () {

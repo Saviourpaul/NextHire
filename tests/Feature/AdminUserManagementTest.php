@@ -15,8 +15,8 @@ it('lets admins create, update, activate, suspend, and soft delete users', funct
             'last_name' => 'Hiring',
             'username' => 'acme-hiring',
             'email' => 'acme@example.com',
-            'password' => 'password',
-            'password_confirmation' => 'password',
+            'password' => 'Password1!',
+            'password_confirmation' => 'Password1!',
             'role' => UserRole::Employer->value,
             'status' => UserStatus::Active->value,
         ])
@@ -39,14 +39,14 @@ it('lets admins create, update, activate, suspend, and soft delete users', funct
             'username' => 'jane-applicant',
             'email' => 'jane@example.com',
             'role' => UserRole::Applicant->value,
-            'status' => UserStatus::Pending->value,
+            'status' => UserStatus::Suspended->value,
         ])
         ->assertRedirect();
 
     expect($user->fresh())
         ->role->toBe(UserRole::Applicant)
-        ->status->toBe(UserStatus::Pending)
-        ->approved_at->toBeNull();
+        ->status->toBe(UserStatus::Suspended)
+        ->suspended_at->not->toBeNull();
 
     $this->actingAs($admin)
         ->patch(route('admin.users.activate', $user))
