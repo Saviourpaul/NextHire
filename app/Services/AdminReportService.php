@@ -251,10 +251,13 @@ class AdminReportService
     private function jobsByCategory(): array
     {
         $categoryExpression = "COALESCE(NULLIF(category, ''), 'Uncategorized')";
+        $normalizedJobs = Job::query()->selectRaw("{$categoryExpression} as category");
 
-        return Job::query()
-            ->selectRaw("{$categoryExpression} as category, COUNT(*) as total_jobs")
-            ->groupByRaw($categoryExpression)
+        return DB::query()
+            ->fromSub($normalizedJobs, 'normalized_jobs')
+            ->select('category')
+            ->selectRaw('COUNT(*) as total_jobs')
+            ->groupBy('category')
             ->orderByDesc('total_jobs')
             ->limit(10)
             ->get()
@@ -349,11 +352,15 @@ class AdminReportService
     private function usersByState(UserRole $role): array
     {
         $stateExpression = "COALESCE(NULLIF(state_of_origin, ''), 'Not Provided')";
-
-        return User::query()
+        $normalizedUsers = User::query()
             ->role($role)
-            ->selectRaw("{$stateExpression} as state, COUNT(*) as total")
-            ->groupByRaw($stateExpression)
+            ->selectRaw("{$stateExpression} as state");
+
+        return DB::query()
+            ->fromSub($normalizedUsers, 'normalized_users')
+            ->select('state')
+            ->selectRaw('COUNT(*) as total')
+            ->groupBy('state')
             ->orderByDesc('total')
             ->limit(10)
             ->get()
