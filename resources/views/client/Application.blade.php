@@ -1,3 +1,5 @@
+@use('App\Http\Requests\StoreApplicationFormRequest')
+
 <x-admin-layout title="Job Application">
     @php
         $wizardSteps = ['Personal Information', 'Identification', 'Educational Qualification', 'Application Summary'];
@@ -22,6 +24,14 @@
         $locationOptions = $states->mapWithKeys(
             fn($state) => [$state->name => $state->localGovernmentAreas->pluck('name')->values()],
         );
+        $profileImageAccept = collect(StoreApplicationFormRequest::PROFILE_IMAGE_TYPES)
+            ->map(fn($type) => '.'.$type)
+            ->implode(',');
+        $documentAccept = collect(StoreApplicationFormRequest::DOCUMENT_TYPES)
+            ->map(fn($type) => '.'.$type)
+            ->implode(',');
+        $profileImageMaxMb = StoreApplicationFormRequest::PROFILE_IMAGE_MAX_KB / 1024;
+        $documentMaxMb = StoreApplicationFormRequest::DOCUMENT_MAX_KB / 1024;
     @endphp
 
     @push('styles')
@@ -107,6 +117,40 @@
                 margin-bottom: 14px;
             }
 
+            .profile-upload-preview {
+                display: flex;
+                align-items: center;
+                gap: 18px;
+                flex-wrap: wrap;
+            }
+
+            .profile-preview-status {
+                min-height: 20px;
+                font-size: 13px;
+                color: #64748b;
+            }
+
+            .profile-preview-status.is-valid {
+                color: #198754;
+            }
+
+            .profile-preview-status.is-invalid {
+                color: #dc3545;
+            }
+
+            .validation-feedback {
+                display: none;
+                width: 100%;
+                margin-top: 0.25rem;
+                font-size: .875em;
+                color: #dc3545;
+            }
+
+            .is-invalid~.validation-feedback,
+            .validation-feedback.is-visible {
+                display: block;
+            }
+
             .application-summary-list {
                 display: grid;
                 grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -182,14 +226,18 @@
         <form action="{{ route('applications.store', $job) }}" method="POST" enctype="multipart/form-data"
             data-application-wizard data-confirm data-confirm-title="Submit application?"
             data-confirm-text="Please confirm your information and uploaded documents are correct."
-            data-confirm-icon="question" data-confirm-button="Submit Application">
+            data-confirm-icon="question" data-confirm-button="Submit Application" novalidate>
             @csrf
+
+            <div class="alert alert-danger d-none" data-validation-summary role="alert" tabindex="-1">
+                Please correct the highlighted fields before continuing.
+            </div>
 
             <x-application-wizard-step title="Personal Information" :index="0">
                 <div class="application-form-panel">
                     <div class="row">
                         <div class="col-md-12 col-lg-12">
-                            <div class="pro-form-img">
+                            <div class="pro-form-img profile-upload-preview">
                                 <div class="profile-pic">
 
                                     <img id="profile-image-preview" class="rounded-circle"
@@ -202,12 +250,33 @@
                                         <i class="feather-upload me-2"></i>Upload Photo
                                         <input id="profile-image-input" type="file" name="profile_image"
                                             class="form-control @error('profile_image') is-invalid @enderror"
-                                            accept="image/*" @required(blank($user->profile_image_path)) data-file-input>
-                                        @error('profile_image')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                            accept="{{ $profileImageAccept }}" @required(blank($user->profile_image_path))
+                                            data-file-input data-file-kind="profile-image"
+                                            data-max-kb="{{ StoreApplicationFormRequest::PROFILE_IMAGE_MAX_KB }}"
+                                            data-allowed-types='@json(StoreApplicationFormRequest::PROFILE_IMAGE_TYPES)'
+                                            data-min-width="{{ StoreApplicationFormRequest::PROFILE_IMAGE_MIN_WIDTH }}"
+                                            data-min-height="{{ StoreApplicationFormRequest::PROFILE_IMAGE_MIN_HEIGHT }}"
+                                            data-max-width="{{ StoreApplicationFormRequest::PROFILE_IMAGE_MAX_WIDTH }}"
+                                            data-max-height="{{ StoreApplicationFormRequest::PROFILE_IMAGE_MAX_HEIGHT }}"
+                                            aria-describedby="profile-image-help profile-image-feedback">
                                     </label>
-                                    <span>For better preview recommended size is 450px x 450px. Max size 5mb.</span>
+                                    <span id="profile-image-help">
+                                        JPG, PNG, or WebP. Max {{ $profileImageMaxMb }}MB. Dimensions
+                                        {{ StoreApplicationFormRequest::PROFILE_IMAGE_MIN_WIDTH }}x{{ StoreApplicationFormRequest::PROFILE_IMAGE_MIN_HEIGHT }}
+                                        to
+                                        {{ StoreApplicationFormRequest::PROFILE_IMAGE_MAX_WIDTH }}x{{ StoreApplicationFormRequest::PROFILE_IMAGE_MAX_HEIGHT }}
+                                        pixels.
+                                    </span>
+                                    <div id="profile-image-preview-status" class="profile-preview-status" aria-live="polite">
+                                        Choose a photo to preview it before submission.
+                                    </div>
+                                    <div id="profile-image-feedback"
+                                        class="validation-feedback @error('profile_image') is-visible @enderror"
+                                        data-validation-message aria-live="polite">
+                                        @error('profile_image')
+                                            {{ $message }}
+                                        @enderror
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -216,7 +285,8 @@
                             <label class="form-label">First Name</label>
                             <input type="text" name="first_name"
                                 class="form-control @error('first_name') is-invalid @enderror"
-                                value="{{ old('first_name', $user->first_name) }}" required>
+                                value="{{ old('first_name', $user->first_name) }}" minlength="2" maxlength="100"
+                                autocomplete="given-name" required>
                             @error('first_name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -226,7 +296,7 @@
                             <label class="form-label">Middle Name</label>
                             <input type="text" name="middle_name"
                                 class="form-control @error('middle_name') is-invalid @enderror"
-                                value="{{ old('middle_name') }}">
+                                value="{{ old('middle_name') }}" maxlength="100" autocomplete="additional-name">
                             @error('middle_name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -236,7 +306,8 @@
                             <label class="form-label">Last Name</label>
                             <input type="text" name="last_name"
                                 class="form-control @error('last_name') is-invalid @enderror"
-                                value="{{ old('last_name', $user->last_name) }}" required>
+                                value="{{ old('last_name', $user->last_name) }}" minlength="2" maxlength="100"
+                                autocomplete="family-name" required>
                             @error('last_name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -244,9 +315,10 @@
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Phone Number</label>
-                            <input type="text" name="phone"
+                            <input type="tel" name="phone"
                                 class="form-control @error('phone') is-invalid @enderror"
-                                value="{{ old('phone', $user->phone) }}" required>
+                                value="{{ old('phone', $user->phone) }}" autocomplete="tel"
+                                pattern="\+?[0-9\s().-]{7,20}" maxlength="20" required>
                             @error('phone')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -256,7 +328,7 @@
                             <label class="form-label">Email Address</label>
                             <input type="email" name="email"
                                 class="form-control @error('email') is-invalid @enderror"
-                                value="{{ old('email', $user->email) }}" required>
+                                value="{{ old('email', $user->email) }}" autocomplete="email" maxlength="255" required>
                             @error('email')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -266,7 +338,8 @@
                             <label class="form-label">Nationality</label>
                             <input type="text" name="nationality"
                                 class="form-control @error('nationality') is-invalid @enderror"
-                                value="{{ old('nationality', $user->nationality ?? 'Nigeria') }}" required>
+                                value="{{ old('nationality', $user->nationality ?? 'Nigeria') }}" maxlength="100"
+                                autocomplete="country-name" required>
                             @error('nationality')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -276,7 +349,8 @@
                             <label class="form-label">Date of Birth</label>
                             <input type="date" name="date_of_birth"
                                 class="form-control @error('date_of_birth') is-invalid @enderror"
-                                value="{{ old('date_of_birth', $user->date_of_birth?->format('Y-m-d')) }}" required>
+                                value="{{ old('date_of_birth', $user->date_of_birth?->format('Y-m-d')) }}"
+                                min="1900-01-01" max="{{ now()->subDay()->toDateString() }}" required>
                             @error('date_of_birth')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -284,7 +358,7 @@
 
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Gender</label>
-                            <select name="gender" class="form-control @error('gender') is-invalid @enderror">
+                            <select name="gender" class="form-control @error('gender') is-invalid @enderror" required>
                                 <option value="">Select gender</option>
                                 @foreach (['male' => 'Male', 'female' => 'Female', 'other' => 'Other'] as $value => $label)
                                     <option value="{{ $value }}" @selected(old('gender') === $value)>
@@ -299,7 +373,7 @@
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Marital Status</label>
                             <select name="marital_status"
-                                class="form-control @error('marital_status') is-invalid @enderror">
+                                class="form-control @error('marital_status') is-invalid @enderror" required>
                                 <option value="">Select status</option>
                                 @foreach (['single' => 'Single', 'married' => 'Married', 'Other' => 'Other'] as $value => $label)
                                     <option value="{{ $value }}" @selected(old('marital_status') === $value)>
@@ -315,7 +389,8 @@
                             <label class="form-label">Zipcode</label>
                             <input type="text" name="zipcode"
                                 class="form-control @error('zipcode') is-invalid @enderror"
-                                value="{{ old('zipcode', $user->zipcode) }}" required>
+                                value="{{ old('zipcode', $user->zipcode) }}" minlength="3" maxlength="20"
+                                pattern="[A-Za-z0-9\s-]{3,20}" autocomplete="postal-code" required>
                             @error('zipcode')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -357,7 +432,8 @@
                             <label class="form-label">Address</label>
                             <input type="text" name="address"
                                 class="form-control @error('address') is-invalid @enderror"
-                                value="{{ old('address', $user->address) }}" required>
+                                value="{{ old('address', $user->address) }}" minlength="5" maxlength="255"
+                                autocomplete="street-address" required>
                             @error('address')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -392,10 +468,20 @@
                             <label class="form-label">NIN Document</label>
                             <input type="file" name="nin_document"
                                 class="form-control @error('nin_document') is-invalid @enderror"
-                                accept=".pdf,.jpg,.jpeg,.png" required data-file-input>
-                            @error('nin_document')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                                accept="{{ $documentAccept }}" required data-file-input data-file-kind="document"
+                                data-max-kb="{{ StoreApplicationFormRequest::DOCUMENT_MAX_KB }}"
+                                data-allowed-types='@json(StoreApplicationFormRequest::DOCUMENT_TYPES)'
+                                aria-describedby="nin-document-help nin-document-feedback">
+                            <div id="nin-document-help" class="form-text">
+                                PDF, JPG, or PNG. Max {{ $documentMaxMb }}MB.
+                            </div>
+                            <div id="nin-document-feedback"
+                                class="validation-feedback @error('nin_document') is-visible @enderror"
+                                data-validation-message aria-live="polite">
+                                @error('nin_document')
+                                    {{ $message }}
+                                @enderror
+                            </div>
                         </div>
 
                         <div class="col-md-6 mb-3">
@@ -413,10 +499,20 @@
                             <label class="form-label">BVN Document</label>
                             <input type="file" name="bvn_document"
                                 class="form-control @error('bvn_document') is-invalid @enderror"
-                                accept=".pdf,.jpg,.jpeg,.png" required data-file-input>
-                            @error('bvn_document')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                                accept="{{ $documentAccept }}" required data-file-input data-file-kind="document"
+                                data-max-kb="{{ StoreApplicationFormRequest::DOCUMENT_MAX_KB }}"
+                                data-allowed-types='@json(StoreApplicationFormRequest::DOCUMENT_TYPES)'
+                                aria-describedby="bvn-document-help bvn-document-feedback">
+                            <div id="bvn-document-help" class="form-text">
+                                PDF, JPG, or PNG. Max {{ $documentMaxMb }}MB.
+                            </div>
+                            <div id="bvn-document-feedback"
+                                class="validation-feedback @error('bvn_document') is-visible @enderror"
+                                data-validation-message aria-live="polite">
+                                @error('bvn_document')
+                                    {{ $message }}
+                                @enderror
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -473,10 +569,22 @@
                                         <input id="education-document-file-{{ $index }}" type="file"
                                             name="education_documents[{{ $index }}][file]"
                                             class="form-control @error('education_documents.' . $index . '.file') is-invalid @enderror"
-                                            accept=".pdf,.jpg,.jpeg,.png" required data-document-file data-file-input>
-                                        @error('education_documents.' . $index . '.file')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                            accept="{{ $documentAccept }}" required data-document-file data-file-input
+                                            data-file-kind="document"
+                                            data-max-kb="{{ StoreApplicationFormRequest::DOCUMENT_MAX_KB }}"
+                                            data-allowed-types='@json(StoreApplicationFormRequest::DOCUMENT_TYPES)'
+                                            aria-describedby="education-document-file-help-{{ $index }} education-document-file-feedback-{{ $index }}">
+                                        <div id="education-document-file-help-{{ $index }}" class="form-text"
+                                            data-document-file-help>
+                                            PDF, JPG, or PNG. Max {{ $documentMaxMb }}MB.
+                                        </div>
+                                        <div id="education-document-file-feedback-{{ $index }}"
+                                            class="validation-feedback @error('education_documents.' . $index . '.file') is-visible @enderror"
+                                            data-validation-message aria-live="polite">
+                                            @error('education_documents.' . $index . '.file')
+                                                {{ $message }}
+                                            @enderror
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -582,8 +690,12 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label" data-document-file-label>Upload Document</label>
-                        <input type="file" class="form-control" accept=".pdf,.jpg,.jpeg,.png" required
-                            data-document-file data-file-input>
+                        <input type="file" class="form-control" accept="{{ $documentAccept }}" required
+                            data-document-file data-file-input data-file-kind="document"
+                            data-max-kb="{{ StoreApplicationFormRequest::DOCUMENT_MAX_KB }}"
+                            data-allowed-types='@json(StoreApplicationFormRequest::DOCUMENT_TYPES)'>
+                        <div class="form-text" data-document-file-help>PDF, JPG, or PNG. Max {{ $documentMaxMb }}MB.</div>
+                        <div class="validation-feedback" data-validation-message aria-live="polite"></div>
                     </div>
                 </div>
             </div>
@@ -602,7 +714,276 @@
                 const steps = Array.from(form.querySelectorAll('[data-application-wizard-step]'));
                 const progressItems = Array.from(document.querySelectorAll('[data-application-wizard-progress-item]'));
                 const lgaOptions = @json($locationOptions);
+                const validationSummary = form.querySelector('[data-validation-summary]');
+                const profileImageInput = document.getElementById('profile-image-input');
+                const profileImagePreview = document.getElementById('profile-image-preview');
+                const profilePreviewStatus = document.getElementById('profile-image-preview-status');
+                const namePattern = /^[\p{L}\s'-]+$/u;
+                const phonePattern = /^\+?[0-9\s().-]{7,20}$/;
+                const zipcodePattern = /^[A-Za-z0-9\s-]{3,20}$/;
+                let profilePreviewUrl = null;
                 let currentStep = 0;
+
+                const formatMegabytes = (kilobytes) => `${Number(kilobytes / 1024).toFixed(kilobytes % 1024 === 0 ? 0 : 1)}MB`;
+
+                const parseAllowedTypes = (field) => {
+                    try {
+                        return JSON.parse(field.dataset.allowedTypes || '[]');
+                    } catch (error) {
+                        return [];
+                    }
+                };
+
+                const extensionFor = (file) => {
+                    const parts = file.name.toLowerCase().split('.');
+
+                    return parts.length > 1 ? parts.pop() : '';
+                };
+
+                const labelFor = (field) => {
+                    if (field.id) {
+                        const explicitLabel = form.querySelector(`label[for="${CSS.escape(field.id)}"]`);
+
+                        if (explicitLabel) {
+                            return explicitLabel.textContent.trim();
+                        }
+                    }
+
+                    return field.closest('.mb-3, .upload-files')?.querySelector('label')?.textContent.trim() ||
+                        field.name.replace(/[_\[\].]/g, ' ');
+                };
+
+                const feedbackFor = (field) => {
+                    const wrapper = field.closest('.mb-3, .upload-files') || field.parentElement;
+                    let feedback = wrapper?.querySelector('[data-validation-message]');
+
+                    if (!feedback) {
+                        feedback = document.createElement('div');
+                        feedback.className = 'validation-feedback';
+                        feedback.dataset.validationMessage = '';
+                        feedback.setAttribute('aria-live', 'polite');
+                        field.insertAdjacentElement('afterend', feedback);
+                    }
+
+                    if (!feedback.id && field.id) {
+                        feedback.id = `${field.id}-feedback`;
+                    }
+
+                    if (feedback.id) {
+                        const descriptions = new Set((field.getAttribute('aria-describedby') || '').split(/\s+/)
+                            .filter(Boolean));
+                        descriptions.add(feedback.id);
+                        field.setAttribute('aria-describedby', Array.from(descriptions).join(' '));
+                    }
+
+                    return feedback;
+                };
+
+                const setFieldError = (field, message) => {
+                    const feedback = feedbackFor(field);
+
+                    field.classList.add('is-invalid');
+                    field.setAttribute('aria-invalid', 'true');
+                    feedback.textContent = message;
+                    feedback.classList.add('is-visible');
+                };
+
+                const clearFieldError = (field) => {
+                    const feedback = feedbackFor(field);
+
+                    field.classList.remove('is-invalid');
+                    field.removeAttribute('aria-invalid');
+                    feedback.textContent = '';
+                    feedback.classList.remove('is-visible');
+                };
+
+                const showValidationSummary = (message) => {
+                    if (!validationSummary) {
+                        return;
+                    }
+
+                    validationSummary.textContent = message || 'Please correct the highlighted fields before continuing.';
+                    validationSummary.classList.remove('d-none');
+                    validationSummary.focus({ preventScroll: true });
+                };
+
+                const hideValidationSummary = () => {
+                    validationSummary?.classList.add('d-none');
+                };
+
+                const loadImageDimensions = (file) => new Promise((resolve, reject) => {
+                    const objectUrl = URL.createObjectURL(file);
+                    const image = new Image();
+
+                    image.onload = () => {
+                        const dimensions = {
+                            width: image.naturalWidth,
+                            height: image.naturalHeight,
+                        };
+
+                        URL.revokeObjectURL(objectUrl);
+                        resolve(dimensions);
+                    };
+
+                    image.onerror = () => {
+                        URL.revokeObjectURL(objectUrl);
+                        reject(new Error('Unable to read image dimensions.'));
+                    };
+
+                    image.src = objectUrl;
+                });
+
+                const setProfilePreviewStatus = (message, state = '') => {
+                    if (!profilePreviewStatus) {
+                        return;
+                    }
+
+                    profilePreviewStatus.textContent = message;
+                    profilePreviewStatus.classList.toggle('is-valid', state === 'valid');
+                    profilePreviewStatus.classList.toggle('is-invalid', state === 'invalid');
+                };
+
+                const validateFileField = async (field) => {
+                    const label = labelFor(field);
+                    const file = field.files?.[0] || null;
+                    const allowedTypes = parseAllowedTypes(field);
+                    const maxKb = Number(field.dataset.maxKb || 0);
+
+                    if (!file) {
+                        if (field.required) {
+                            setFieldError(field, `${label} is required.`);
+                            return false;
+                        }
+
+                        clearFieldError(field);
+                        return true;
+                    }
+
+                    const extension = extensionFor(file);
+
+                    if (allowedTypes.length > 0 && !allowedTypes.includes(extension)) {
+                        setFieldError(field, `${label} must be a ${allowedTypes.map((type) => type.toUpperCase()).join(', ')} file.`);
+                        return false;
+                    }
+
+                    if (maxKb > 0 && file.size > maxKb * 1024) {
+                        setFieldError(field, `${label} must not be larger than ${formatMegabytes(maxKb)}.`);
+                        return false;
+                    }
+
+                    if (field.dataset.fileKind === 'profile-image') {
+                        try {
+                            const dimensions = await loadImageDimensions(file);
+                            const minWidth = Number(field.dataset.minWidth || 0);
+                            const minHeight = Number(field.dataset.minHeight || 0);
+                            const maxWidth = Number(field.dataset.maxWidth || Infinity);
+                            const maxHeight = Number(field.dataset.maxHeight || Infinity);
+
+                            if (
+                                dimensions.width < minWidth ||
+                                dimensions.height < minHeight ||
+                                dimensions.width > maxWidth ||
+                                dimensions.height > maxHeight
+                            ) {
+                                setFieldError(
+                                    field,
+                                    `${label} must be between ${minWidth}x${minHeight} and ${maxWidth}x${maxHeight} pixels.`
+                                );
+                                setProfilePreviewStatus('The selected image dimensions are not allowed.', 'invalid');
+                                return false;
+                            }
+
+                            if (profileImagePreview) {
+                                if (profilePreviewUrl) {
+                                    URL.revokeObjectURL(profilePreviewUrl);
+                                }
+
+                                profilePreviewUrl = URL.createObjectURL(file);
+                                profileImagePreview.src = profilePreviewUrl;
+                            }
+
+                            setProfilePreviewStatus(
+                                `${file.name} selected - ${dimensions.width}x${dimensions.height}px, ${(file.size / 1024 / 1024).toFixed(2)}MB.`,
+                                'valid'
+                            );
+                        } catch (error) {
+                            setFieldError(field, 'Choose a valid image that can be previewed.');
+                            setProfilePreviewStatus('The selected file could not be previewed.', 'invalid');
+                            return false;
+                        }
+                    }
+
+                    clearFieldError(field);
+                    return true;
+                };
+
+                const validateStandardField = (field) => {
+                    const label = labelFor(field);
+                    const value = field.value.trim();
+
+                    if (field.required && value === '') {
+                        setFieldError(field, `${label} is required.`);
+                        return false;
+                    }
+
+                    if (value === '') {
+                        clearFieldError(field);
+                        return true;
+                    }
+
+                    if (field.name === 'first_name' || field.name === 'middle_name' || field.name === 'last_name' || field.name === 'nationality') {
+                        if (!namePattern.test(value)) {
+                            setFieldError(field, `${label} may only contain letters, spaces, hyphens, and apostrophes.`);
+                            return false;
+                        }
+                    }
+
+                    if (field.name === 'phone' && !phonePattern.test(value)) {
+                        setFieldError(field, 'Enter a valid phone number using 7 to 20 digits, with an optional leading plus sign.');
+                        return false;
+                    }
+
+                    if (field.name === 'zipcode' && !zipcodePattern.test(value)) {
+                        setFieldError(field, 'The zipcode may only contain letters, numbers, spaces, and hyphens.');
+                        return false;
+                    }
+
+                    if (!field.checkValidity()) {
+                        setFieldError(field, field.validationMessage || `${label} is invalid.`);
+                        return false;
+                    }
+
+                    clearFieldError(field);
+                    return true;
+                };
+
+                const validateField = async (field) => {
+                    if (field.disabled) {
+                        return true;
+                    }
+
+                    return field.type === 'file' ? validateFileField(field) : validateStandardField(field);
+                };
+
+                const validateFields = async (fields) => {
+                    let firstInvalidField = null;
+
+                    for (const field of fields) {
+                        const isValid = await validateField(field);
+
+                        if (!isValid && !firstInvalidField) {
+                            firstInvalidField = field;
+                        }
+                    }
+
+                    if (firstInvalidField) {
+                        firstInvalidField.focus({ preventScroll: false });
+                        return false;
+                    }
+
+                    hideValidationSummary();
+                    return true;
+                };
 
                 const showStep = (index) => {
                     currentStep = Math.max(0, Math.min(index, steps.length - 1));
@@ -617,16 +998,15 @@
                     });
                 };
 
-                const validateCurrentStep = () => {
+                const validateCurrentStep = async () => {
                     const fields = Array.from(steps[currentStep].querySelectorAll('input, select, textarea'));
-                    const invalidField = fields.find((field) => !field.disabled && !field.checkValidity());
+                    const isValid = await validateFields(fields);
 
-                    if (!invalidField) {
-                        return true;
+                    if (!isValid) {
+                        showValidationSummary('Please correct the highlighted fields in this step before continuing.');
                     }
 
-                    invalidField.reportValidity();
-                    return false;
+                    return isValid;
                 };
 
                 const stateSelect = form.querySelector('[data-state-of-origin]');
@@ -673,6 +1053,8 @@
                         const file = row.querySelector('[data-document-file]');
                         const typeLabel = row.querySelector('[data-document-type-label]');
                         const fileLabel = row.querySelector('[data-document-file-label]');
+                        const fileHelp = row.querySelector('[data-document-file-help]');
+                        const fileFeedback = row.querySelector('[data-validation-message]');
                         const removeButton = row.querySelector('[data-remove-document]');
                         const title = row.querySelector('[data-document-title]');
 
@@ -696,6 +1078,18 @@
 
                         if (fileLabel) {
                             fileLabel.setAttribute('for', `education-document-file-${index}`);
+                        }
+
+                        if (fileHelp) {
+                            fileHelp.id = `education-document-file-help-${index}`;
+                        }
+
+                        if (fileFeedback) {
+                            fileFeedback.id = `education-document-file-feedback-${index}`;
+                        }
+
+                        if (file && fileHelp && fileFeedback) {
+                            file.setAttribute('aria-describedby', `${fileHelp.id} ${fileFeedback.id}`);
                         }
 
                         if (removeButton) {
@@ -770,9 +1164,9 @@
                     });
                 }
 
-                form.addEventListener('click', (event) => {
+                form.addEventListener('click', async (event) => {
                     if (event.target.closest('[data-wizard-next]')) {
-                        if (validateCurrentStep()) {
+                        if (await validateCurrentStep()) {
                             showStep(currentStep + 1);
                             updateSummary();
                         }
@@ -784,8 +1178,58 @@
                     }
                 });
 
-                form.addEventListener('input', updateSummary);
-                form.addEventListener('change', updateSummary);
+                form.addEventListener('input', (event) => {
+                    delete form.dataset.validationPassed;
+                    updateSummary();
+
+                    if (event.target.matches('input:not([type="file"]), select, textarea')) {
+                        validateField(event.target);
+                    }
+                });
+
+                form.addEventListener('change', async (event) => {
+                    delete form.dataset.validationPassed;
+                    updateSummary();
+
+                    if (event.target.matches('input, select, textarea')) {
+                        await validateField(event.target);
+                    }
+                });
+
+                profileImageInput?.addEventListener('change', async () => {
+                    if (!profileImageInput.files?.length) {
+                        setProfilePreviewStatus('Choose a photo to preview it before submission.');
+                        return;
+                    }
+
+                    await validateFileField(profileImageInput);
+                });
+
+                form.addEventListener('submit', async (event) => {
+                    if (form.dataset.confirmed === 'true' || form.dataset.validationPassed === 'true') {
+                        return;
+                    }
+
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+
+                    const allFields = steps.flatMap((step) => Array.from(step.querySelectorAll('input, select, textarea')));
+                    const isValid = await validateFields(allFields);
+
+                    if (!isValid) {
+                        const invalidStepIndex = steps.findIndex((step) => step.querySelector('.is-invalid'));
+
+                        if (invalidStepIndex >= 0) {
+                            showStep(invalidStepIndex);
+                        }
+
+                        showValidationSummary('Please correct the highlighted fields before submitting your application.');
+                        return;
+                    }
+
+                    form.dataset.validationPassed = 'true';
+                    form.requestSubmit();
+                });
 
                 refreshDocumentRows();
                 updateSummary();

@@ -62,6 +62,10 @@ it('renders the application wizard with dependent location and document controls
         ->assertSee('Application Summary')
         ->assertSee('data-state-of-origin', false)
         ->assertSee('data-local-government-area', false)
+        ->assertSee('id="profile-image-preview"', false)
+        ->assertSee('data-file-kind="profile-image"', false)
+        ->assertSee('data-min-width="200"', false)
+        ->assertSee('Choose a photo to preview it before submission.')
         ->assertSee('Add another document');
 });
 
@@ -108,7 +112,8 @@ it('stores applications, synchronizes applicant profile, and prevents duplicate 
 
     $this->actingAs($applicant)
         ->post(route('applications.store', $job), validApplicationPayload())
-        ->assertRedirect();
+        ->assertRedirect()
+        ->assertSessionHas('success', 'Your application has been submitted successfully.');
 
     $application = ApplicationForm::query()->firstOrFail();
     $document = $application->documents()->firstOrFail();
@@ -183,6 +188,38 @@ it('requires nin and bvn numbers to be exactly eleven numeric digits', function 
         ]))
         ->assertRedirect(route('applications.create', $job))
         ->assertSessionHasErrors(['nin_number', 'bvn_number']);
+
+    expect(ApplicationForm::count())->toBe(0);
+});
+
+it('validates profile photo and document uploads before storing an application', function () {
+    Storage::fake('public');
+    Storage::fake('local');
+
+    $employer = User::factory()->employer()->create();
+    $job = Job::factory()->approved()->for($employer, 'employer')->create();
+    $applicant = User::factory()->applicant()->create();
+
+    $this->actingAs($applicant)
+        ->from(route('applications.create', $job))
+        ->post(route('applications.store', $job), validApplicationPayload([
+            'profile_image' => UploadedFile::fake()->image('tiny-profile.jpg', 100, 100),
+            'nin_document' => UploadedFile::fake()->create('nin.svg', 100, 'image/svg+xml'),
+            'bvn_document' => UploadedFile::fake()->create('bvn.pdf', 6000, 'application/pdf'),
+            'education_documents' => [
+                [
+                    'type' => 'bsc',
+                    'file' => UploadedFile::fake()->create('degree.exe', 100, 'application/octet-stream'),
+                ],
+            ],
+        ]))
+        ->assertRedirect(route('applications.create', $job))
+        ->assertSessionHasErrors([
+            'profile_image',
+            'nin_document',
+            'bvn_document',
+            'education_documents.0.file',
+        ]);
 
     expect(ApplicationForm::count())->toBe(0);
 });
