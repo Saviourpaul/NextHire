@@ -12,10 +12,7 @@
         <div class="row align-items-center g-3">
             <div class="col-xl-5 col-lg-12">
                 <h3 class="page-title">Administrative Reports</h3>
-                <p class="text-muted mb-0">
-                    Platform performance, recruitment activity, moderation, security, and configuration status for
-                    <strong>{{ $report['dateRange']->label() }}</strong>.
-                </p>
+                
             </div>
             <div class="col-xl-7 col-lg-12">
                 <form method="GET" action="{{ route('Reports') }}" id="report-filter-form" class="row g-2 align-items-end justify-content-xl-end">
@@ -326,7 +323,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <!--div class="row">
         <div class="col-lg-6 d-flex">
             <div class="card w-100">
                 <div class="card-body">
@@ -395,9 +392,9 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div-->
 
-    <div class="row">
+    <!--div class="row">
         <div class="col-lg-6 d-flex">
             <div class="card w-100">
                 <div class="card-body">
@@ -450,7 +447,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div-->
 
     @push('scripts')
         <script>
